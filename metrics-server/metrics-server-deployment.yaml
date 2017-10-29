@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: metrics-server
+  namespace: kube-system
+  labels:
+    k8s-app: metrics-server
+spec:
+  selector:
+    matchLabels:
+      k8s-app: metrics-server
+  template:
+    metadata:
+      name: metrics-server
+      labels:
+        k8s-app: metrics-server
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ''
+    spec:
+      serviceAccountName: metrics-server
+      containers:
+      - name: metrics-server
+        image: gcr.io/google_containers/metrics-server-amd64:v0.2.0
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: 100Mi
+        command:
+        - /metrics-server
+        - --v=10
+        - --source=kubernetes.summary_api:''
+        - --enable-swagger-ui
+        ports:
+        - containerPort: 443
+          name: https
+          protocol: TCP
+        - containerPort: 8082
+          name: http
+          protocol: TCP
+      tolerations:
+      - key: "CriticalAddonsOnly"
+        operator: "Exists"
+
+

@@ -1,0 +1,102 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: plex
+  namespace: plex
+  labels:
+    app: plex
+spec:
+  type: NodePort
+  selector:
+    app: plex
+  ports:
+  - name: plex
+    port: 32400
+    targetPort: 32400
+    nodePort: 30000
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: plex
+  namespace: plex
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: plex
+    spec:
+      containers:
+      - name: plex
+        image: plexinc/pms-docker:1.9.2.4285-9f65b88ae
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 200m
+            memory: 1024Mi
+          limits:
+            cpu: 2
+            memory: 3072Mi
+        readinessProbe:
+          exec:
+            command:
+            - /healthcheck.sh
+          failureThreshold: 5
+          timeoutSeconds: 15
+          periodSeconds: 15
+        livenessProbe:
+          exec:
+            command:
+            - /healthcheck.sh
+          initialDelaySeconds: 120
+          failureThreshold: 5
+          timeoutSeconds: 15
+          periodSeconds: 15
+        ports:
+        - containerPort: 32400
+          name: plex
+        - containerPort: 3005
+        - containerPort: 8324
+        - containerPort: 32469
+          name: plex2
+        - containerPort: 1900
+          name: plex4-udp
+          protocol: UDP
+        - containerPort: 32410
+          protocol: UDP
+        - containerPort: 32412
+          protocol: UDP
+        - containerPort: 32413
+          protocol: UDP
+        - containerPort: 32414
+          protocol: UDP        
+        env:
+        - name: TZ
+          value: Europe/London
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: config
+          mountPath: /config
+        - name: transcode
+          mountPath: /transcode
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: data
+        nfs:
+          server: home.lukeaddison.co.uk
+          path: "/mnt/data/plex"
+      - name: config
+        persistentVolumeClaim:
+          claimName: plex
+      - name: transcode
+        emptyDir: {}
+      - name: tmp
+        emptyDir: {}

@@ -1,0 +1,1 @@
+kubectl -n custom-metrics create secret tls cm-adapter-serving-certs --cert=serving.crt --key=serving.key
