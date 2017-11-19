@@ -1,0 +1,107 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: bookstack
+  labels:
+    app: bookstack
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: bookstack
+    tier: mysql
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: bookstack
+  labels:
+    app: bookstack
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: bookstack
+        tier: mysql
+    spec:
+      containers:
+      - image: mysql:5.6
+        name: mysql
+        env:
+        - name: MYSQL_USER
+          value: bookstack
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql
+              key: password.txt
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql
+              key: password.txt
+        - name: MYSQL_DATABASE
+          value: bookstack
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql
+        persistentVolumeClaim:
+          claimName: mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bookstack
+  namespace: bookstack
+  labels:
+    app: bookstack
+spec:
+  ports:
+    - port: 80
+  selector:
+    app: bookstack
+    tier: bookstack
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: bookstack
+  namespace: bookstack
+  labels:
+    app: bookstack
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: bookstack
+        tier: bookstack
+    spec:
+      containers:
+      - image: solidnerd/bookstack:0.18.5
+        name: bookstack
+        env:
+        - name: DB_HOST
+          value: mysql:3306
+        - name: DB_DATABASE
+          value: bookstack
+        - name: DB_USERNAME
+          value: bookstack
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql
+              key: password.txt
+        ports:
+        - containerPort: 80
+          name: bookstack
