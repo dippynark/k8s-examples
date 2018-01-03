@@ -13,8 +13,7 @@ spec:
   ports:
   - name: plex
     port: 32400
-    targetPort: 32400
-    nodePort: 30000
+    nodePort: 32400
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -30,8 +29,8 @@ spec:
     spec:
       containers:
       - name: plex
-        image: plexinc/pms-docker:1.9.2.4285-9f65b88ae
-        imagePullPolicy: IfNotPresent
+        image: plexinc/pms-docker:plexpass
+        imagePullPolicy: Always
         resources:
           requests:
             cpu: 200m
@@ -91,7 +90,7 @@ spec:
       volumes:
       - name: data
         nfs:
-          server: home.lukeaddison.co.uk
+          server: node1.lukeaddison.co.uk
           path: "/mnt/data/plex"
       - name: config
         persistentVolumeClaim:
