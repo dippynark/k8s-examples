@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pirate
+  namespace: pirate
+spec:
+  selector:
+    app: pirate
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: pirate
+  namespace: pirate
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: pirate
+    spec:
+      containers:
+      - name: pirate
+        image: hypriot/rpi-busybox-httpd
+        ports:
+        - name: http
+          containerPort: 80
+      tolerations:
+      - key: "arch"
+        operator: "Equal"
+        value: "arm"
+        effect: "NoSchedule"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: beta.kubernetes.io/arch
+                operator: In
+                values:
+                - arm
