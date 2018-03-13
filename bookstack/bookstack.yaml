@@ -31,6 +31,8 @@ spec:
       containers:
       - image: mysql:5.6
         name: mysql
+        #args:
+        #- --skip-grant-tables
         env:
         - name: MYSQL_USER
           value: bookstack
@@ -66,7 +68,8 @@ metadata:
     app: bookstack
 spec:
   ports:
-    - port: 80
+    - name: http
+      port: 80
   selector:
     app: bookstack
     tier: bookstack

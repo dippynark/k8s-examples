@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: ingress
+  name: bookstack
   namespace: bookstack
   annotations:
     kubernetes.io/ingress.class: nginx
@@ -14,6 +14,12 @@ spec:
     - wiki.lukeaddison.co.uk
   rules:
   - host: wiki.lukeaddison.co.uk
+    http:
+      paths:
+      - backend:
+          serviceName: bookstack
+          servicePort: 80
+  - host: wiki
     http:
       paths:
       - backend:
