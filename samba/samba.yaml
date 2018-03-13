@@ -1,0 +1,51 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: samba
+  namespace: samba
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: samba
+    spec:
+      hostNetwork: true
+      containers:
+      - name: samba
+        image: dperson/samba
+        args:
+        - -i
+        - /samba/smbpasswd
+        - -s
+        - "music;/srv;yes;yes;no;samba"
+        - -g 
+        - "ntlm auth = yes" 
+        - -S
+        resources:
+          requests:
+            cpu: 50m
+            memory: 100Mi
+          limits:
+            cpu: 200m
+            memory: 500Mi
+        ports:
+        - containerPort: 139
+        - containerPort: 445
+        volumeMounts:
+        - name: smbpasswd
+          mountPath: /samba
+        - name: srv
+          mountPath: /srv
+      volumes:
+      - name: smbpasswd
+        secret:
+          secretName: smbpasswd
+      - name: srv
+        nfs:
+          server: node1.lukeaddison.co.uk
+          path: "/mnt/data/plex/Music"
+          readOnly: true
+
+        
+        
