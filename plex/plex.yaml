@@ -11,7 +11,8 @@ spec:
   selector:
     app: plex
   ports:
-  - name: plex
+  - name: http
+    protocol: TCP
     port: 32400
     nodePort: 32400
 ---
@@ -29,15 +30,12 @@ spec:
     spec:
       containers:
       - name: plex
-        image: plexinc/pms-docker:1.10.1.4602-f54242b6b
-        imagePullPolicy: Always
+        image: plexinc/pms-docker:1.12.0.4829-6de959918
+        #imagePullPolicy: Always
         resources:
           requests:
-            cpu: 200m
+            cpu: 1
             memory: 1024Mi
-          limits:
-            cpu: 2
-            memory: 3072Mi
         readinessProbe:
           exec:
             command:
@@ -55,22 +53,7 @@ spec:
           periodSeconds: 15
         ports:
         - containerPort: 32400
-          name: plex
-        - containerPort: 3005
-        - containerPort: 8324
-        - containerPort: 32469
-          name: plex2
-        - containerPort: 1900
-          name: plex4-udp
-          protocol: UDP
-        - containerPort: 32410
-          protocol: UDP
-        - containerPort: 32412
-          protocol: UDP
-        - containerPort: 32413
-          protocol: UDP
-        - containerPort: 32414
-          protocol: UDP        
+          name: http
         env:
         - name: TZ
           value: Europe/London
@@ -87,14 +70,19 @@ spec:
           mountPath: /transcode
         - name: tmp
           mountPath: /tmp
+      nodeName: node1.lukeaddison.co.uk
       volumes:
       - name: data
         nfs:
           server: node1.lukeaddison.co.uk
           path: "/mnt/data/plex"
+          readOnly: true
+      #- name: plex-config
+      #  persistentVolumeClaim:
+      #    claimName: plex
       - name: config
-        persistentVolumeClaim:
-          claimName: plex
+        hostPath:
+          path: /srv/nfs/plex-plex-pvc-e4a59cb1-f3db-11e7-a397-7085c2230fb3
       - name: transcode
         emptyDir: {}
       - name: tmp
