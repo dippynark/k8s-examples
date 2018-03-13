@@ -1,0 +1,63 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: radarr
+  namespace: radarr
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: radarr
+    spec:
+      containers:
+      - name: radarr
+        image: linuxserver/radarr
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 50m
+            memory: 100Mi
+          limits:
+            cpu: 200m
+            memory: 500Mi
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 7878
+          timeoutSeconds: 15
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 7878
+          failureThreshold: 3
+          timeoutSeconds: 15
+          periodSeconds: 15
+          initialDelaySeconds: 60
+        ports:
+        - containerPort: 7878
+          name: http
+        env:
+        - name: TZ
+          value: Europe/London
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        volumeMounts:
+        - name: movies
+          mountPath: /movies
+        - name: config
+          mountPath: /config
+      volumes:
+      - name: movies
+        nfs:
+          server: node1.lukeaddison.co.uk
+          path: "/mnt/data/plex/Movies"
+      - name: config
+        persistentVolumeClaim:
+          claimName: config
+
+        
+        
