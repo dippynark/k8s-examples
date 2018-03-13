@@ -1,0 +1,60 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: sonarr
+  namespace: sonarr
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sonarr
+    spec:
+      containers:
+      - name: sonarr
+        image: linuxserver/sonarr
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 50m
+            memory: 100Mi
+          limits:
+            cpu: 200m
+            memory: 500Mi
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8989
+          timeoutSeconds: 15
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8989
+          failureThreshold: 3
+          timeoutSeconds: 15
+          periodSeconds: 15
+          initialDelaySeconds: 60
+        ports:
+        - containerPort: 8989
+          name: http
+        env:
+        - name: TZ
+          value: Europe/London
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        volumeMounts:
+        - name: tv
+          mountPath: /tv
+        - name: config
+          mountPath: /config
+      volumes:
+      - name: tv
+        nfs:
+          server: node1.lukeaddison.co.uk
+          path: "/mnt/data/plex/TV Shows"
+      - name: config
+        persistentVolumeClaim:
+          claimName: config
