@@ -11,9 +11,11 @@ spec:
     port: 80
     targetPort: 80
     protocol: TCP
+    nodePort: 30080
   - name: https
     port: 443
     targetPort: 443
+    nodePort: 30443
     protocol: TCP
   selector:
     app: ingress-nginx
@@ -39,7 +41,7 @@ spec:
       serviceAccountName: nginx-ingress-serviceaccount
       containers:
         - name: nginx-ingress-controller
-          image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.9.0-beta.15
+          image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.9.0
           args:
             - /nginx-ingress-controller
             - --default-backend-service=$(POD_NAMESPACE)/default-http-backend
