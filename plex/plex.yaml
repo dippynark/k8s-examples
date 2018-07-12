@@ -30,12 +30,11 @@ spec:
     spec:
       containers:
       - name: plex
-        image: plexinc/pms-docker:1.12.0.4829-6de959918
-        #imagePullPolicy: Always
+        image: plexinc/pms-docker:1.13.2.5154-fd05be322
         resources:
           requests:
-            cpu: 1
-            memory: 1024Mi
+            cpu: 0.5
+            memory: 2Gi
         readinessProbe:
           exec:
             command:
