@@ -16,13 +16,16 @@ spec:
     port: 32400
     nodePort: 32400
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: plex
   namespace: plex
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: plex
   template:
     metadata:
       labels:
@@ -30,7 +33,7 @@ spec:
     spec:
       containers:
       - name: plex
-        image: plexinc/pms-docker:1.13.2.5154-fd05be322
+        image: plexinc/pms-docker:1.13.4.5271-200287a06
         resources:
           requests:
             cpu: 0.5
