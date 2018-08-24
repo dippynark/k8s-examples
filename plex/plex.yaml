@@ -23,6 +23,8 @@ metadata:
   namespace: plex
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: plex
@@ -33,7 +35,7 @@ spec:
     spec:
       containers:
       - name: plex
-        image: plexinc/pms-docker:1.13.4.5271-200287a06
+        image: plexinc/pms-docker:1.13.5.5332-21ab172de
         resources:
           requests:
             cpu: 0.5
