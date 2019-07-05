@@ -91,7 +91,7 @@ spec:
         tier: bookstack
     spec:
       containers:
-      - image: solidnerd/bookstack:0.18.5
+      - image: solidnerd/bookstack:0.25.5
         name: bookstack
         env:
         - name: DB_HOST
