@@ -88,12 +88,9 @@ spec:
           server: node1.lukeaddison.co.uk
           path: "/mnt/data/plex"
           readOnly: true
-      #- name: plex-config
-      #  persistentVolumeClaim:
-      #    claimName: plex
-      - name: config
-        hostPath:
-          path: /srv/nfs/plex-plex-pvc-e4a59cb1-f3db-11e7-a397-7085c2230fb3
+      - name: plex-config
+        persistentVolumeClaim:
+          claimName: plex
       - name: transcode
         emptyDir: {}
       - name: tmp
