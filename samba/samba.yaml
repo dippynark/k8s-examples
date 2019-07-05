@@ -11,6 +11,19 @@ spec:
         app: samba
     spec:
       hostNetwork: true
+      initContainers:
+      - name: busybox
+        image: busybox
+        command:
+        - cp
+        - -aL
+        - /samba-src/*
+        - /samba/
+        volumeMounts:
+        - name: smbpasswd-src
+          mountPath: /samba-src
+        - name: smbpasswd
+          mountPath: /samba
       containers:
       - name: samba
         image: dperson/samba
@@ -38,9 +51,13 @@ spec:
         - name: srv
           mountPath: /srv
       volumes:
-      - name: smbpasswd
+      - name: smbpasswd-src
         secret:
           secretName: smbpasswd
+          defaultMode: 0600
+      - name: smbpasswd
+        emptyDir:
+          medium: Memory
       - name: srv
         nfs:
           server: node1.lukeaddison.co.uk
