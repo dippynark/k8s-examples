@@ -1,3 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarr
+  namespace: sonarr
+spec:
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8989
+  selector:
+    app: sonarr
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/auth-realm: Authentication Required
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-type: basic
+  name: sonarr
+  namespace: sonarr
+spec:
+  tls:
+  - hosts:
+    - sonarr.lukeaddison.co.uk
+    secretName: sonarr-tls
+  rules:
+  - host: sonarr.lukeaddison.co.uk
+    http:
+      paths:
+      - backend:
+          serviceName: sonarr
+          servicePort: 8989
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:

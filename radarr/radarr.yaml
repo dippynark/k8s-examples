@@ -1,3 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: radarr
+  namespace: radarr
+spec:
+  ports:
+  - name: http
+    port: 7878
+  selector:
+    app: radarr
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/auth-realm: Authentication Required
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-type: basic
+  name: radarr
+  namespace: radarr
+spec:
+  tls:
+  - hosts:
+    - radarr.lukeaddison.co.uk
+    secretName: radarr-tls
+  rules:
+  - host: radarr.lukeaddison.co.uk
+    http:
+      paths:
+      - backend:
+          serviceName: radarr
+          servicePort: 7878
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -18,9 +54,6 @@ spec:
           requests:
             cpu: 50m
             memory: 100Mi
-          limits:
-            cpu: 200m
-            memory: 500Mi
         readinessProbe:
           httpGet:
             path: /
@@ -58,6 +91,3 @@ spec:
       - name: config
         persistentVolumeClaim:
           claimName: config
-
-        
-        
