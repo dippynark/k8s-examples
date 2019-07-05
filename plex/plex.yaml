@@ -16,6 +16,12 @@ spec:
     port: 32400
     nodePort: 32400
 ---
+apiVersion: scheduling.k8s.io/v1beta1
+kind: PriorityClass
+metadata:
+  name: high-priority
+value: 1000000
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -33,13 +39,14 @@ spec:
       labels:
         app: plex
     spec:
+      priorityClassName: high-priority
       containers:
       - name: plex
-        image: plexinc/pms-docker:1.13.5.5332-21ab172de
+        image: plexinc/pms-docker:1.16.1.1291-158e5b199
         resources:
           requests:
-            cpu: 0.5
-            memory: 2Gi
+            cpu: 0.2
+            memory: 1Gi
         readinessProbe:
           exec:
             command:
