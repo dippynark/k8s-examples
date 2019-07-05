@@ -1,5 +1,5 @@
 .DS_Store
-/micellaneous
+ignore
 secret.yaml
 secrets.yaml
 secret
