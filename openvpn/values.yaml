@@ -96,14 +96,13 @@ openvpn:
   #taKey: false
   taKey: true
   # Override default cipher
-  #cipher: AES-256-CBC
-  cipher: AES-128-OFB
+  cipher: AES-256-CBC
   # Arbitrary lines appended to the end of the server configuration file
   # conf: |
   #  max-clients 100
   #  client-to-client
   conf: |-
-    push "route 192.168.1.0 255.255.255.0"
+    push "redirect-gateway def1"
     push "dhcp-option DOMAIN lukeaddison.co.uk"
 
 nodeSelector: {}

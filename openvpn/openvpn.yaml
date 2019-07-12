@@ -44,7 +44,7 @@ data:
       nobind
       dev tun
       remote ${MY_IP_ADDR} 443 udp
-      cipher AES-128-OFB
+      cipher AES-256-CBC
       redirect-gateway def1
       <key>
       `cat ${EASY_RSA_LOC}/pki/private/$1.key`
@@ -147,7 +147,7 @@ data:
 
 
 
-      cipher AES-128-OFB
+      cipher AES-256-CBC
 
       key-direction 0
       keepalive 10 60
@@ -172,7 +172,7 @@ data:
       OVPN_K8S_SEARCH
 
       push "dhcp-option DNS OVPN_K8S_DNS"
-      push "route 192.168.1.0 255.255.255.0"
+      push "redirect-gateway def1"
       push "dhcp-option DOMAIN lukeaddison.co.uk"
 ---
 # Source: openvpn/templates/openvpn-service.yaml
@@ -220,7 +220,7 @@ spec:
         app: openvpn
         release: openvpn
       annotations:
-        checksum/config: 9ba53e4b5ea8fe6e005617b7aedade6075baabaffc194b3da78323917b74c6a1
+        checksum/config: 7fb518cf0878bc7cde42c152b4df97dc8e9545a03bd06ef34bfc105a1353785d
     spec:
       containers:
       - name: openvpn
