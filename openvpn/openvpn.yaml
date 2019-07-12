@@ -102,7 +102,7 @@ data:
       }
 
       /etc/openvpn/setup/setup-certs.sh
-      iptables -t nat -A POSTROUTING -s 10.200.0.0/255.255.0.0 -o eth0 -j MASQUERADE
+      iptables -t nat -A POSTROUTING -s 10.240.0.0/255.255.0.0 -o eth0 -j MASQUERADE
       mkdir -p /dev/net
       if [ ! -c /dev/net/tun ]; then
           mknod /dev/net/tun c 10 200
@@ -135,7 +135,7 @@ data:
 
       openvpn --config /etc/openvpn/openvpn.conf
   openvpn.conf: |-
-      server 10.200.0.0 255.255.0.0
+      server 10.240.0.0 255.255.0.0
       verb 3
 
       key /etc/openvpn/certs/pki/private/server.key
@@ -166,6 +166,8 @@ data:
 
       push "route 10.100.0.0 255.255.0.0"
 
+
+      push "route 10.3.0.0/16 255.255.0.0"
 
 
 
@@ -220,7 +222,7 @@ spec:
         app: openvpn
         release: openvpn
       annotations:
-        checksum/config: 7fb518cf0878bc7cde42c152b4df97dc8e9545a03bd06ef34bfc105a1353785d
+        checksum/config: 38998ad32724de775b19be0814a75ac18140fb966127067391070909f9a00e22
     spec:
       containers:
       - name: openvpn

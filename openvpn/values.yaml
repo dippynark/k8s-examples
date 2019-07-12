@@ -62,8 +62,7 @@ persistence:
   size: 2M
 openvpn:
   # Network allocated for openvpn clients (default: 10.240.0.0).
-  #OVPN_NETWORK: 10.240.0.0
-  OVPN_NETWORK: 10.200.0.0
+  OVPN_NETWORK: 10.240.0.0
   # Network subnet allocated for openvpn client (default: 255.255.0.0).
   OVPN_SUBNET: 255.255.0.0
   # Protocol used by openvpn tcp or udp (default: udp).
@@ -78,8 +77,10 @@ openvpn:
   # Kubernetes service network (optional).
   # Define openvpn.OVPN_K8S_SVC_NETWORK and openvpn.OVPN_K8S_SVC_SUBNET if it's needed to create a separate route to Kubernates service subnet
   # OVPN_K8S_SVC_NETWORK:
+  OVPN_K8S_SVC_NETWORK: "10.3.0.0/16"
   # Kubernetes service network subnet (optional).
   # OVPN_K8S_SVC_SUBNET:
+  OVPN_K8S_SVC_SUBNET: "255.255.0.0"
   # Server certificate data
   # keystoreSecret:
   keystoreSecret: openvpn
