@@ -179,7 +179,7 @@ data:
       push "route 10.100.0.0 255.255.0.0"
 
 
-      push "route 10.3.0.0/16 255.255.0.0"
+      push "route 10.3.0.0 255.255.0.0"
 
 
 
@@ -234,7 +234,7 @@ spec:
         app: openvpn
         release: openvpn
       annotations:
-        checksum/config: 7ea77fa0e894339625f6446da66fd95679bae0a7d7f3e59b0defdeae49974955
+        checksum/config: d8280840a8073da0b6dde5094cc58c1ba0aabab4dbb163f0559e752c16cd12c3
     spec:
       containers:
       - name: openvpn
