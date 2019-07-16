@@ -143,6 +143,7 @@ data:
       sed 's|NETWORK|'"${NETWORK}"'|' -i /etc/openvpn/openvpn.conf
       sed 's|NETMASK|'"${NETMASK}"'|' -i /etc/openvpn/openvpn.conf
 
+      # exec openvpn process so it receives lifecycle signals
       exec openvpn --config /etc/openvpn/openvpn.conf
   openvpn.conf: |-
       server 10.240.0.0 255.255.0.0
@@ -236,7 +237,7 @@ spec:
         app: openvpn
         release: openvpn
       annotations:
-        checksum/config: 5e52a4adc1e9f830f4acea78613e21b24852ea3bb2940dbd5f29ef71c85cca1e
+        checksum/config: b6ffc9f8050633fc58c78097fe45b87004004839f84e8bb9dd0e9ec1b8dd0bf7
     spec:
       containers:
       - name: openvpn
@@ -257,8 +258,9 @@ spec:
           exec:
             command:
             - nc
-            - -uvz
-            - localhost
+            - -u
+            - -z
+            - 127.0.0.1
             - "443"
         resources:
           requests:
