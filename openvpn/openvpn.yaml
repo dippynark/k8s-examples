@@ -6,7 +6,7 @@ metadata:
   name: openvpn
   labels:
     app: openvpn
-    chart: openvpn-3.13.1
+    chart: openvpn-3.13.2
     release: openvpn
     heritage: Tiller
 data:
@@ -17,6 +17,13 @@ data:
     if [ -e "$SERVER_CERT" ]
     then
       echo "found existing certs - reusing"
+      if [ ! -e ${EASY_RSA_LOC}/pki/crl.pem ]
+      then
+        echo "generating missed crl file"
+        ./easyrsa gen-crl
+        cp ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}/crl.pem
+        chmod 644 ${EASY_RSA_LOC}/crl.pem
+      fi
         if [ ! -e ${EASY_RSA_LOC}/pki/ta.key ]
         then
           echo "generating missed ta.key"
@@ -29,6 +36,9 @@ data:
       echo "ca\n" | ./easyrsa build-ca nopass
       ./easyrsa build-server-full server nopass
       ./easyrsa gen-dh
+      ./easyrsa gen-crl
+      cp ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}/crl.pem # Note: the pki/ directory is inaccessible after openvpn drops privileges, so we cp crl.pem to ${EASY_RSA_LOC} to allow CRL updates without a restart
+      chmod 644 ${EASY_RSA_LOC}/crl.pem
       openvpn --genkey --secret ${EASY_RSA_LOC}/pki/ta.key
     fi
 
@@ -138,6 +148,8 @@ data:
       server 10.240.0.0 255.255.0.0
       verb 3
 
+      crl-verify /etc/openvpn/certs/crl.pem
+
       key /etc/openvpn/certs/pki/private/server.key
       ca /etc/openvpn/certs/pki/ca.crt
       cert /etc/openvpn/certs/pki/issued/server.crt
@@ -184,7 +196,7 @@ metadata:
   name: openvpn
   labels:
     app: openvpn
-    chart: openvpn-3.13.1
+    chart: openvpn-3.13.2
     release: openvpn
     heritage: Tiller
 spec:
@@ -207,7 +219,7 @@ metadata:
   name: openvpn
   labels:
     app: openvpn
-    chart: openvpn-3.13.1
+    chart: openvpn-3.13.2
     release: openvpn
     heritage: Tiller
 spec:
@@ -222,7 +234,7 @@ spec:
         app: openvpn
         release: openvpn
       annotations:
-        checksum/config: 38998ad32724de775b19be0814a75ac18140fb966127067391070909f9a00e22
+        checksum/config: 7ea77fa0e894339625f6446da66fd95679bae0a7d7f3e59b0defdeae49974955
     spec:
       containers:
       - name: openvpn
@@ -268,6 +280,9 @@ spec:
             path: "pki/issued/server.crt"
           - key: "dh.pem"
             path: "pki/dh.pem"
+          - key: "crl.pem"
+            path: "crl.pem"
+            mode: 484
           - key: "ta.key"
             path: "pki/ta.key"
 

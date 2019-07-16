@@ -6,12 +6,13 @@ https://firxworx.com/blog/it-devops/sysadmin/creating-certificates-and-keys-for-
 cd ~/vpn/easyrsa
 openvpn --genkey --secret pki/private/ta.key
 kubectl create ns openvpn
-kubectl create secret generic openvpn -n openvpn --from-file=~/vpn/easyrsa/pki/private/server.key \
-    --from-file=~/vpn/easyrsa/pki/ca.crt \
-    --from-file=~/vpn/easyrsa/pki/issued/server.crt \
-    --from-file=~/vpn/easyrsa/pki/dh.pem \
-    --from-file=~/vpn/easyrsa/pki/private/ta.key
-    [--from-file=./crl.pem]
+kubectl create secret generic openvpn -n openvpn \
+    --from-file=$HOME/vpn/easyrsa/pki/private/server.key \
+    --from-file=$HOME/vpn/easyrsa/pki/ca.crt \
+    --from-file=$HOME/vpn/easyrsa/pki/issued/server.crt \
+    --from-file=$HOME/vpn/easyrsa/pki/dh.pem \
+    --from-file=$HOME/vpn/easyrsa/pki/private/ta.key \
+    --from-file=$HOME/vpn/easyrsa/pki/crl.pem
 
 # https://github.com/helm/charts/blob/master/stable/openvpn/values.yaml
 helm template /Users/luke/go/src/github.com/helm/charts/stable/openvpn -f values.yaml --name openvpn --namespace openvpn > openvpn.yaml
@@ -23,6 +24,11 @@ cp -a ~/vpn/easyrsa/pki/dh.pem \
     ~/vpn/easyrsa/pki/private/laptop.key \
     ~/vpn/easyrsa/pki/issued/laptop.crt \
     ~/.openvpn/home
+
+# revoke
+cd ~/vpn/easyrsa
+./easyrsa revoke client1
+./easyrsa gen-crl
 ```
 
 ## Example client config
