@@ -143,7 +143,7 @@ data:
       sed 's|NETWORK|'"${NETWORK}"'|' -i /etc/openvpn/openvpn.conf
       sed 's|NETMASK|'"${NETMASK}"'|' -i /etc/openvpn/openvpn.conf
 
-      openvpn --config /etc/openvpn/openvpn.conf
+      exec openvpn --config /etc/openvpn/openvpn.conf
   openvpn.conf: |-
       server 10.240.0.0 255.255.0.0
       verb 3
@@ -186,6 +186,8 @@ data:
       OVPN_K8S_SEARCH
 
       push "dhcp-option DNS OVPN_K8S_DNS"
+      client-to-client
+      explicit-exit-notify
       push "redirect-gateway def1"
       push "dhcp-option DOMAIN lukeaddison.co.uk"
 ---
@@ -234,7 +236,7 @@ spec:
         app: openvpn
         release: openvpn
       annotations:
-        checksum/config: fe36fdda77d46ae579528dda26b818dde8fd3715bd441d1e81b98b58cf009572
+        checksum/config: 5e52a4adc1e9f830f4acea78613e21b24852ea3bb2940dbd5f29ef71c85cca1e
     spec:
       containers:
       - name: openvpn
@@ -248,6 +250,16 @@ spec:
           capabilities:
             add:
               - NET_ADMIN
+        readinessProbe:
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 2
+          exec:
+            command:
+            - nc
+            - -uvz
+            - localhost
+            - "443"
         resources:
           requests:
             cpu: "100m"

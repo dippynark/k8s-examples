@@ -103,6 +103,8 @@ openvpn:
   #  max-clients 100
   #  client-to-client
   conf: |-
+    client-to-client
+    explicit-exit-notify
     push "redirect-gateway def1"
     push "dhcp-option DOMAIN lukeaddison.co.uk"
 
