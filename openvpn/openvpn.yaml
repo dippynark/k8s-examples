@@ -17,7 +17,7 @@ data:
     if [ -e "$SERVER_CERT" ]
     then
       echo "found existing certs - reusing"
-      if [ ! -e ${EASY_RSA_LOC}/pki/crl.pem ]
+      if [ ! -e ${EASY_RSA_LOC}/crl.pem ]
       then
         echo "generating missed crl file"
         ./easyrsa gen-crl
@@ -234,11 +234,11 @@ spec:
         app: openvpn
         release: openvpn
       annotations:
-        checksum/config: d8280840a8073da0b6dde5094cc58c1ba0aabab4dbb163f0559e752c16cd12c3
+        checksum/config: fe36fdda77d46ae579528dda26b818dde8fd3715bd441d1e81b98b58cf009572
     spec:
       containers:
       - name: openvpn
-        image: "jfelten/openvpn-docker:1.1.0"
+        image: "dippynark/openvpn-docker:1.0.0"
         imagePullPolicy: IfNotPresent
         command: ["/etc/openvpn/setup/configure.sh"]
         ports:
