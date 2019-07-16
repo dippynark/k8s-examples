@@ -6,7 +6,7 @@ metadata:
   name: openvpn
   labels:
     app: openvpn
-    chart: openvpn-3.13.2
+    chart: openvpn-3.13.4
     release: openvpn
     heritage: Tiller
 data:
@@ -199,7 +199,7 @@ metadata:
   name: openvpn
   labels:
     app: openvpn
-    chart: openvpn-3.13.2
+    chart: openvpn-3.13.4
     release: openvpn
     heritage: Tiller
 spec:
@@ -222,7 +222,7 @@ metadata:
   name: openvpn
   labels:
     app: openvpn
-    chart: openvpn-3.13.2
+    chart: openvpn-3.13.4
     release: openvpn
     heritage: Tiller
 spec:
@@ -237,7 +237,7 @@ spec:
         app: openvpn
         release: openvpn
       annotations:
-        checksum/config: b6ffc9f8050633fc58c78097fe45b87004004839f84e8bb9dd0e9ec1b8dd0bf7
+        checksum/config: bcfc0cbbf69a655fafdaf811d0c3fb4e8d0ace4861353defa1c0b63a315643a3
     spec:
       containers:
       - name: openvpn
