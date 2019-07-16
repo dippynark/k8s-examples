@@ -208,7 +208,7 @@ spec:
       port: 443
       targetPort: 443
       protocol: UDP
-      nodePort: 32085
+      nodePort: 31194
   selector:
     app: openvpn
     release: openvpn
