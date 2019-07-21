@@ -17,13 +17,6 @@ data:
     if [ -e "$SERVER_CERT" ]
     then
       echo "found existing certs - reusing"
-      if [ ! -e ${EASY_RSA_LOC}/crl.pem ]
-      then
-        echo "generating missed crl file"
-        ./easyrsa gen-crl
-        cp ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}/crl.pem
-        chmod 644 ${EASY_RSA_LOC}/crl.pem
-      fi
         if [ ! -e ${EASY_RSA_LOC}/pki/ta.key ]
         then
           echo "generating missed ta.key"
@@ -36,9 +29,6 @@ data:
       echo "ca\n" | ./easyrsa build-ca nopass
       ./easyrsa build-server-full server nopass
       ./easyrsa gen-dh
-      ./easyrsa gen-crl
-      cp ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}/crl.pem # Note: the pki/ directory is inaccessible after openvpn drops privileges, so we cp crl.pem to ${EASY_RSA_LOC} to allow CRL updates without a restart
-      chmod 644 ${EASY_RSA_LOC}/crl.pem
       openvpn --genkey --secret ${EASY_RSA_LOC}/pki/ta.key
     fi
 
@@ -149,8 +139,6 @@ data:
       server 10.240.0.0 255.255.0.0
       verb 3
 
-      crl-verify /etc/openvpn/certs/crl.pem
-
       key /etc/openvpn/certs/pki/private/server.key
       ca /etc/openvpn/certs/pki/ca.crt
       cert /etc/openvpn/certs/pki/issued/server.crt
@@ -237,7 +225,7 @@ spec:
         app: openvpn
         release: openvpn
       annotations:
-        checksum/config: bcfc0cbbf69a655fafdaf811d0c3fb4e8d0ace4861353defa1c0b63a315643a3
+        checksum/config: 2cb4c6432bd998ad72392d981c09537a46dda24db777cf64ff3e81438b0251b5
     spec:
       containers:
       - name: openvpn
@@ -294,9 +282,6 @@ spec:
             path: "pki/issued/server.crt"
           - key: "dh.pem"
             path: "pki/dh.pem"
-          - key: "crl.pem"
-            path: "crl.pem"
-            mode: 484
           - key: "ta.key"
             path: "pki/ta.key"
 

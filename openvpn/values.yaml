@@ -27,7 +27,7 @@ openvpn:
   # Push a `dhcp-option DOMAIN` config
   dhcpOptionDomain: true
   # Use/generate certificate revocation list
-  useCrl: true
+  useCrl: false
   # Use/generate a ta.key
   taKey: true
   # Override default cipher
