@@ -8,6 +8,10 @@ metadata:
     tier: node
     app: flannel
 spec:
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -19,6 +23,14 @@ spec:
       - key: node-role.kubernetes.io/master
         operator: Exists
         effect: NoSchedule
+      - key: node.kubernetes.io/not-ready
+        operator: Exists
+        effect: NoSchedule
+      - key: node.kubernetes.io/not-ready
+        effect: NoExecute
+        operator: Exists      
+      - key: CriticalAddonsOnly
+        operator: Exists
       serviceAccountName: flannel
       initContainers:
       - name: install-cni
@@ -74,6 +86,10 @@ metadata:
     tier: node
     app: flannel
 spec:
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -94,6 +110,14 @@ spec:
       - key: node-role.kubernetes.io/master
         operator: Exists
         effect: NoSchedule
+      - key: node.kubernetes.io/not-ready
+        operator: Exists
+        effect: NoSchedule
+      - key: node.kubernetes.io/not-ready
+        effect: NoExecute
+        operator: Exists      
+      - key: CriticalAddonsOnly
+        operator: Exists
       - key: "arch"
         operator: "Equal"
         value: "arm"
