@@ -124,6 +124,10 @@ metadata:
     app: metallb
     component: speaker
 spec:
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
   selector:
     matchLabels:
       app: metallb

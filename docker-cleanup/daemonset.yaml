@@ -6,6 +6,10 @@ metadata:
   name: clean-up
   namespace: docker
 spec:
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -44,6 +48,10 @@ metadata:
   name: clean-up-arm
   namespace: docker
 spec:
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       labels:
