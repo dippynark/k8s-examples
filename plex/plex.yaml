@@ -81,7 +81,7 @@ spec:
           mountPath: /transcode
         - name: tmp
           mountPath: /tmp
-      nodeName: node1
+      nodeName: core1
       volumes:
       - name: data
         nfs:
