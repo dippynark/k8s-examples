@@ -81,11 +81,11 @@ spec:
           mountPath: /transcode
         - name: tmp
           mountPath: /tmp
-      nodeName: node1.lukeaddison.co.uk
+      nodeName: node1
       volumes:
       - name: data
         nfs:
-          server: node1.lukeaddison.co.uk
+          server: node1
           path: "/mnt/data/plex"
           readOnly: true
       - name: plex-config
