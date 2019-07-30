@@ -38,7 +38,7 @@ spec:
       volumes:
       - name: data
         nfs:
-          server: node1.lukeaddison.co.uk
+          server: nfs.lukeaddison.co.uk
           path: "/mnt/data/plex"
           readOnly: true
       - name: config

@@ -60,7 +60,7 @@ spec:
           medium: Memory
       - name: srv
         nfs:
-          server: node1.lukeaddison.co.uk
+          server: nfs.lukeaddison.co.uk
           path: "/mnt/data/plex/Music"
           readOnly: true
 

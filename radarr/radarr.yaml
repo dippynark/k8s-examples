@@ -86,7 +86,7 @@ spec:
       volumes:
       - name: movies
         nfs:
-          server: node1.lukeaddison.co.uk
+          server: nfs.lukeaddison.co.uk
           path: "/mnt/data/plex/Movies"
       - name: config
         persistentVolumeClaim:
