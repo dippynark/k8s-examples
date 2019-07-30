@@ -17,7 +17,7 @@ spec:
         command:
         - cp
         - -aL
-        - /samba-src/*
+        - /samba-src/smbpasswd
         - /samba/
         volumeMounts:
         - name: smbpasswd-src
