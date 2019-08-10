@@ -35,3 +35,21 @@ spec:
       for: 5m
       labels:
         severity: critical
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    role: alert-rules
+  name: node-systemd-unit-state-failed
+  namespace: monitoring
+spec:
+  groups:
+  - name: node-systemd-unit-state-failed
+    rules:
+    - alert: NodeSystemdUnitStateFailed
+      annotations:
+        message: Systemd unit {{ $labels.name }} entered a failed state
+      expr: 'node_systemd_unit_state{state="failed"} > 0'
+      labels:
+        severity: critical
