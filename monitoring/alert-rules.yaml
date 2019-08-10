@@ -80,13 +80,21 @@ spec:
       for: 5m
       labels:
         severity: critical
-  - name: node-systemd-unit-state-failed
+  - name: node-systemd-unit-state
     rules:
     - alert: NodeSystemdUnitStateFailed
       annotations:
         message: Systemd unit {{ $labels.name }} entered failed state on instance {{ $labels.instance }}
       expr: |
         node_systemd_unit_state{state="failed"} > 0
+      labels:
+        severity: critical
+    - alert: NodeSystemdUnitStateRestarting
+      annotations:
+        message: Systemd unit {{ $labels.name }} on instance {{ $labels.instance }} has restarted regularly for 10m
+      expr: |
+        rate(node_systemd_service_restart_total[5m]) > 0
+      for: 10m
       labels:
         severity: critical
   - name: node-disk-running-full
