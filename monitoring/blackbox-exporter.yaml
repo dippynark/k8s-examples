@@ -1,0 +1,180 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: blackbox-exporter
+  namespace: monitoring
+  labels:
+    type: application
+spec:
+  endpoints:
+  - port: http
+    scheme: http
+    path: "/probe"
+    interval: 30s
+    scrapeTimeout: 30s
+    params:
+      module:
+      - http_2xx
+      target:
+      - https://www.lukeaddison.co.uk
+    metricRelabelings:
+      - sourceLabels: [__address__]
+        targetLabel: __param_target
+      - sourceLabels: [__param_target]
+        targetLabel: instance
+      - targetLabel: target
+        replacement: https://www.lukeaddison.co.uk
+  - port: http
+    scheme: http
+    path: "/probe"
+    interval: 30s
+    scrapeTimeout: 30s
+    params:
+      module:
+      - http_2xx
+      target:
+      - https://wiki.lukeaddison.co.uk
+    metricRelabelings:
+      - sourceLabels: [__address__]
+        targetLabel: __param_target
+      - sourceLabels: [__param_target]
+        targetLabel: instance
+      - targetLabel: target
+        replacement: https://wiki.lukeaddison.co.uk
+  - port: http
+    scheme: http
+    path: "/probe"
+    interval: 30s
+    scrapeTimeout: 30s
+    params:
+      module:
+      - http_2xx
+      target:
+      - https://plex.lukeaddison.co.uk/web/index.html
+    metricRelabelings:
+      - sourceLabels: [__address__]
+        targetLabel: __param_target
+      - sourceLabels: [__param_target]
+        targetLabel: instance
+      - targetLabel: target
+        replacement: https://plex.lukeaddison.co.uk/web/index.html
+  - port: http
+    scheme: http
+    path: "/probe"
+    interval: 30s
+    scrapeTimeout: 30s
+    params:
+      module:
+      - http_2xx
+      target:
+      - https://pirate.lukeaddison.co.uk
+    metricRelabelings:
+      - sourceLabels: [__address__]
+        targetLabel: __param_target
+      - sourceLabels: [__param_target]
+        targetLabel: instance
+      - targetLabel: target
+        replacement: https://pirate.lukeaddison.co.uk
+  jobLabel: "blackbox-exporter"
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: blackbox-exporter
+  namespaceSelector:
+    matchNames:
+    - monitoring
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: blackbox-exporter
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: blackbox-exporter
+data:
+  blackbox.yaml: |
+    modules:
+      http_2xx:
+        prober: http
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: blackbox-exporter
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: blackbox-exporter
+spec:
+  ports:
+  - name: http
+    port: 9115
+    protocol: TCP
+  selector:
+    app.kubernetes.io/name: blackbox-exporter
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blackbox-exporter
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: blackbox-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: blackbox-exporter
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: blackbox-exporter
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: blackbox-exporter
+        image: "prom/blackbox-exporter:v0.14.0"
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1000
+        args:
+        - "--config.file=/config/blackbox.yaml"
+        resources:
+          requests:
+            memory: 100Mi
+        ports:
+        - containerPort: 9115
+          name: http
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+        volumeMounts:
+        - mountPath: /config
+          name: config
+      - name: configmap-reload
+        image: "jimmidyson/configmap-reload:v0.2.2"
+        imagePullPolicy: "IfNotPresent"
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 65534
+        args:
+        - --volume-dir=/etc/config
+        - --webhook-url=http://localhost:9115/-/reload
+        volumeMounts:
+        - mountPath: /etc/config
+          name: config
+          readOnly: true
+      volumes:
+      - name: config
+        configMap:
+          name: blackbox-exporter

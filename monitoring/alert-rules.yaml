@@ -17,31 +17,38 @@ spec:
       for: 5m
       labels:
         severity: critical
-    - alert: NodeExporterDown
+    - alert: NodeExporterPirate0Down
       annotations:
         message: NodeExporter pirate0.lukeaddison.co.uk:9100 has disappeared from Prometheus target discovery for 5m
       expr: absent(up{job="node-exporter", instance="pirate0.lukeaddison.co.uk:9100"} == 1)
       for: 5m
       labels:
         severity: critical
-    - alert: NodeExporterDown
+    - alert: NodeExporterPirate1Down
       annotations:
         message: NodeExporter pirate1.lukeaddison.co.uk:9100 has disappeared from Prometheus target discovery for 5m
       expr: absent(up{job="node-exporter", instance="pirate1.lukeaddison.co.uk:9100"} == 1)
       for: 5m
       labels:
         severity: critical
-    - alert: NodeExporterDown
+    - alert: NodeExporterUbntDown
       annotations:
         message: NodeExporter ubnt.lukeaddison.co.uk:9100 has disappeared from Prometheus target discovery for 5m
       expr: absent(up{job="node-exporter", instance="ubnt.lukeaddison.co.uk:9100"} == 1)
       for: 5m
       labels:
         severity: critical
-    - alert: NodeExporterDown
+    - alert: NodeExporterDaemonSetDown
       annotations:
         message: NodeExporter Daemonset has disappeared from Prometheus target discovery for 5m
-      expr: absent(up{job="node-exporter", instance!~"pirate0.lukeaddison.co.uk:9100|pirate1.lukeaddison.co.uk:9100|ubnt.lukeaddison.co.uk:9100"} == 1)
+      expr: absent(up{job="node-exporter", pod=~".+"} == 1)
+      for: 5m
+      labels:
+        severity: critical
+    - alert: BlackboxExporterDown
+      annotations:
+        message: BlackboxExporter has disappeared from Prometheus target discovery for 5m
+      expr: absent(up{job="blackbox-exporter"} == 1)
       for: 5m
       labels:
         severity: critical
@@ -57,10 +64,10 @@ spec:
         severity: critical
     - alert: KubePodCrashLooping
       annotations:
-        message: Pod {{ $labels.exported_namespace }}/{{ $labels.exported_pod }} ({{ $labels.container}}) is restarting {{ printf "%.2f" $value }} times / 5 minutes for 5m
+        message: Pod {{ $labels.exported_namespace }}/{{ $labels.exported_pod }} ({{ $labels.container}}) has restarted regularly for 10m
       expr: |
-        rate(kube_pod_container_status_restarts_total{job="kube-state-metrics"}[15m]) * 60 * 5 > 0
-      for: 5m
+        rate(kube_pod_container_status_restarts_total{job="kube-state-metrics"}[5m]) > 0
+      for: 10m
       labels:
         severity: critical
   - name: kubernetes-system
@@ -89,5 +96,14 @@ spec:
         message: Filesystem at {{ $labels.mountpoint }} on instance {{ $labels.instance }} has less than 5% available space
       expr: |
         (node_filesystem_avail_bytes*100)/node_filesystem_size_bytes < 5
+      labels:
+        severity: critical
+  - name: probe-failed
+    rules:
+    - alert: ProbeFailed
+      annotations:
+        message: '{{ $labels.target }} is unavailable'
+      expr: |
+        probe_success == 0
       labels:
         severity: critical
