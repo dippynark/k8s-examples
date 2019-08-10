@@ -1,0 +1,48 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sachet
+  namespace: monitoring
+spec:
+  ports:
+  - name: alert
+    port: 9876
+  selector:
+    app: sachet
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sachet
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: sachet
+  template:
+    metadata:
+      labels:
+        app: sachet
+    spec:
+      containers:
+      - name: sachet
+        image: dippynark/sachet:latest
+        imagePullPolicy: Always
+        args:
+        - -config
+        - /etc/sachet/config.yaml
+        volumeMounts:
+        - name: config
+          mountPath: /etc/sachet
+        ports:
+        - name: alert
+          containerPort: 9876
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: 9876
+      volumes:
+      - name: config
+        secret:
+          secretName: sachet
