@@ -4,6 +4,8 @@ kind: Service
 metadata:
   name: ingress-nginx
   namespace: ingress-nginx
+  labels:
+    app: ingress-nginx
 spec:
   type: NodePort
   ports:
