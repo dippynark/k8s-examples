@@ -42,6 +42,18 @@ spec:
           httpGet:
             path: /metrics
             port: 9876
+      - name: configmap-reload
+        image: "jimmidyson/configmap-reload:v0.2.2"
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 65534
+        args:
+        - --volume-dir=/etc/config
+        - --webhook-url=http://127.0.0.1:9876/-/reload
+        volumeMounts:
+        - mountPath: /etc/config
+          name: config
+          readOnly: true
       volumes:
       - name: config
         secret:
