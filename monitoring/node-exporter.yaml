@@ -71,6 +71,7 @@ spec:
             - --path.sysfs=/host/sys
             - --path.rootfs=/host/root
             - --collector.systemd
+            - --collector.systemd.enable-restarts-metrics
             - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+)($|/)
             - --collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|cgroup|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|sysfs|tracefs)$
           ports:
