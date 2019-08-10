@@ -12,26 +12,6 @@ spec:
   selector:
     app: alertmanager
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: alertmanager-alertmanager
-  namespace: monitoring
-stringData:
-  alertmanager.yaml: |
-    global:
-      resolve_timeout: 5m
-    route:
-      group_by: ['job']
-      group_wait: 30s
-      group_interval: 5m
-      repeat_interval: 12h
-      receiver: 'webhook'
-    receivers:
-    - name: 'webhook'
-      webhook_configs:
-      - url: 'http://alertmanagerwh:30500/'
----
 apiVersion: monitoring.coreos.com/v1
 kind: Alertmanager
 metadata:
