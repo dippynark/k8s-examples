@@ -1,0 +1,43 @@
+defaultRules:
+  create: false
+global:
+  rbac:
+    create: true
+    pspEnabled: false
+alertmanager:
+  enabled: false
+grafana:
+  enabled: false
+  adminPassword: admin
+  sidecar:
+    # https://github.com/helm/charts/pull/13001
+    skipTlsVerify: true
+    dashboards:
+      enabled: false
+    datasources:
+      defaultDatasourceEnabled: false
+  additionalDataSources:
+  - name: Prometheus
+    type: prometheus
+    access: direct
+    url: http://prometheus.monitoring:9090
+kubeApiServer:
+  enabled: false
+kubelet:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+coreDns:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeProxy:
+  enabled: false
+kubeStateMetrics:
+  enabled: false
+nodeExporter:
+  enabled: false
+prometheus:
+  enabled: false
