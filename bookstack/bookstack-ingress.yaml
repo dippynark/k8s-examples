@@ -19,9 +19,3 @@ spec:
       - backend:
           serviceName: bookstack
           servicePort: 80
-  - host: wiki
-    http:
-      paths:
-      - backend:
-          serviceName: bookstack
-          servicePort: 80

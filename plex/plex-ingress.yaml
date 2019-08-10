@@ -20,10 +20,3 @@ spec:
       - backend:
           serviceName: plex
           servicePort: 32400
-  - host: plex
-    http:
-      paths:
-      - backend:
-          serviceName: plex
-          servicePort: 32400
-  
