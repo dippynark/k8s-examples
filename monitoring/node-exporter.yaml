@@ -66,7 +66,10 @@ spec:
           args:
             - --path.procfs=/host/proc
             - --path.sysfs=/host/sys
+            - --path.rootfs=/host/root
             - --collector.systemd
+            - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+)($|/)
+            - --collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|cgroup|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|sysfs|tracefs)$
           ports:
             - name: metrics
               containerPort: 9100
@@ -80,6 +83,10 @@ spec:
               readOnly: true
             - mountPath: /var/run/dbus/system_bus_socket
               name: system-dbus-socket
+              readOnly: true
+            - mountPath: /host/root
+              mountPropagation: HostToContainer
+              name: root
               readOnly: true
           resources:
             limits:
@@ -99,3 +106,6 @@ spec:
         - name: system-dbus-socket
           hostPath:
             path: /var/run/dbus/system_bus_socket
+        - name: root
+          hostPath:
+            path: /

@@ -1,0 +1,72 @@
+# https://github.com/camilb/prometheus-kubernetes/blob/master/manifests/prometheus/prometheus-k8s-rules.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    role: alert-rules
+  name: alert-rules
+  namespace: monitoring
+spec:
+  groups:
+  - name: instance-down
+    rules:
+    - alert: KubeStateMetricsDown
+      annotations:
+        message: KubeStateMetrics has disappeared from Prometheus target discovery for 5m
+      expr: absent(up{job="kube-state-metrics"} == 1)
+      for: 5m
+      labels:
+        severity: critical
+    - alert: NodeExporterDown
+      annotations:
+        message: NodeExporter has disappeared from Prometheus target discovery for 5m
+      expr: absent(up{job="node-exporter"} == 1)
+      for: 5m
+      labels:
+        severity: critical
+  - name: kubernetes-applications
+    rules:
+    - alert: KubePodNotReady
+      annotations:
+        message: Pod {{ $labels.exported_namespace }}/{{ $labels.exported_pod }} has been in a non-ready state for 5m
+      expr: |
+        sum by (exported_namespace, exported_pod) (kube_pod_status_phase{job="kube-state-metrics", phase=~"Pending|Unknown"}) > 0
+      for: 5m
+      labels:
+        severity: critical
+    - alert: KubePodCrashLooping
+      annotations:
+        message: Pod {{ $labels.exported_namespace }}/{{ $labels.exported_pod }} ({{ $labels.container}}) is restarting {{ printf "%.2f" $value }} times / 5 minutes for 5m
+      expr: |
+        rate(kube_pod_container_status_restarts_total{job="kube-state-metrics"}[15m]) * 60 * 5 > 0
+      for: 5m
+      labels:
+        severity: critical
+  - name: kubernetes-system
+    rules:
+    - alert: KubeNodeNotReady
+      annotations:
+        message: Node {{ $labels.node }} has been unready for 5m
+      expr: |
+        kube_node_status_condition{job="kube-state-metrics",condition="Ready",status="true"} == 0
+      for: 5m
+      labels:
+        severity: critical
+  - name: node-systemd-unit-state-failed
+    rules:
+    - alert: NodeSystemdUnitStateFailed
+      annotations:
+        message: Systemd unit {{ $labels.name }} entered failed state on instance {{ $labels.instance }}
+      expr: |
+        node_systemd_unit_state{state="failed"} > 0
+      labels:
+        severity: critical
+  - name: node-disk-running-full
+    rules:
+    - alert: NodeDiskRunningFull
+      annotations:
+        message: Filesystem at {{ $labels.mountpoint }} on instance {{ $labels.instance }} has less than 5% available space
+      expr: |
+        (node_filesystem_avail_bytes*100)/node_filesystem_size_bytes < 5
+      labels:
+        severity: critical

@@ -59,6 +59,9 @@ spec:
   retention: "10d"
   routePrefix: "/"
   serviceAccountName: prometheus
+  additionalScrapeConfigs:
+    name: additional-scrape-configs
+    key: prometheus-additional.yaml
   serviceMonitorSelector:
     matchExpression:
     - name: type
@@ -66,12 +69,10 @@ spec:
   resources:
     requests:
       memory: 400Mi
-  #serviceMonitorNamespaceSelector: {}
   securityContext:
     fsGroup: 2000
     runAsNonRoot: true
     runAsUser: 1000
-  #ruleNamespaceSelector: {}
   ruleSelector:
     matchLabels:
       role: alert-rules
