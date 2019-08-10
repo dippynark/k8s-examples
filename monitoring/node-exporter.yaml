@@ -46,29 +46,27 @@ metadata:
     k8s-app: node-exporter
     kubernetes.io/cluster-service: "true"
     addonmanager.kubernetes.io/mode: Reconcile
-    version: v0.15.2
 spec:
   selector:
     matchLabels:
       k8s-app: node-exporter
-      version: v0.15.2
   updateStrategy:
-    type: OnDelete
+    type: RollingUpdate
   template:
     metadata:
       labels:
         k8s-app: node-exporter
-        version: v0.15.2
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
     spec:
       containers:
         - name: prometheus-node-exporter
-          image: "prom/node-exporter:v0.15.2"
+          image: "prom/node-exporter:v0.18.1"
           imagePullPolicy: "IfNotPresent"
           args:
             - --path.procfs=/host/proc
             - --path.sysfs=/host/sys
+            - --collector.systemd
           ports:
             - name: metrics
               containerPort: 9100
@@ -79,6 +77,9 @@ spec:
               readOnly:  true
             - name: sys
               mountPath: /host/sys
+              readOnly: true
+            - mountPath: /var/run/dbus/system_bus_socket
+              name: system-dbus-socket
               readOnly: true
           resources:
             limits:
@@ -95,3 +96,6 @@ spec:
         - name: sys
           hostPath:
             path: /sys
+        - name: system-dbus-socket
+          hostPath:
+            path: /var/run/dbus/system_bus_socket
