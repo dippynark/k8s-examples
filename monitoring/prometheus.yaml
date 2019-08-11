@@ -47,17 +47,10 @@ spec:
     - namespace: monitoring
       name: alertmanager
       port: web
-  baseImage: quay.io/prometheus/prometheus
   version: v2.10.0
   externalUrl: http://prometheus.monitoring.svc.cluster.local:9090
-  paused: false
-  replicas: 1
-  logLevel:  info
-  logFormat:  logfmt
-  listenLocal: false
   enableAdminAPI: true
-  retention: "10d"
-  routePrefix: "/"
+  scrapeInterval: 1m
   serviceAccountName: prometheus
   additionalScrapeConfigs:
     name: additional-scrape-configs
