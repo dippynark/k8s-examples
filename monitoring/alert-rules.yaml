@@ -84,9 +84,10 @@ spec:
     rules:
     - alert: NodeSystemdUnitStateFailed
       annotations:
-        message: Systemd unit {{ $labels.name }} entered failed state on instance {{ $labels.instance }}
+        message: Systemd unit {{ $labels.name }} entered failed state on instance {{ $labels.instance }} for 10m
       expr: |
         node_systemd_unit_state{state="failed"} > 0
+      for: 10m
       labels:
         severity: critical
     - alert: NodeSystemdUnitStateRestarting
@@ -110,9 +111,10 @@ spec:
     rules:
     - alert: ProbeFailed
       annotations:
-        message: '{{ $labels.target }} is unavailable'
+        message: '{{ $labels.target }} has been unavailable for 2m'
       expr: |
         probe_success == 0
+      for: 2m
       labels:
         severity: critical
   - name: node-network
