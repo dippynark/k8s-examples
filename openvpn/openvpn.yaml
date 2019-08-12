@@ -6,13 +6,14 @@ metadata:
   name: openvpn
   labels:
     app: openvpn
-    chart: openvpn-3.13.4
+    chart: openvpn-3.13.8
     release: openvpn
     heritage: Tiller
 data:
   setup-certs.sh: |-
     #!/bin/bash
     EASY_RSA_LOC="/etc/openvpn/certs"
+    cd $EASY_RSA_LOC
     SERVER_CERT="${EASY_RSA_LOC}/pki/issued/server.crt"
     if [ -e "$SERVER_CERT" ]
     then
@@ -24,7 +25,6 @@ data:
         fi
     else
       cp -R /usr/share/easy-rsa/* $EASY_RSA_LOC
-      cd $EASY_RSA_LOC
       ./easyrsa init-pki
       echo "ca\n" | ./easyrsa build-ca nopass
       ./easyrsa build-server-full server nopass
@@ -102,6 +102,10 @@ data:
       }
 
       /etc/openvpn/setup/setup-certs.sh
+
+
+
+
       iptables -t nat -A POSTROUTING -s 10.240.0.0/255.255.0.0 -o eth0 -j MASQUERADE
       mkdir -p /dev/net
       if [ ! -c /dev/net/tun ]; then
@@ -187,7 +191,7 @@ metadata:
   name: openvpn
   labels:
     app: openvpn
-    chart: openvpn-3.13.4
+    chart: openvpn-3.13.8
     release: openvpn
     heritage: Tiller
 spec:
@@ -210,7 +214,7 @@ metadata:
   name: openvpn
   labels:
     app: openvpn
-    chart: openvpn-3.13.4
+    chart: openvpn-3.13.8
     release: openvpn
     heritage: Tiller
 spec:
@@ -225,7 +229,7 @@ spec:
         app: openvpn
         release: openvpn
       annotations:
-        checksum/config: 2cb4c6432bd998ad72392d981c09537a46dda24db777cf64ff3e81438b0251b5
+        checksum/config: cd6df2fe7864911459162e7f17449f5f1951ccd134d0d6e36dfd6dfa69b80058
     spec:
       containers:
       - name: openvpn
