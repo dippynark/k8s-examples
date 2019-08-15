@@ -52,6 +52,27 @@ spec:
       for: 5m
       labels:
         severity: critical
+    - alert: FluentBitDaemonSetDown
+      annotations:
+        message: FluentBit Daemonset has disappeared from Prometheus target discovery for 5m
+      expr: absent(up{job="fluent-bit", pod=~".+"} == 1)
+      for: 5m
+      labels:
+        severity: critical
+    - alert: FluentBitPirate0Down
+      annotations:
+        message: FluentBit pirate0.lukeaddison.co.uk:2020 has disappeared from Prometheus target discovery for 5m
+      expr: absent(up{job="fluent-bit", instance="pirate0.lukeaddison.co.uk:2020"} == 1)
+      for: 5m
+      labels:
+        severity: critical
+    - alert: FluentBitPirate1Down
+      annotations:
+        message: FluentBit pirate1.lukeaddison.co.uk:2020 has disappeared from Prometheus target discovery for 5m
+      expr: absent(up{job="fluent-bit", instance="pirate1.lukeaddison.co.uk:2020"} == 1)
+      for: 5m
+      labels:
+        severity: critical
   - name: kubernetes-applications
     rules:
     - alert: KubePodNotReady
