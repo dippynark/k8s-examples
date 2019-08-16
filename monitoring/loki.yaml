@@ -40,8 +40,8 @@ stringData:
       filesystem:
         directory: /data/loki/chunks
     table_manager:
-      retention_deletes_enabled: false
-      retention_period: 0
+      retention_deletes_enabled: true
+      retention_period: 332h
 ---
 apiVersion: v1
 kind: Service
