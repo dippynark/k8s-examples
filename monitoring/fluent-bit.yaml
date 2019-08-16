@@ -147,7 +147,7 @@ spec:
     spec:
       serviceAccountName: fluent-bit
       initContainers:
-      - name: install-loki
+      - name: install-loki-output-plugin
         image: dippynark/fluent-bit-go-loki
         imagePullPolicy: Always
         command:
