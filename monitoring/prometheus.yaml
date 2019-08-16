@@ -50,7 +50,7 @@ spec:
   version: v2.10.0
   externalUrl: http://prometheus.monitoring.svc.cluster.local:9090
   enableAdminAPI: true
-  scrapeInterval: 1m
+  scrapeInterval: 30s
   serviceAccountName: prometheus
   additionalScrapeConfigs:
     name: additional-scrape-configs
