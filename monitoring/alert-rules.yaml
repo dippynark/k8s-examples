@@ -105,10 +105,9 @@ spec:
     rules:
     - alert: NodeSystemdUnitStateFailed
       annotations:
-        message: Systemd unit {{ $labels.name }} entered failed state on instance {{ $labels.instance }} for 10m
+        message: Systemd unit {{ $labels.name }} entered failed state on instance {{ $labels.instance }}
       expr: |
         node_systemd_unit_state{state="failed"} > 0
-      for: 10m
       labels:
         severity: critical
     - alert: NodeSystemdUnitStateRestarting
