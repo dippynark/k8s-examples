@@ -66,6 +66,7 @@ data:
         Name   loki
         Match  *
         Url    http://loki.monitoring.svc.cluster.local:3100/api/prom/push
+        Labels {job="fluent-bit", instance="${HOSTNAME}"}
 
   fluent-bit.conf: |-
     @INCLUDE fluent-bit-service.conf
