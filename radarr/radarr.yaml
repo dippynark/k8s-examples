@@ -48,7 +48,7 @@ spec:
     spec:
       containers:
       - name: radarr
-        image: linuxserver/radarr
+        image: dippynark/radarr
         imagePullPolicy: Always
         resources:
           requests:
