@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: calibre-web
+  namespace: calibre
+  labels:
+    app: calibre-web
+spec:
+  selector:
+    app: calibre-web
+  ports:
+  - port: 80
+    targetPort: 8083
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calibre-web
+  namespace: calibre
+  labels:
+    app: calibre-web
+spec:
+  selector:
+    matchLabels:
+      app: calibre-web
+  template:
+    metadata:
+      name: calibre-web
+      labels:
+        app: calibre-web
+    spec:
+      containers:
+      - name: calibre-web
+        image: linuxserver/calibre-web
+        ports:
+        - containerPort: 8083
+        env:
+        - name: TZ
+          value: Europe/London
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        volumeMounts:
+        - name: books
+          mountPath: /books
+        - name: config
+          mountPath: /config
+      nodeName: core1
+      volumes:
+      - name: books
+        hostPath:
+          path: /mnt/data/plex/Books
+      - name: config
+        persistentVolumeClaim:
+          claimName: calibre-web
