@@ -6,7 +6,8 @@ metadata:
 spec:
   ports:
   - name: http
-    port: 7878
+    port: 80
+    targetPort: 7878
   selector:
     app: radarr
 ---
@@ -32,7 +33,7 @@ spec:
       paths:
       - backend:
           serviceName: radarr
-          servicePort: 7878
+          servicePort: 80
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment

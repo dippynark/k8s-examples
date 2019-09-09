@@ -7,7 +7,8 @@ spec:
   ports:
   - name: http
     protocol: TCP
-    port: 8989
+    port: 80
+    targetPort: 8989
   selector:
     app: sonarr
 ---
@@ -33,7 +34,7 @@ spec:
       paths:
       - backend:
           serviceName: sonarr
-          servicePort: 8989
+          servicePort: 80
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
