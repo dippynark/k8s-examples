@@ -42,7 +42,7 @@ spec:
       priorityClassName: high-priority
       containers:
       - name: plex
-        image: plexinc/pms-docker:1.16.6.1592-b9d49bdb7
+        image: plexinc/pms-docker:1.17.0.1709-982421575
         resources:
           requests:
             cpu: 0.2
