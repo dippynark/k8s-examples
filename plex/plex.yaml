@@ -73,8 +73,15 @@ spec:
         - name: PGID
           value: "1000"
         volumeMounts:
-        - name: data
-          mountPath: /data
+        - name: music
+          mountPath: /data/Music
+          readOnly: true
+        - name: tv-shows
+          mountPath: /data/TV Shows
+          readOnly: true
+        - name: films
+          mountPath: /data/Films
+          readOnly: true
         - name: config
           mountPath: /config
         - name: transcode
@@ -83,11 +90,15 @@ spec:
           mountPath: /tmp
       nodeName: core1
       volumes:
-      - name: data
-        nfs:
-          server: nfs.lukeaddison.co.uk
-          path: "/mnt/data/plex"
-          readOnly: true
+      - name: music
+        hostPath:
+          path: /mnt/data/plex/Music
+      - name: tv-shows
+        hostPath:
+          path: /mnt/data/plex/TV Shows
+      - name: films
+        hostPath:
+          path: /mnt/data/media/Films
       - name: config
         persistentVolumeClaim:
           claimName: plex
