@@ -17,20 +17,6 @@ spec:
       for: 5m
       labels:
         severity: critical
-    - alert: NodeExporterPirate0Down
-      annotations:
-        message: NodeExporter pirate0.lukeaddison.co.uk:9100 has disappeared from Prometheus target discovery for 5m
-      expr: absent(up{job="node-exporter", instance="pirate0.lukeaddison.co.uk:9100"} == 1)
-      for: 5m
-      labels:
-        severity: critical
-    - alert: NodeExporterPirate1Down
-      annotations:
-        message: NodeExporter pirate1.lukeaddison.co.uk:9100 has disappeared from Prometheus target discovery for 5m
-      expr: absent(up{job="node-exporter", instance="pirate1.lukeaddison.co.uk:9100"} == 1)
-      for: 5m
-      labels:
-        severity: critical
     - alert: NodeExporterUbntDown
       annotations:
         message: NodeExporter ubnt.lukeaddison.co.uk:9100 has disappeared from Prometheus target discovery for 5m
@@ -56,20 +42,6 @@ spec:
       annotations:
         message: FluentBit Daemonset has disappeared from Prometheus target discovery for 5m
       expr: absent(up{job="fluent-bit", pod=~".+"} == 1)
-      for: 5m
-      labels:
-        severity: critical
-    - alert: FluentBitPirate0Down
-      annotations:
-        message: FluentBit pirate0.lukeaddison.co.uk:2020 has disappeared from Prometheus target discovery for 5m
-      expr: absent(up{job="fluent-bit", instance="pirate0.lukeaddison.co.uk:2020"} == 1)
-      for: 5m
-      labels:
-        severity: critical
-    - alert: FluentBitPirate1Down
-      annotations:
-        message: FluentBit pirate1.lukeaddison.co.uk:2020 has disappeared from Prometheus target discovery for 5m
-      expr: absent(up{job="fluent-bit", instance="pirate1.lukeaddison.co.uk:2020"} == 1)
       for: 5m
       labels:
         severity: critical
