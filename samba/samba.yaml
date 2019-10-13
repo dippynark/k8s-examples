@@ -5,6 +5,8 @@ metadata:
   namespace: samba
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -45,11 +47,20 @@ spec:
         ports:
         - containerPort: 139
         - containerPort: 445
+        env:
+        - name: TZ
+          value: Europe/London
+        - name: USERID
+          value: "1000"
+        - name: GROUPID
+          value: "1000"
         volumeMounts:
         - name: smbpasswd
           mountPath: /samba
         - name: srv
           mountPath: /srv
+          readOnly: true
+      nodeName: core1
       volumes:
       - name: smbpasswd-src
         secret:
@@ -59,10 +70,5 @@ spec:
         emptyDir:
           medium: Memory
       - name: srv
-        nfs:
-          server: nfs.lukeaddison.co.uk
-          path: "/mnt/data/plex/Music"
-          readOnly: true
-
-        
-        
+        hostPath:
+          path: /mnt/data/media/Music
