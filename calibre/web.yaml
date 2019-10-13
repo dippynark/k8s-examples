@@ -50,7 +50,7 @@ spec:
       volumes:
       - name: books
         hostPath:
-          path: /mnt/data/plex/Books
+          path: /mnt/data/media/Books
       - name: config
         persistentVolumeClaim:
           claimName: calibre-web
