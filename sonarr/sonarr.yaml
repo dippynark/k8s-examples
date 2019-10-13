@@ -42,13 +42,66 @@ metadata:
   name: sonarr
   namespace: sonarr
 spec:
-  replicas: 1
   template:
     metadata:
       labels:
         app: sonarr
     spec:
       containers:
+      containers:
+      - name: connect
+        image: python:3.7
+        env:
+        - name: WHATBOX_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: sonarr
+              key: whatbox_username
+        - name: WHATBOX_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sonarr
+              key: whatbox_password
+        - name: WHATBOX_HOSTNAME
+          valueFrom:
+            secretKeyRef:
+              name: sonarr
+              key: whatbox_hostname
+        - name: SONARR_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: sonarr
+              key: sonarr_username
+        - name: SONARR_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sonarr
+              key: sonarr_password
+        - name: SONARR_APIKEY
+          valueFrom:
+            secretKeyRef:
+              name: sonarr
+              key: sonarr_apikey
+        - name: PUSHBULLET_ACCESS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: sonarr
+              key: pushbullet_access_token
+        volumeMounts:
+        - name: link-script
+          mountPath: /opt/bin/link.py
+          subPath: link.py
+        - name: connect
+          mountPath: /connect
+        command:
+        - sh
+        - -c
+        - |
+          pip install requests pushbullet.py
+          while true; do
+            find /connect -type f -exec /opt/bin/link.py $WHATBOX_USERNAME $WHATBOX_PASSWORD $WHATBOX_HOSTNAME $SONARR_USERNAME $SONARR_PASSWORD $SONARR_APIKEY $PUSHBULLET_ACCESS_TOKEN {} \;
+            sleep 10
+          done
       - name: sonarr
         image: linuxserver/sonarr
         imagePullPolicy: Always
@@ -56,9 +109,6 @@ spec:
           requests:
             cpu: 50m
             memory: 100Mi
-          limits:
-            cpu: 200m
-            memory: 500Mi
         readinessProbe:
           httpGet:
             path: /
@@ -88,11 +138,40 @@ spec:
           mountPath: /tv
         - name: config
           mountPath: /config
+        - name: whatbox
+          mountPath: /mnt/whatbox
+          readOnly: true
+        - name: connect
+          mountPath: /connect
+        - name: connect-script
+          mountPath: /opt/bin/connect.sh
+          subPath: connect.sh
+      nodeName: core1
       volumes:
       - name: tv
-        nfs:
-          server: nfs.lukeaddison.co.uk
-          path: "/mnt/data/plex/TV Shows"
+        hostPath:
+          path: /mnt/google-drive/Media/TV Shows
+      - name: whatbox
+        hostPath:
+          path: /mnt/whatbox
       - name: config
         persistentVolumeClaim:
           claimName: config
+      - name: connect
+        persistentVolumeClaim:
+          claimName: connect
+      - name: connect-script
+        configMap:
+          name: sonarr
+          items:
+          - key: connect.sh
+            path: connect.sh
+            mode: 0555
+      - name: link-script
+        configMap:
+          name: sonarr
+          items:
+          - key: link.py
+            path: link.py
+            mode: 0555
+

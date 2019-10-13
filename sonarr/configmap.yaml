@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonarr
+  namespace: sonarr
+data:
+  connect.sh: |
+    #!/bin/bash
+  
+    touch /connect/$sonarr_download_id
+  link.py: |
+    #!/usr/local/bin/python
+
+    import xmlrpc.client
+    import sys
+    import os
+    import json
+    import requests
+    import traceback
+    from pushbullet import Pushbullet
+
+    whatbox_username = sys.argv[1]
+    whatbox_password = sys.argv[2]
+    whatbox_hostname = sys.argv[3]
+    sonarr_username = sys.argv[4]
+    sonarr_password = sys.argv[5]
+    sonarr_apikey = sys.argv[6]
+    pushbullet_access_token = sys.argv[7]
+    trigger_path = sys.argv[8]
+    torrent_hash = os.path.basename(trigger_path)
+
+    sonarr_url = "https://%s:%s@sonarr.lukeaddison.co.uk/api/command?apikey=%s" % (sonarr_username, sonarr_password, sonarr_apikey);
+
+    server_url = "https://%s:%s@%s:443/xmlrpc" % (whatbox_username, whatbox_password, whatbox_hostname);
+    server = xmlrpc.client.Server(server_url);
+
+    try:
+      rtorrent_label = server.d.custom1(torrent_hash)
+      if rtorrent_label != "LukeTVShows":
+        if server.d.complete(torrent_hash):
+            torrent_directory = server.d.get_directory(torrent_hash)
+            torrent_name = server.d.get_name(torrent_hash)
+            data = {'name':'DownloadedEpisodesScan',
+                    'path':os.path.join(torrent_directory.replace("/home/%s/files" % whatbox_username, "/mnt/whatbox").replace(torrent_name, ""), torrent_name),
+                    'downloadClientId':torrent_hash,
+                    'importMode':'Copy'}
+            r = requests.post(url = sonarr_url, data = json.dumps(data))
+            print(r.text)
+        else:
+          raise Exception("%s torrent is not complete: %s" % (rtorrent_label, torrent_hash))
+    except:
+      pb = Pushbullet(pushbullet_access_token)
+      push = pb.push_note("Sonarr - Connect error", "Error downloading torrent hash %s:\n%s" % (torrent_hash, traceback.format_exc()))
+
+    os.remove(trigger_path)
+      
