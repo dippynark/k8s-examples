@@ -88,11 +88,17 @@ spec:
           mountPath: /transcode
         - name: tmp
           mountPath: /tmp
+        - name: google-drive-media
+          mountPath: /mnt/google-drive/Media
+          readOnly: true
       nodeName: core1
       volumes:
+      - name: google-drive-media
+        hostPath:
+          path: /mnt/google-drive/Media
       - name: music
         hostPath:
-          path: /mnt/data/plex/Music
+          path: /mnt/data/media/Music
       - name: tv-shows
         hostPath:
           path: /mnt/data/plex/TV Shows
