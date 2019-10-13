@@ -90,13 +90,22 @@ spec:
       for: 10m
       labels:
         severity: critical
-  - name: node-disk-running-full
+  - name: node-disk
     rules:
-    - alert: NodeDiskRunningFull
+    - alert: NodeDiskUsageHigh
       annotations:
         message: Filesystem at {{ $labels.mountpoint }} on instance {{ $labels.instance }} has less than 5% available space
       expr: |
         (node_filesystem_avail_bytes*100)/node_filesystem_size_bytes < 5
+      labels:
+        severity: critical
+  - name: node-memory
+    rules:
+    - alert: NodeMemoryUsageHigh
+      annotations:
+        message: Instance {{ $labels.instance }} has over 80% memory utilisation
+      expr: |
+        (node_memory_MemTotal_bytes-node_memory_MemFree_bytes-node_memory_Cached_bytes)/node_memory_MemTotal_bytes*100 > 80
       labels:
         severity: critical
   - name: probe-failed
