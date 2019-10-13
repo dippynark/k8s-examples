@@ -14,6 +14,57 @@ spec:
     scrapeTimeout: 30s
     params:
       module:
+      - http_2xx_sonarr
+      target:
+      - http://sonarr.sonarr.svc.cluster.local/api/queue
+    metricRelabelings:
+      - sourceLabels: [__address__]
+        targetLabel: __param_target
+      - sourceLabels: [__param_target]
+        targetLabel: instance
+      - targetLabel: target
+        replacement: http://sonarr.sonarr.svc.cluster.local/api/queue
+  - port: http
+    scheme: http
+    path: "/probe"
+    interval: 30s
+    scrapeTimeout: 30s
+    params:
+      module:
+      - http_2xx_radarr
+      target:
+      - http://radarr.radarr.svc.cluster.local/api/queue
+    metricRelabelings:
+      - sourceLabels: [__address__]
+        targetLabel: __param_target
+      - sourceLabels: [__param_target]
+        targetLabel: instance
+      - targetLabel: target
+        replacement: http://radarr.radarr.svc.cluster.local/api/queue
+  - port: http
+    scheme: http
+    path: "/probe"
+    interval: 30s
+    scrapeTimeout: 30s
+    params:
+      module:
+      - http_2xx_lidarr
+      target:
+      - http://lidarr.lidarr.svc.cluster.local/api/v1/queue
+    metricRelabelings:
+      - sourceLabels: [__address__]
+        targetLabel: __param_target
+      - sourceLabels: [__param_target]
+        targetLabel: instance
+      - targetLabel: target
+        replacement: http://lidarr.lidarr.svc.cluster.local/api/v1/queue
+  - port: http
+    scheme: http
+    path: "/probe"
+    interval: 30s
+    scrapeTimeout: 30s
+    params:
+      module:
       - http_2xx
       target:
       - https://www.lukeaddison.co.uk
@@ -58,23 +109,6 @@ spec:
         targetLabel: instance
       - targetLabel: target
         replacement: https://plex.lukeaddison.co.uk/web/index.html
-  - port: http
-    scheme: http
-    path: "/probe"
-    interval: 30s
-    scrapeTimeout: 30s
-    params:
-      module:
-      - http_2xx
-      target:
-      - https://pirate.lukeaddison.co.uk
-    metricRelabelings:
-      - sourceLabels: [__address__]
-        targetLabel: __param_target
-      - sourceLabels: [__param_target]
-        targetLabel: instance
-      - targetLabel: target
-        replacement: https://pirate.lukeaddison.co.uk
   jobLabel: "blackbox-exporter"
   selector:
     matchLabels:
@@ -82,19 +116,6 @@ spec:
   namespaceSelector:
     matchNames:
     - monitoring
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: blackbox-exporter
-  namespace: monitoring
-  labels:
-    app.kubernetes.io/name: blackbox-exporter
-data:
-  blackbox.yaml: |
-    modules:
-      http_2xx:
-        prober: http
 ---
 kind: Service
 apiVersion: v1
@@ -176,5 +197,5 @@ spec:
           readOnly: true
       volumes:
       - name: config
-        configMap:
-          name: blackbox-exporter
+        secret:
+          secretName: blackbox-exporter
