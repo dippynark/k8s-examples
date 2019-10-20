@@ -1,0 +1,56 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: whatbox
+  namespace: monitoring
+spec:
+  schedule: "*/10 * * * *"
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: disk-space-checker
+            image: python:3            
+            env:
+            - name: WHATBOX_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: whatbox
+                  key: username
+            - name: WHATBOX_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: whatbox
+                  key: password
+            - name: WHATBOX_HOSTNAME
+              valueFrom:
+                secretKeyRef:
+                  name: whatbox
+                  key: hostname
+            args:
+            - bash
+            - -c
+            - |
+              pip install requests
+              cat > disk-space-checker.py <<EOF
+              import requests
+              import os
+              import sys
+              import json
+
+              s = requests.Session() 
+              r = s.post("https://%s/login" % os.environ['WHATBOX_HOSTNAME'], data={'username': os.environ['WHATBOX_USERNAME'], 'password': os.environ['WHATBOX_PASSWORD']})
+              r = s.get("https://%s/api/disk_usage" % os.environ['WHATBOX_HOSTNAME'])
+
+              json_response = json.loads(r.text)
+              disk_space_allotted = json_response['disk_space_allotted']
+              disk_space_used = json_response['disk_space_used']
+              if disk_space_used/disk_space_allotted > 0.95:
+                  print("ERROR: disk space usage is over 95%")
+                  sys.exit(1)
+              EOF
+              python disk-space-checker.py
