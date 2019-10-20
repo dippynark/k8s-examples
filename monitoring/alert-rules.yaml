@@ -63,6 +63,15 @@ spec:
       for: 10m
       labels:
         severity: critical
+    - alert: KubeCronJobLastJobFailed
+      annotations:
+        message: CronJob {{ $labels.namespace }}/{{ $labels.owner_name }} is failing
+      expr: |
+        (max(kube_job_status_start_time * on(job_name) group_left(owner_name) ((kube_job_status_succeeded == 1) + on(job_name) group_left(owner_name) (0 * kube_job_owner{owner_kind="CronJob", owner_is_controller="true"}))) by (owner_name, namespace))
+        < bool
+        (max(kube_job_status_start_time * on(job_name) group_left(owner_name) ((kube_job_status_failed == 1) + on(job_name) group_left(owner_name) (0 * kube_job_owner{owner_kind="CronJob", owner_is_controller="true"}))) by (owner_name, namespace)) == 1
+      labels:
+        severity: critical
   - name: kubernetes-system
     rules:
     - alert: KubeNodeNotReady
