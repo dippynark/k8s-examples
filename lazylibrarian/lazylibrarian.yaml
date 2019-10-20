@@ -1,0 +1,100 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lazylibrarian
+  namespace: lazylibrarian
+spec:
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 5299
+  selector:
+    app: lazylibrarian
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/auth-realm: Authentication Required
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-type: basic
+  name: lidarr
+  namespace: lazylibrarian
+spec:
+  tls:
+  - hosts:
+    - lazylibrarian.lukeaddison.co.uk
+    secretName: lazylibrarian-tls
+  rules:
+  - host: lazylibrarian.lukeaddison.co.uk
+    http:
+      paths:
+      - backend:
+          serviceName: lazylibrarian
+          servicePort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: lazylibrarian
+  namespace: lazylibrarian
+spec:
+  template:
+    metadata:
+      labels:
+        app: lazylibrarian
+    spec:
+      containers:
+      - name: lazylibrarian
+        image: linuxserver/lazylibrarian
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 50m
+            memory: 100Mi
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5299
+          timeoutSeconds: 15
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 5299
+          failureThreshold: 3
+          timeoutSeconds: 15
+          periodSeconds: 15
+          initialDelaySeconds: 60
+        ports:
+        - containerPort: 5299
+          name: http
+        env:
+        - name: TZ
+          value: Europe/London
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: DOCKER_MODS
+          value: linuxserver/calibre-web:calibre
+        volumeMounts:
+        - name: books
+          mountPath: /books
+        - name: config
+          mountPath: /config
+        - name: downloads
+          mountPath: /downloads
+      volumes:
+      - name: downloads
+        hostPath:
+          path: /mnt/data/staging/lazylibrarian/downloads
+      - name: books
+        hostPath:
+          path: /mnt/data/media/Books
+      - name: config
+        persistentVolumeClaim:
+          claimName: config
