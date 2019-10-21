@@ -85,8 +85,9 @@ spec:
               DATA="$(wget -q -O - https://$PLEX_HOSTNAME:$PLEX_PORT/status/sessions?X-Plex-Token=$X_PLEX_TOKEN)"
               RET=$?
               DATA+="$(wget -q -O - https://$PLEX_HOSTNAME:$PLEX_PORT/livetv/sessions?X-Plex-Token=$X_PLEX_TOKEN)"
+              RET2=$?
 
-              if [ $RET -eq 0 ]; then
+              if [ $RET -eq 0 -a $RET2 -eq 0 ]; then
                   # Get a total count of active media (MediaContainer size), then deduct one for every paused stream.
                   # If all streams are paused, we consider the server to not be active.
                   mediacount="$(awk -F'"' '/<MediaContainer size="[0-9]+">/ {count+=$2}; /<Player[^>]* state="paused"/ {count--}; END {print count}' <<< "${DATA}")"
@@ -102,11 +103,11 @@ spec:
               RET=$?
 
               if [ $RET -eq 0 ]; then
-                  LATEST_SHA=$(echo $DATA | jq -r '[.images[] | select(.os == "linux" and .architecture == "amd64")][0].digest')
-                  kubectl set image deployment/plex -n plex plex="plexinc/pms-docker@$LATEST_SHA"
+                  LATEST_SHA=$(echo $DATA | jq -r '[.images[] | select(.os == "linux" and .architecture == "amd64")][0].digest' | sed 's/.*://')
+                  kubectl patch deployment/plex -n plex -p "{\"spec\": {\"template\": {\"metadata\": {\"annotations\": {\"sha256\": \"$LATEST_SHA\"}}}}}"
                   RET=$?
                   if [ $RET -ne 0 ]; then
-                      echo "Failed to set Plex image"
+                      echo "Failed to set latest image SHA annotation"
                       exit 1
                   fi
               else
@@ -114,6 +115,6 @@ spec:
                   exit 1
               fi
 
-              echo 'Plex image set'
+              echo 'Latest image SHA annotation set'
 
               exit 0
