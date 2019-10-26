@@ -1,7 +1,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: whatbox
+  name: whatbox-disk-space-checker
   namespace: monitoring
 spec:
   schedule: "*/10 * * * *"
@@ -14,7 +14,7 @@ spec:
           restartPolicy: Never
           containers:
           - name: disk-space-checker
-            image: python:3            
+            image: python:3
             env:
             - name: WHATBOX_USERNAME
               valueFrom:

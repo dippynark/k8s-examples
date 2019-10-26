@@ -1,0 +1,54 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: whatbox-torrent-message-checker
+  namespace: monitoring
+spec:
+  schedule: "*/10 * * * *"
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: torrent-message-checker
+            image: python:3
+            env:
+            - name: WHATBOX_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: whatbox
+                  key: username
+            - name: WHATBOX_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: whatbox
+                  key: password
+            - name: WHATBOX_HOSTNAME
+              valueFrom:
+                secretKeyRef:
+                  name: whatbox
+                  key: hostname
+            args:
+            - bash
+            - -c
+            - |
+              cat > torrent-message-checker.py <<EOF
+              import sys
+              import xmlrpc.client
+
+              server_url = "https://%s:%s@%s/xmlrpc" % (os.environ['WHATBOX_USERNAME'], os.environ['WHATBOX_PASSWORD'], os.environ['WHATBOX_HOSTNAME']);
+              server = xmlrpc.client.Server(server_url);
+
+              messages = server.d.multicall.filtered("",
+                  "main",
+                  "or=\"equal=d.custom1=,cat=LukeBooks\",\"equal=d.custom1=,cat=LukeFilms\",\"equal=d.custom1=,cat=LukeMusic\",\"equal=d.custom1=,cat=LukeTVShows\"",
+                  "d.message=")
+
+              for message in messages:
+                  if "Failure reason" in message:
+                      sys.exit(1)
+              EOF
+              python torrent-message-checker.py
