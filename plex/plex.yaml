@@ -28,7 +28,6 @@ metadata:
   name: plex
   namespace: plex
 spec:
-  replicas: 1
   strategy:
     type: Recreate
   selector:
@@ -101,8 +100,8 @@ spec:
         hostPath:
           path: /mnt/data/media/Films
       - name: config
-        persistentVolumeClaim:
-          claimName: plex
+        hostPath:
+          path: /mnt/data/volumes/plex
       - name: transcode
         emptyDir: {}
       - name: tmp
