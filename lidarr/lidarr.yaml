@@ -87,6 +87,7 @@ spec:
         - name: whatbox
           mountPath: /mnt/whatbox
           readOnly: true
+      nodeName: core1
       volumes:
       - name: whatbox
         hostPath:
