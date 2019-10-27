@@ -44,7 +44,7 @@ spec:
           failureThreshold: 3
           timeoutSeconds: 15
           periodSeconds: 15
-          initialDelaySeconds: 60
+          initialDelaySeconds: 180
         ports:
         - containerPort: 9117
           name: http
