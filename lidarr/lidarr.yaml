@@ -95,5 +95,5 @@ spec:
         hostPath:
           path: /mnt/data/media/Music
       - name: config
-        persistentVolumeClaim:
-          claimName: config
+        hostPath:
+          path: /mnt/data/volumes/lidarr
