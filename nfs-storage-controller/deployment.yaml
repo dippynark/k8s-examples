@@ -26,9 +26,9 @@ spec:
         - name: NFS_SERVER
           value: nfs.lukeaddison.co.uk
         - name: NFS_PATH
-          value: /srv/nfs
+          value: /mnt/data/nfs
       volumes:
       - name: nfs-client-root
         nfs:
           server: nfs.lukeaddison.co.uk
-          path: /srv/nfs
+          path: /mnt/data/nfs
