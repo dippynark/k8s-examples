@@ -155,8 +155,8 @@ spec:
         hostPath:
           path: /mnt/whatbox
       - name: config
-        persistentVolumeClaim:
-          claimName: config
+        hostPath:
+          path: /mnt/data/volumes/sonarr
       - name: connect
         persistentVolumeClaim:
           claimName: connect
