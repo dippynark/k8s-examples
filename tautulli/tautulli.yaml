@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tautulli
+  namespace: tautulli
+spec:
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 8181
+  selector:
+    app: tautulli
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: tautulli
+  namespace: tautulli
+spec:
+  template:
+    metadata:
+      labels:
+        app: tautulli
+    spec:
+      containers:
+      - name: tautulli
+        image: tautulli/tautulli
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 50m
+            memory: 50Mi
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8181
+          timeoutSeconds: 15
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8181
+          failureThreshold: 3
+          timeoutSeconds: 15
+          periodSeconds: 15
+          initialDelaySeconds: 60
+        ports:
+        - containerPort: 8181
+          name: http
+        env:
+        - name: TZ
+          value: Europe/London
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: logs
+          mountPath: /plex-logs
+          readOnly: true
+      nodeName: core1
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: config
+      - name: logs
+        hostPath:
+          path: /mnt/data/volumes/plex/Library/Application Support/Plex Media Server/Logs
