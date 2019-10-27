@@ -36,6 +36,7 @@ spec:
             - -c
             - |
               cat > torrent-message-checker.py <<EOF
+              import os
               import sys
               import xmlrpc.client
 
