@@ -41,7 +41,6 @@ metadata:
   name: radarr
   namespace: radarr
 spec:
-  replicas: 1
   template:
     metadata:
       labels:
@@ -154,8 +153,8 @@ spec:
         hostPath:
           path: /mnt/data/media/Films
       - name: config
-        persistentVolumeClaim:
-          claimName: config
+        hostPath:
+          path: /mnt/data/volumes/radarr
       - name: connect
         persistentVolumeClaim:
           claimName: connect
