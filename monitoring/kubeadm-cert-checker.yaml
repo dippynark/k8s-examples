@@ -1,0 +1,41 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: kubeadm-cert-checker
+  namespace: monitoring
+spec:
+  schedule: "0 4 * * *"
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          nodeName: core1
+          containers:
+          - name: kubeadm-cert-checker
+            image: dippynark/kubeadm:v1.15.1
+            volumeMounts:
+            - name: etc-kubernetes
+              mountPath: /etc/kubernetes
+              readOnly: true
+            command:
+            - /bin/bash
+            - -c
+            - |
+              set -euo pipefail
+
+              RESIDUAL_TIMES=$(kubeadm alpha certs check-expiration | tail -n +2 | awk '{print $7}' | tr '\n' ' ')
+              for RESIDUAL_TIME in $RESIDUAL_TIMES; do
+                if [ $(echo $RESIDUAL_TIME | sed 's/d//') -gt 90 ]; then
+                  :
+                else
+                  exit 1
+                fi
+              done
+              echo Success!
+          volumes:
+          - name: etc-kubernetes
+            hostPath:
+              path: /etc/kubernetes
