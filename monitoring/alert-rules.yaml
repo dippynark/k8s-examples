@@ -117,6 +117,22 @@ spec:
         (node_filesystem_avail_bytes*100)/node_filesystem_size_bytes < 5
       labels:
         severity: critical
+  - name: node-filesystem
+    rules:
+    - alert: NodeRootFilesystemDeviceError
+      annotations:
+        message: Error getting root filesystem device statistics for instance 192.168.1.201:9100
+      expr: |
+        absent(node_filesystem_device_error{job="node-exporter",instance="192.168.1.201:9100",mountpoint="/"} == 0)
+      labels:
+        severity: critical
+    - alert: NodeDataFilesystemDeviceError
+      annotations:
+        message: Error getting data filesystem device statistics for instance 192.168.1.201:9100
+      expr: |
+        absent(node_filesystem_device_error{job="node-exporter",instance="192.168.1.201:9100",mountpoint="/mnt/data"} == 0)
+      labels:
+        severity: critical
   - name: node-memory
     rules:
     - alert: NodeMemoryUsageHigh
