@@ -142,16 +142,6 @@ spec:
         (node_memory_MemTotal_bytes-node_memory_MemFree_bytes-node_memory_Cached_bytes)/node_memory_MemTotal_bytes*100 > 80
       labels:
         severity: critical
-  - name: probe-failed
-    rules:
-    - alert: ProbeFailed
-      annotations:
-        message: '{{ $labels.target }} has been unavailable for 2m'
-      expr: |
-        probe_success == 0
-      for: 2m
-      labels:
-        severity: critical
   - name: node-network
     rules:
     - alert: NetworkReceiveErrors
@@ -175,3 +165,13 @@ spec:
       for: 2m
       labels:
         severity: warning
+  - name: probe-failed
+    rules:
+    - alert: ProbeFailed
+      annotations:
+        message: '{{ $labels.target }} has been unavailable for 2m'
+      expr: |
+        probe_success == 0
+      for: 2m
+      labels:
+        severity: critical
