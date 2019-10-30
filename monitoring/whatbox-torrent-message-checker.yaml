@@ -35,6 +35,8 @@ spec:
             - bash
             - -c
             - |
+              set -euo pipefail
+
               cat > torrent-message-checker.py <<EOF
               import os
               import sys

@@ -35,6 +35,8 @@ spec:
             - bash
             - -c
             - |
+              set -euo pipefail
+
               pip install requests
               cat > disk-space-checker.py <<EOF
               import requests
