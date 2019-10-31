@@ -59,16 +59,16 @@ spec:
           httpGet:
             path: /
             port: 8686
-          timeoutSeconds: 15
-          periodSeconds: 15
+          timeoutSeconds: 30
+          periodSeconds: 30
         livenessProbe:
           httpGet:
             path: /
             port: 8686
-          failureThreshold: 3
-          timeoutSeconds: 15
-          periodSeconds: 15
-          initialDelaySeconds: 60
+          failureThreshold: 10
+          timeoutSeconds: 30
+          periodSeconds: 30
+          initialDelaySeconds: 180
         ports:
         - containerPort: 8686
           name: http
