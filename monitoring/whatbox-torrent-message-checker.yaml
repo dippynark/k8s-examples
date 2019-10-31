@@ -45,10 +45,10 @@ spec:
               server_url = "https://%s:%s@%s/xmlrpc" % (os.environ['WHATBOX_USERNAME'], os.environ['WHATBOX_PASSWORD'], os.environ['WHATBOX_HOSTNAME']);
               server = xmlrpc.client.Server(server_url);
 
-              messages = server.d.multicall.filtered("",
+              messages = [x[0] for x in server.d.multicall.filtered("",
                   "main",
                   "or=\"equal=d.custom1=,cat=LukeBooks\",\"equal=d.custom1=,cat=LukeFilms\",\"equal=d.custom1=,cat=LukeMusic\",\"equal=d.custom1=,cat=LukeTVShows\"",
-                  "d.message=")
+                  "d.message=")]
 
               for message in messages:
                   if "Failure reason" in message:
