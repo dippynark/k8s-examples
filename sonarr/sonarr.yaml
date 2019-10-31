@@ -48,7 +48,6 @@ spec:
         app: sonarr
     spec:
       containers:
-      containers:
       - name: connect
         image: python:3.7
         env:
