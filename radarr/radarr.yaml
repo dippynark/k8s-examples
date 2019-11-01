@@ -35,12 +35,15 @@ spec:
           serviceName: radarr
           servicePort: 80
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: radarr
   namespace: radarr
 spec:
+  selector:
+    matchLabels:
+      app: radarr
   template:
     metadata:
       labels:

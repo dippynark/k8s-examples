@@ -11,13 +11,16 @@ spec:
     port: 80
     targetPort: 80
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: pirate
   namespace: pirate
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: pirate
   template:
     metadata:
       labels:

@@ -130,7 +130,7 @@ spec:
   selector:
     app: fluent-bit
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: fluent-bit
@@ -139,7 +139,13 @@ metadata:
     app: fluent-bit
 spec:
   updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
     type: RollingUpdate
+  selector:
+    matchLabels:
+      app: fluent-bit
+      release: fluent-bit
   template:
     metadata:
       labels:

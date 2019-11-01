@@ -12,12 +12,15 @@ spec:
   selector:
     app: jackett
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: jackett
   namespace: jackett
 spec:
+  selector:
+    matchLabels:
+      app: jackett
   template:
     metadata:
       labels:

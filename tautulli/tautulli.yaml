@@ -12,12 +12,15 @@ spec:
   selector:
     app: tautulli
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: tautulli
   namespace: tautulli
 spec:
+  selector:
+    matchLabels:
+      app: tautulli
   template:
     metadata:
       labels:

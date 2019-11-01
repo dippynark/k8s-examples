@@ -36,12 +36,15 @@ spec:
           serviceName: lazylibrarian
           servicePort: 80
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: lazylibrarian
   namespace: lazylibrarian
 spec:
+  selector:
+    matchLabels:
+      app: lazylibrarian
   template:
     metadata:
       labels:

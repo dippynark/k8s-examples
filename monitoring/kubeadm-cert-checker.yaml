@@ -15,7 +15,7 @@ spec:
           nodeName: core1
           containers:
           - name: kubeadm-cert-checker
-            image: dippynark/kubeadm:v1.15.1
+            image: dippynark/kubeadm:v1.16.2
             volumeMounts:
             - name: etc-kubernetes
               mountPath: /etc/kubernetes

@@ -51,6 +51,8 @@ spec:
     matchLabels:
       k8s-app: node-exporter
   updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
     type: RollingUpdate
   template:
     metadata:
