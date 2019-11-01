@@ -59,7 +59,7 @@ spec:
       annotations:
         message: Pod {{ $labels.exported_namespace }}/{{ $labels.exported_pod }} ({{ $labels.container}}) has restarted regularly for 10m
       expr: |
-        rate(kube_pod_container_status_restarts_total{job="kube-state-metrics"}[5m]) > 0
+        rate(kube_pod_container_status_restarts_total{job="kube-state-metrics"}[6m]) > 0
       for: 10m
       labels:
         severity: critical
