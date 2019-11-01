@@ -40,14 +40,6 @@ spec:
             port: 9117
           timeoutSeconds: 15
           periodSeconds: 15
-        livenessProbe:
-          httpGet:
-            path: /UI/Login
-            port: 9117
-          failureThreshold: 3
-          timeoutSeconds: 15
-          periodSeconds: 15
-          initialDelaySeconds: 300
         ports:
         - containerPort: 9117
           name: http
