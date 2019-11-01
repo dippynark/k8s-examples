@@ -15,7 +15,8 @@ kubectl create secret generic openvpn -n openvpn \
     --from-file=$HOME/vpn/easyrsa/pki/crl.pem
 
 # https://github.com/helm/charts/blob/master/stable/openvpn/values.yaml
-helm template /Users/luke/go/src/github.com/helm/charts/stable/openvpn -f values.yaml --name openvpn --namespace openvpn > openvpn.yaml
+helm template /Users/luke/go/src/github.com/helm/charts/stable/openvpn -f values.txt --name openvpn --namespace openvpn > openvpn.yaml
+# manually add openvpn namespace
 
 mkdir -p ~/.openvpn/home
 cp -a ~/vpn/easyrsa/pki/dh.pem \
