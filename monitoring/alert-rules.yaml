@@ -57,10 +57,10 @@ spec:
         severity: critical
     - alert: KubePodCrashLooping
       annotations:
-        message: Pod {{ $labels.exported_namespace }}/{{ $labels.exported_pod }} ({{ $labels.container}}) has restarted regularly for 10m
+        message: Pod {{ $labels.exported_namespace }}/{{ $labels.exported_pod }} ({{ $labels.container}}) has restarted regularly for 30m
       expr: |
-        rate(kube_pod_container_status_restarts_total{job="kube-state-metrics"}[6m]) > 0
-      for: 10m
+        rate(kube_pod_container_status_restarts_total{job="kube-state-metrics"}[15m]) > 0
+      for: 30m
       labels:
         severity: critical
     - alert: KubeCronJobLastJobFailedAfterSuccess
