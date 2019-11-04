@@ -1,7 +1,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: whatbox-torrent-message-checker
+  name: whatbox-torrent-status-checker
   namespace: monitoring
 spec:
   schedule: "*/10 * * * *"
@@ -13,7 +13,7 @@ spec:
         spec:
           restartPolicy: Never
           containers:
-          - name: torrent-message-checker
+          - name: whatbox-torrent-status-checker
             image: python:3
             env:
             - name: WHATBOX_USERNAME
@@ -37,7 +37,7 @@ spec:
             - |
               set -euo pipefail
 
-              cat > torrent-message-checker.py <<EOF
+              cat > whatbox-torrent-status-checker.py <<EOF
               import os
               import sys
               import xmlrpc.client
@@ -64,4 +64,4 @@ spec:
                       print("ERROR: %s %s %s %s %s" % (name, state, is_open, is_active, message))
                       sys.exit(1)
               EOF
-              python torrent-message-checker.py
+              python whatbox-torrent-status-checker.py

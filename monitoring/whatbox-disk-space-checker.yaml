@@ -13,7 +13,7 @@ spec:
         spec:
           restartPolicy: Never
           containers:
-          - name: disk-space-checker
+          - name: whatbox-disk-space-checker
             image: python:3
             env:
             - name: WHATBOX_USERNAME
@@ -38,7 +38,7 @@ spec:
               set -euo pipefail
 
               pip install requests
-              cat > disk-space-checker.py <<EOF
+              cat > whatbox-disk-space-checker.py <<EOF
               import requests
               import os
               import sys
@@ -55,4 +55,4 @@ spec:
                   print("ERROR: disk space usage is over 90%")
                   sys.exit(1)
               EOF
-              python disk-space-checker.py
+              python whatbox-disk-space-checker.py
