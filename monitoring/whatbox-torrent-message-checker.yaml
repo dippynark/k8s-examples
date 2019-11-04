@@ -45,13 +45,23 @@ spec:
               server_url = "https://%s:%s@%s/xmlrpc" % (os.environ['WHATBOX_USERNAME'], os.environ['WHATBOX_PASSWORD'], os.environ['WHATBOX_HOSTNAME']);
               server = xmlrpc.client.Server(server_url);
 
-              messages = [x[0] for x in server.d.multicall.filtered("",
+              torrents = server.d.multicall.filtered("",
                   "main",
-                  "or=\"equal=d.custom1=,cat=LukeBooks\",\"equal=d.custom1=,cat=LukeFilms\",\"equal=d.custom1=,cat=LukeMusic\",\"equal=d.custom1=,cat=LukeTVShows\"",
-                  "d.message=")]
+                  "or=\"equal=d.custom1=,cat=LukeBooks\",\"equal=d.custom1=,cat=LukeFilms\",\"equal=d.custom1=,cat=LukeMusic\",\"equal=d.custom1=,cat=LukeTVShows\",\"equal=d.custom1=,cat=LukeApplications\"",
+                  "d.name=",
+                  "d.state=",
+                  "d.is_open=",
+                  "d.is_active=",
+                  "d.message=")
 
-              for message in messages:
-                  if "Failure reason" in message:
+              for torrent in torrents:
+                  name = torrent[0]
+                  state = torrent[1]
+                  is_open = torrent[2]
+                  is_active = torrent[3]
+                  message = torrent[4]
+                  if state != 1 or is_open != 1 or is_active != 1 or message != "":
+                      print("ERROR: %s %s %s %s %s" % (name, state, is_open, is_active, message))
                       sys.exit(1)
               EOF
               python torrent-message-checker.py
