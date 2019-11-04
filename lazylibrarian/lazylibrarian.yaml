@@ -89,12 +89,7 @@ spec:
           mountPath: /books
         - name: config
           mountPath: /config
-        - name: downloads
-          mountPath: /downloads
       volumes:
-      - name: downloads
-        hostPath:
-          path: /mnt/data/staging/lazylibrarian/downloads
       - name: books
         hostPath:
           path: /mnt/data/media/Books
