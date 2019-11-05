@@ -4,11 +4,11 @@ kind: PersistentVolumeClaim
 metadata:
   name: mysql
   namespace: bookstack
-  labels:
-    app: bookstack
 spec:
-  accessModes:
-    - ReadWriteOnce
   resources:
     requests:
       storage: 10Gi
+  accessModes:
+  - ReadWriteOnce
+  volumeName: bookstack-mysql
+  storageClassName: ""
