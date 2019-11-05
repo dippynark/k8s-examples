@@ -1,0 +1,53 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memcached
+  namespace: lukeaddison
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: memcached
+  template:
+    metadata:
+      labels:
+        app: memcached
+    spec:
+      containers:
+      - name: memcached
+        image: memcached:1.4
+        ports:
+        - containerPort: 11211
+          protocol: TCP
+        resources:
+          requests:
+            memory: 64Mi
+            cpu: 100m
+          limits:            
+            memory: 64Mi
+            cpu: 200m
+        livenessProbe:
+          tcpSocket:
+            port: 11211
+          initialDelaySeconds: 30
+          periodSeconds: 3
+        readinessProbe:
+          tcpSocket:
+            port: 11211
+          periodSeconds: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: memcached
+  namespace: lukeaddison
+spec:
+  selector:
+    app: memcached
+  ports:
+  - protocol: TCP
+    port: 11211
+    targetPort: 11211
+
+

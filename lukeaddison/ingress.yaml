@@ -1,0 +1,70 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: lukeaddison
+  namespace: lukeaddison
+  annotations:
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  tls:
+  - secretName: lukeaddison-tls
+    hosts:
+    - blog.lukeaddison.co.uk
+    - www.lukeaddison.co.uk
+    - lukeaddison.co.uk
+  rules:
+  - host: blog.lukeaddison.co.uk
+    http:
+      paths:
+      - path: /favicon.ico
+        backend:
+          serviceName: nginx
+          servicePort: 80
+      - path: /static
+        backend:
+          serviceName: nginx
+          servicePort: 80
+      - path: /robots.txt 
+        backend:
+          serviceName: nginx
+          servicePort: 80
+      - backend:
+          serviceName: mezzanine
+          servicePort: 8000
+  - host: www.lukeaddison.co.uk
+    http:
+      paths:
+      - path: /favicon.ico
+        backend:
+          serviceName: nginx
+          servicePort: 80
+      - path: /static
+        backend:
+          serviceName: nginx
+          servicePort: 80
+      - path: /robots.txt 
+        backend:
+          serviceName: nginx
+          servicePort: 80
+      - backend:
+          serviceName: mezzanine
+          servicePort: 8000
+  - host: lukeaddison.co.uk
+    http:
+      paths:
+      - path: /favicon.ico
+        backend:
+          serviceName: nginx
+          servicePort: 80
+      - path: /static
+        backend:
+          serviceName: nginx
+          servicePort: 80
+      - path: /robots.txt 
+        backend:
+          serviceName: nginx
+          servicePort: 80
+      - backend:
+          serviceName: mezzanine
+          servicePort: 8000

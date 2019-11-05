@@ -1,0 +1,105 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx
+  namespace: lukeaddison
+data:
+  lukeaddison.co.uk.conf: |
+    server {
+        listen 80;
+        server_name blog.lukeaddison.co.uk www.lukeaddison.co.uk lukeaddison.co.uk;
+
+        client_max_body_size 5M;
+
+        location /favicon.ico {
+            root /usr/share/nginx/html/static/img;
+            access_log      off;
+            log_not_found   off;
+        }
+
+        location /robots.txt {
+            root            /usr/share/nginx/html/static;
+            access_log      off;
+            log_not_found   off;
+        }
+
+        location /static/ {
+            root /usr/share/nginx/html;
+            access_log      off;
+            log_not_found   off;
+            expires 30d;
+        }
+
+        #location / {
+        #    proxy_pass http://mezzanine:8000;
+        #}
+
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: lukeaddison
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: nginx
+  template:
+    metadata:
+      labels:
+        component: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.12
+        ports:
+          - containerPort: 80
+        volumeMounts:
+        - name: static-storage 
+          mountPath: /usr/share/nginx/html/static
+        - name: nginx-config
+          mountPath: /etc/nginx/conf.d
+        resources:
+          requests:
+            memory: 64Mi
+            cpu: 100m
+          limits:            
+            memory: 64Mi
+            cpu: 100m
+        livenessProbe:
+          httpGet:
+            path: /robots.txt
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /robots.txt
+            port: 80
+          periodSeconds: 3
+      volumes:
+      - name: static-storage
+        persistentVolumeClaim:
+          claimName: static
+      - name: nginx-config
+        configMap:
+          name: nginx
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: lukeaddison
+spec:
+  selector:
+    component: nginx
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+
+
