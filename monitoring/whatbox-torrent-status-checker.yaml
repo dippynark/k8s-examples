@@ -4,7 +4,7 @@ metadata:
   name: whatbox-torrent-status-checker
   namespace: monitoring
 spec:
-  schedule: "*/10 * * * *"
+  schedule: "0 14 * * *"
   successfulJobsHistoryLimit: 1
   jobTemplate:
     spec:
