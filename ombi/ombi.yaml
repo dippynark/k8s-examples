@@ -38,10 +38,21 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
+        readinessProbe:
+          httpGet:
+            path: /login
+            port: 3579
+          timeoutSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /login
+            port: 3579
+          timeoutSeconds: 10
+          initialDelaySeconds: 60
         volumeMounts:
         - name: config
           mountPath: /config
       volumes:
       - name: config
         persistentVolumeClaim:
-          claimName: ombi
+          claimName: config

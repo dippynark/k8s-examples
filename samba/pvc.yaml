@@ -2,13 +2,13 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: config
-  namespace: jackett
+  name: music
+  namespace: samba
 spec:
   resources:
     requests:
       storage: 10Gi
   accessModes:
-  - ReadWriteOnce
-  volumeName: jackett-config
+  - ReadOnlyMany
+  volumeName: samba-music
   storageClassName: ""

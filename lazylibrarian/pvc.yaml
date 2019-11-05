@@ -5,8 +5,10 @@ metadata:
   name: config
   namespace: lazylibrarian
 spec:
-  accessModes:
-  - ReadWriteOnce
   resources:
     requests:
       storage: 10Gi
+  accessModes:
+  - ReadWriteOnce
+  volumeName: lazylibrarian-config
+  storageClassName: ""

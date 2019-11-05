@@ -1,0 +1,20 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: samba-music
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+  - ReadOnlyMany
+  local:
+    path: /mnt/data/media/Music
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - core1

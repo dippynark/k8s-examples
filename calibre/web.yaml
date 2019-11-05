@@ -46,11 +46,19 @@ spec:
           mountPath: /books
         - name: config
           mountPath: /config
-      nodeName: core1
+        readinessProbe:
+          httpGet:
+            path: /login
+            port: 8083
+        livenessProbe:
+          httpGet:
+            path: /login
+            port: 8083
+          initialDelaySeconds: 60
       volumes:
       - name: books
         hostPath:
           path: /mnt/data/media/Books
       - name: config
         persistentVolumeClaim:
-          claimName: calibre-web
+          claimName: web-config

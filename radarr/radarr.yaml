@@ -141,23 +141,22 @@ spec:
           mountPath: /config
         - name: whatbox
           mountPath: /mnt/whatbox
-          readOnly: true
         - name: connect
           mountPath: /connect
         - name: connect-script
           mountPath: /opt/bin/connect.sh
           subPath: connect.sh
-      nodeName: core1
       volumes:
       - name: whatbox
-        hostPath:
-          path: /mnt/whatbox
+        persistentVolumeClaim:
+          claimName: whatbox
+          readOnly: true
       - name: films
-        hostPath:
-          path: /mnt/data/media/Films
+        persistentVolumeClaim:
+          claimName: films
       - name: config
-        hostPath:
-          path: /mnt/data/volumes/radarr
+        persistentVolumeClaim:
+          claimName: config
       - name: connect
         persistentVolumeClaim:
           claimName: connect

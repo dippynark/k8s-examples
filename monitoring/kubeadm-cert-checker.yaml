@@ -12,14 +12,12 @@ spec:
       template:
         spec:
           restartPolicy: Never
-          nodeName: core1
           containers:
           - name: kubeadm-cert-checker
             image: dippynark/kubeadm:v1.16.2
             volumeMounts:
             - name: etc-kubernetes
               mountPath: /etc/kubernetes
-              readOnly: true
             command:
             - /bin/bash
             - -c
@@ -37,5 +35,6 @@ spec:
               echo Success!
           volumes:
           - name: etc-kubernetes
-            hostPath:
-              path: /etc/kubernetes
+            persistentVolumeClaim:
+              claimName: etc-kubernetes
+              readOnly: true

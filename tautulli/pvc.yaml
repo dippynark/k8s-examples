@@ -5,8 +5,10 @@ metadata:
   name: config
   namespace: tautulli
 spec:
-  accessModes:
-  - ReadWriteOnce
   resources:
     requests:
       storage: 10Gi
+  accessModes:
+  - ReadWriteOnce
+  volumeName: tautulli-config
+  storageClassName: ""

@@ -1,0 +1,80 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: plex-config
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+  - ReadWriteOnce
+  local:
+    path: /var/lib/kubernetes/volumes/plex-config
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - core1
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: plex-music
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+  - ReadOnlyMany
+  local:
+    path: /mnt/data/media/Music
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - core1
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: plex-tv-shows
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+  - ReadOnlyMany
+  local:
+    path: /mnt/google-drive/Media/TV Shows
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - core1
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: plex-films
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+  - ReadOnlyMany
+  local:
+    path: /mnt/data/media/Films
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - core1

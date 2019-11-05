@@ -61,14 +61,13 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /config
-        - name: logs
+        - name: plex-logs
           mountPath: /plex-logs
-          readOnly: true
-      nodeName: core1
       volumes:
       - name: config
         persistentVolumeClaim:
           claimName: config
-      - name: logs
-        hostPath:
-          path: /mnt/data/volumes/plex/Library/Application Support/Plex Media Server/Logs
+      - name: plex-logs
+        persistentVolumeClaim:
+          claimName: plex-logs
+          readOnly: true

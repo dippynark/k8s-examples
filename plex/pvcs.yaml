@@ -1,0 +1,56 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: config
+  namespace: plex
+spec:
+  resources:
+    requests:
+      storage: 10Gi
+  accessModes:
+  - ReadWriteOnce
+  volumeName: plex-config
+  storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: music
+  namespace: plex
+spec:
+  resources:
+    requests:
+      storage: 10Gi
+  accessModes:
+  - ReadOnlyMany
+  volumeName: plex-music
+  storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tv-shows
+  namespace: plex
+spec:
+  resources:
+    requests:
+      storage: 10Gi
+  accessModes:
+  - ReadOnlyMany
+  volumeName: plex-tv-shows
+  storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: films
+  namespace: plex
+spec:
+  resources:
+    requests:
+      storage: 10Gi
+  accessModes:
+  - ReadOnlyMany
+  volumeName: plex-films
+  storageClassName: ""

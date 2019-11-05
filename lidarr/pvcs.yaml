@@ -1,0 +1,42 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: config
+  namespace: lidarr
+spec:
+  resources:
+    requests:
+      storage: 10Gi
+  accessModes:
+  - ReadWriteOnce
+  volumeName: lidarr-config
+  storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: music
+  namespace: lidarr
+spec:
+  resources:
+    requests:
+      storage: 10Gi
+  accessModes:
+  - ReadWriteOnce
+  volumeName: lidarr-music
+  storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: whatbox
+  namespace: lidarr
+spec:
+  resources:
+    requests:
+      storage: 10Gi
+  accessModes:
+  - ReadOnlyMany
+  volumeName: lidarr-whatbox
+  storageClassName: ""

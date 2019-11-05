@@ -55,7 +55,6 @@ spec:
           mountPath: /config
         - name: blackhole
           mountPath: /downloads
-      nodeName: core1
       volumes:
       - name: config
         persistentVolumeClaim:

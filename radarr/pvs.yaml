@@ -1,0 +1,60 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: radarr-config
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+  - ReadWriteOnce
+  local:
+    path: /var/lib/kubernetes/volumes/radarr-config
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - core1
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: radarr-films
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+  - ReadWriteOnce
+  local:
+    path: /mnt/data/media/Films
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - core1
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: radarr-whatbox
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+  - ReadOnlyMany
+  local:
+    path: /mnt/whatbox
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - core1

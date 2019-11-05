@@ -2,13 +2,13 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: config
-  namespace: jackett
+  name: plex-logs
+  namespace: tautulli
 spec:
   resources:
     requests:
       storage: 10Gi
   accessModes:
-  - ReadWriteOnce
-  volumeName: jackett-config
+  - ReadOnlyMany
+  volumeName: tautulli-plex-logs
   storageClassName: ""

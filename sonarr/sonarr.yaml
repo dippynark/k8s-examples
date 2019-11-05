@@ -136,29 +136,28 @@ spec:
         - name: PGID
           value: "1000"
         volumeMounts:
-        - name: tv
+        - name: tv-shows
           mountPath: /tv
         - name: config
           mountPath: /config
         - name: whatbox
           mountPath: /mnt/whatbox
-          readOnly: true
         - name: connect
           mountPath: /connect
         - name: connect-script
           mountPath: /opt/bin/connect.sh
           subPath: connect.sh
-      nodeName: core1
       volumes:
-      - name: tv
-        hostPath:
-          path: /mnt/google-drive/Media/TV Shows
+      - name: tv-shows
+        persistentVolumeClaim:
+          claimName: tv-shows
       - name: whatbox
-        hostPath:
-          path: /mnt/whatbox
+        persistentVolumeClaim:
+          claimName: whatbox
+          readOnly: true
       - name: config
-        hostPath:
-          path: /mnt/data/volumes/sonarr
+        persistentVolumeClaim:
+          claimName: config
       - name: connect
         persistentVolumeClaim:
           claimName: connect

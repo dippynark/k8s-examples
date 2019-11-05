@@ -60,10 +60,8 @@ spec:
         volumeMounts:
         - name: smbpasswd
           mountPath: /samba
-        - name: srv
+        - name: music
           mountPath: /srv
-          readOnly: true
-      nodeName: core1
       volumes:
       - name: smbpasswd-src
         secret:
@@ -72,6 +70,7 @@ spec:
       - name: smbpasswd
         emptyDir:
           medium: Memory
-      - name: srv
-        hostPath:
-          path: /mnt/data/media/Music
+      - name: music
+        persistentVolumeClaim:
+          claimName: music
+          readOnly: true
