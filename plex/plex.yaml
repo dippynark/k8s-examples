@@ -75,13 +75,10 @@ spec:
         volumeMounts:
         - name: music
           mountPath: /data/Music
-          readOnly: true
         - name: tv-shows
           mountPath: /data/TV Shows
-          readOnly: true
         - name: films
           mountPath: /data/Films
-          readOnly: true
         - name: config
           mountPath: /config
         - name: transcode
