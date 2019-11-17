@@ -154,9 +154,9 @@ spec:
     rules:
     - alert: NodeMemoryUsageHigh
       annotations:
-        message: Instance {{ $labels.instance }} has over 80% memory utilisation
+        message: Instance {{ $labels.instance }} has over 90% memory utilisation
       expr: |
-        (node_memory_MemTotal_bytes-node_memory_MemFree_bytes-node_memory_Cached_bytes)/node_memory_MemTotal_bytes*100 > 80
+        (node_memory_MemTotal_bytes-node_memory_MemFree_bytes-node_memory_Cached_bytes)/node_memory_MemTotal_bytes*100 > 90
       labels:
         severity: critical
   - name: node-network
