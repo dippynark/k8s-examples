@@ -4,7 +4,7 @@ metadata:
   name: whatbox-torrent-status-checker
   namespace: monitoring
 spec:
-  schedule: "0 14 * * *"
+  schedule: "*/10 * * * *"
   successfulJobsHistoryLimit: 1
   jobTemplate:
     spec:
@@ -38,9 +38,14 @@ spec:
               set -euo pipefail
 
               cat > whatbox-torrent-status-checker.py <<EOF
+              import datetime
               import os
               import sys
               import xmlrpc.client
+
+              current_time = datetime.datetime.now().time()
+              if current_time < datetime.time(10) or datetime.time(22) < current_time:
+                sys.exit(0)
 
               server_url = "https://%s:%s@%s/xmlrpc" % (os.environ['WHATBOX_USERNAME'], os.environ['WHATBOX_PASSWORD'], os.environ['WHATBOX_HOSTNAME']);
               server = xmlrpc.client.Server(server_url);
