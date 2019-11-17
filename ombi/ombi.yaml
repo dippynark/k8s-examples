@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: ombi
-        image: linuxserver/ombi
+        image: linuxserver/ombi:3.0.4809-ls66
         ports:
         - containerPort: 3579
         env:
