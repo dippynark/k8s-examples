@@ -18,6 +18,8 @@ metadata:
   name: ombi
   namespace: ombi
 spec:
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: ombi
