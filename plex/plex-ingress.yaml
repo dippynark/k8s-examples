@@ -12,9 +12,18 @@ spec:
   tls:
   - secretName: plex-tls
     hosts:
-    - plex.lukeaddison.co.uk  
+    - plex.lukeaddison.co.uk
+  - secretName: dippystreams-tls
+    hosts:
+    - dippystreams.co.uk
   rules:
   - host: plex.lukeaddison.co.uk
+    http:
+      paths:
+      - backend:
+          serviceName: plex
+          servicePort: 32400
+  - host: dippystreams.co.uk
     http:
       paths:
       - backend:

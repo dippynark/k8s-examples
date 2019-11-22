@@ -10,9 +10,18 @@ spec:
   tls:
   - secretName: ombi-tls
     hosts:
-    - ombi.lukeaddison.co.uk  
+    - ombi.lukeaddison.co.uk
+  - secretName: requests-dippystreams-tls
+    hosts:
+    - requests.dippystreams.co.uk
   rules:
   - host: ombi.lukeaddison.co.uk
+    http:
+      paths:
+      - backend:
+          serviceName: ombi
+          servicePort: 80
+  - host: requests.dippystreams.co.uk
     http:
       paths:
       - backend:
