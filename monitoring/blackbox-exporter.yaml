@@ -101,14 +101,31 @@ spec:
       module:
       - http_2xx
       target:
-      - https://plex.lukeaddison.co.uk/web/index.html
+      - https://dippystreams.co.uk/web/index.html
     metricRelabelings:
       - sourceLabels: [__address__]
         targetLabel: __param_target
       - sourceLabels: [__param_target]
         targetLabel: instance
       - targetLabel: target
-        replacement: https://plex.lukeaddison.co.uk/web/index.html
+        replacement: https://dippystreams.co.uk/web/index.html
+  - port: http
+    scheme: http
+    path: "/probe"
+    interval: 30s
+    scrapeTimeout: 30s
+    params:
+      module:
+      - http_2xx
+      target:
+      - https://requests.dippystreams.co.uk/login
+    metricRelabelings:
+      - sourceLabels: [__address__]
+        targetLabel: __param_target
+      - sourceLabels: [__param_target]
+        targetLabel: instance
+      - targetLabel: target
+        replacement: https://requests.dippystreams.co.uk/login
   jobLabel: "blackbox-exporter"
   selector:
     matchLabels:

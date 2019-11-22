@@ -63,7 +63,7 @@ spec:
             - /bin/sh
             - -c
             - |
-              PLEX_HOSTNAME="plex.lukeaddison.co.uk"
+              PLEX_HOSTNAME="dippystreams.co.uk"
               PLEX_PORT=443
 
               apt-get update && apt-get install wget
