@@ -97,6 +97,14 @@ spec:
         (sum((kube_job_status_succeeded > bool 0) + on(job_name) group_left(owner_name) (0 * kube_job_owner{owner_is_controller="true",owner_kind="CronJob"})) by (owner_name,namespace) > bool 0)) == 1
       labels:
         severity: critical
+    - alert: KubeCronJobInvalidNextScheduleTime
+      annotations:
+        message: CronJob {{ $labels.namespace }}/{{ $labels.owner_name }} next schedule time has been in the past for 10m
+      expr: |
+        kube_cronjob_next_schedule_time - time() < 0
+      for: 10m
+      labels:
+        severity: critical
   - name: kubernetes-system
     rules:
     - alert: KubeNodeNotReady
