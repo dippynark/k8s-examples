@@ -29,6 +29,8 @@ data:
     trigger_path = sys.argv[8]
     torrent_hash = os.path.basename(trigger_path)
 
+    print("Torrent hash: %s" % torrent_hash)
+
     sonarr_url = "https://%s:%s@sonarr.lukeaddison.co.uk/api/command?apikey=%s" % (sonarr_username, sonarr_password, sonarr_apikey);
 
     server_url = "https://%s:%s@%s:443/xmlrpc" % (whatbox_username, whatbox_password, whatbox_hostname);
@@ -37,6 +39,7 @@ data:
     try:
       rtorrent_label = server.d.custom1(torrent_hash)
       if rtorrent_label != "LukeTVShows":
+        print("rTorrent label: %s" % rtorrent_label)
         if server.d.complete(torrent_hash):
             torrent_directory = server.d.get_directory(torrent_hash)
             torrent_name = server.d.get_name(torrent_hash)
@@ -49,8 +52,11 @@ data:
         else:
           raise Exception("%s torrent is not complete: %s" % (rtorrent_label, torrent_hash))
     except:
+      error_message = "Error downloading torrent %s:\n%s" % (torrent_hash, traceback.format_exc())
+      print(error_message)
       pb = Pushbullet(pushbullet_access_token)
-      push = pb.push_note("Sonarr - Connect error", "Error downloading torrent hash %s:\n%s" % (torrent_hash, traceback.format_exc()))
+      push = pb.push_note("Sonarr - Connect error", error_message)
+      print(push)
 
     os.remove(trigger_path)
       
