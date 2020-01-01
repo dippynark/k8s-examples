@@ -1,7 +1,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: whatbox-torrent-remover
+  name: whatbox-torrent-eraser
   namespace: monitoring
 spec:
   schedule: "*/2 * * * *"
@@ -13,7 +13,7 @@ spec:
         spec:
           restartPolicy: Never
           containers:
-          - name: whatbox-torrent-remover
+          - name: whatbox-torrent-eraser
             image: python:3
             env:
             - name: WHATBOX_USERNAME
@@ -38,7 +38,7 @@ spec:
               set -euo pipefail
 
               pip install requests
-              cat > whatbox-torrent-remover.py <<EOF
+              cat > whatbox-torrent-eraser.py <<EOF
               import os
               import sys
               import requests
@@ -94,4 +94,4 @@ spec:
                   server.d.erase(torrents[0][1])
 
               EOF
-              python whatbox-torrent-remover.py
+              python whatbox-torrent-eraser.py
