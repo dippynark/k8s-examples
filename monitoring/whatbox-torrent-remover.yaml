@@ -64,7 +64,7 @@ spec:
                   sys.exit(0)
 
               # setup connection
-              server_url = "https://%s:%s@%s/xmlrpc" % (whatbox_username, whatbox_password, whatbox_hostname);
+              server_url = "https://%s:%s@%s/xmlrpc" % (os.environ['WHATBOX_USERNAME'], os.environ['WHATBOX_PASSWORD'], os.environ['WHATBOX_HOSTNAME']);
               server = xmlrpc.client.Server(server_url);
 
               # create torrent list
