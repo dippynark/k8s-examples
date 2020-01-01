@@ -78,6 +78,7 @@ spec:
                   "d.ratio=")
               now = datetime.now()
               # filter H&Rs
+              torrents = [torrent for torrent in torrents if torrent[3] != 0]
               torrents = [torrent for torrent in torrents if torrent[2] != "LukeTVShows" or (now - datetime.fromtimestamp(torrent[3])).total_seconds() > tv_show_seeding_requirement_seconds*seeding_requirement_multiplier]
               torrents = [torrent for torrent in torrents if torrent[2] != "LukeFilms" or (now - datetime.fromtimestamp(torrent[3])).total_seconds() > film_seeding_requirement_seconds*seeding_requirement_multiplier]
               torrents = [torrent for torrent in torrents if torrent[2] != "LukeMusic" or (now - datetime.fromtimestamp(torrent[3])).total_seconds() > music_seeding_requirement_seconds*seeding_requirement_multiplier]
