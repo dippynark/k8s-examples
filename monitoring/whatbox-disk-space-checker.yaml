@@ -38,11 +38,12 @@ spec:
               set -euo pipefail
 
               pip install requests
-              cat > whatbox-disk-space-checker.py <<EOF
+              cat > whatbox-disk-space-checker.py <<'EOF'
               import requests
               import os
               import sys
               import json
+              import xmlrpc.client
 
               server_url = "https://%s:%s@%s/xmlrpc" % (os.environ['WHATBOX_USERNAME'], os.environ['WHATBOX_PASSWORD'], os.environ['WHATBOX_HOSTNAME']);
               server = xmlrpc.client.Server(server_url);
