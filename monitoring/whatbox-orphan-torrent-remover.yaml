@@ -40,7 +40,6 @@ spec:
               cat > whatbox-orphan-torrent-remover.py <<EOF
               import os
               import sys
-              import subprocess
               import xmlrpc.client
               from shutil import rmtree
 
