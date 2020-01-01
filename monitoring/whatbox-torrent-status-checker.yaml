@@ -45,7 +45,7 @@ spec:
 
               current_time = datetime.datetime.now().time()
               if current_time < datetime.time(10) or datetime.time(22) < current_time:
-                sys.exit(0)
+                  sys.exit(0)
 
               server_url = "https://%s:%s@%s/xmlrpc" % (os.environ['WHATBOX_USERNAME'], os.environ['WHATBOX_PASSWORD'], os.environ['WHATBOX_HOSTNAME']);
               server = xmlrpc.client.Server(server_url);
@@ -54,19 +54,29 @@ spec:
                   "main",
                   "or=\"equal=d.custom1=,cat=LukeBooks\",\"equal=d.custom1=,cat=LukeFilms\",\"equal=d.custom1=,cat=LukeMusic\",\"equal=d.custom1=,cat=LukeTVShows\",\"equal=d.custom1=,cat=LukeApplications\",\"equal=d.custom1=,cat=LukeGames\"",
                   "d.name=",
+                  "d.hash=",
                   "d.state=",
                   "d.is_open=",
                   "d.is_active=",
                   "d.message=")
 
+              irrecoverable_errors = False
               for torrent in torrents:
                   name = torrent[0]
-                  state = torrent[1]
-                  is_open = torrent[2]
-                  is_active = torrent[3]
-                  message = torrent[4]
+                  hash = torrent[1]
+                  state = torrent[2]
+                  is_open = torrent[3]
+                  is_active = torrent[4]
+                  message = torrent[5]
                   if state != 1 or is_open != 1 or is_active != 1 or message != "":
-                      print("ERROR: %s %s %s %s %s" % (name, state, is_open, is_active, message))
-                      sys.exit(1)
+                      if message.startswith('Tracker: [Failure reason "Unregistered torrent'):
+                          print("Erasing: %s" % name)
+                          server.d.erase(hash)
+                          continue
+                      irrecoverable_errors = True
+                      print("Name: %s, Message: %s" % (name, message))
+
+              if irrecoverable_errors:
+                  sys.exit(1)
               EOF
               python whatbox-torrent-status-checker.py
