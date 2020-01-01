@@ -1,7 +1,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: whatbox-orphan-torrent-remover
+  name: whatbox-torrent-orphan-remover
   namespace: monitoring
 spec:
   schedule: "*/2 * * * *"
@@ -13,7 +13,7 @@ spec:
         spec:
           restartPolicy: Never
           containers:
-          - name: whatbox-orphan-torrent-remover
+          - name: whatbox-torrent-orphan-remover
             image: python:3
             env:
             - name: WHATBOX_USERNAME
@@ -37,7 +37,7 @@ spec:
             - |
               set -euo pipefail
 
-              cat > whatbox-orphan-torrent-remover.py <<EOF
+              cat > whatbox-torrent-orphan-remover.py <<EOF
               import os
               import sys
               import xmlrpc.client
@@ -81,7 +81,7 @@ spec:
                       print("ERROR: path is neither a file nor a directory: %s" % directory)
                       sys.exit(1)
               EOF
-              python whatbox-orphan-torrent-remover.py
+              python whatbox-torrent-orphan-remover.py
             volumeMounts:
             - name: whatbox-luke
               mountPath: /mnt/whatbox/luke
