@@ -71,7 +71,7 @@ spec:
                   torrent_directories.append(torrent_directory)
               for directory in existing_directories:
                   if directory not in torrent_directories:
-                      print(directory)
+                      print("Removing: %s" % directory)
                       if os.path.isfile(directory):
                         os.remove(directory)
                         continue
