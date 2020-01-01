@@ -52,7 +52,7 @@ spec:
 
               torrents = server.d.multicall.filtered("",
                   "main",
-                  "or=\"equal=d.custom1=,cat=LukeBooks\",\"equal=d.custom1=,cat=LukeFilms\",\"equal=d.custom1=,cat=LukeMusic\",\"equal=d.custom1=,cat=LukeTVShows\",\"equal=d.custom1=,cat=LukeApplications\"",
+                  "or=\"equal=d.custom1=,cat=LukeBooks\",\"equal=d.custom1=,cat=LukeFilms\",\"equal=d.custom1=,cat=LukeMusic\",\"equal=d.custom1=,cat=LukeTVShows\",\"equal=d.custom1=,cat=LukeApplications\",\"equal=d.custom1=,cat=LukeGames\"",
                   "d.name=",
                   "d.state=",
                   "d.is_open=",
