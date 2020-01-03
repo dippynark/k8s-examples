@@ -55,8 +55,12 @@ spec:
               json_response = json.loads(r.text)
               disk_space_allotted = json_response['disk_space_allotted']
               disk_space_used = json_response['disk_space_used']
-              if disk_space_used/disk_space_allotted > 0.95:
-                  print("ERROR: disk space usage is over 95%")
+              # 2968681394995 bytes available
+              # 2968681394995*8 bits available
+              # 1% is (2968681394995*8)/100
+              # so it takes ((2968681394995*8)/100)/(1000^3) ~ 237 seconds to download 1% with a 1 Gbps stream
+              if disk_space_used/disk_space_allotted > 0.99:
+                  print("ERROR: disk space usage is over 99%")
 
                   # pause all incomplete torrents
                   server.d.multicall.filtered("",
@@ -65,7 +69,7 @@ spec:
                     "d.pause=")
 
                   sys.exit(1)
-              elif disk_space_used/disk_space_allotted <= 0.90:
+              elif disk_space_used/disk_space_allotted <= 0.98:
                   # resume all incomplete torrents
                   server.d.multicall.filtered("",
                     "main",
