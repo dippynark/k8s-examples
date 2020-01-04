@@ -59,8 +59,8 @@ spec:
               # 2968681394995*8 bits available
               # 1% is (2968681394995*8)/100
               # so it takes ((2968681394995*8)/100)/(1000^3) ~ 237 seconds to download 1% with a 1 Gbps stream
-              if disk_space_used/disk_space_allotted > 0.99:
-                  print("ERROR: disk space usage is over 99%")
+              if disk_space_used/disk_space_allotted > 0.91:
+                  print("ERROR: disk space usage is over 91%")
 
                   # pause all incomplete torrents
                   server.d.multicall.filtered("",
@@ -69,7 +69,7 @@ spec:
                     "d.pause=")
 
                   sys.exit(1)
-              elif disk_space_used/disk_space_allotted <= 0.98:
+              elif disk_space_used/disk_space_allotted <= 0.90:
                   # resume all incomplete torrents
                   server.d.multicall.filtered("",
                     "main",
