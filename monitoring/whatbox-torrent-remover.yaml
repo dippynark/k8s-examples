@@ -112,8 +112,8 @@ spec:
               if disk_space_allotted != expected_allotted_disk_space:
                   print("Allotted disk space has changed: %d to %d" % (expected_allotted_disk_space, disk_space_allotted))
                   sys.exit(1)
-              if disk_space_used/disk_space_allotted <= 0.90:
-                  print("Disk space usage less than 90% - nothing to do")
+              if disk_space_used/disk_space_allotted <= 0.95:
+                  print("Disk space usage less than 95% - nothing to do")
                   sys.exit(0)
 
               # setup connection
@@ -146,7 +146,7 @@ spec:
               torrents_to_erase = []
               total_size_to_erase = 0
               for torrent in torrents:
-                  if disk_space_used - total_size_to_erase > 0.90 * disk_space_allotted:
+                  if disk_space_used - total_size_to_erase > 0.95 * disk_space_allotted:
                       name = torrent[0]
                       hash = torrent[1]
                       size = torrent[5]
