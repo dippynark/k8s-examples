@@ -138,8 +138,8 @@ spec:
               torrents = [torrent for torrent in torrents if torrent[2] != "LukeMusic" or (now - datetime.fromtimestamp(torrent[3])).total_seconds() > music_seeding_requirement_seconds*seeding_requirement_multiplier]
               # replace ratio with ratio rate
               torrents = list(map(lambda x: [x[0], x[1], x[2], x[3], x[4] / ((now - datetime.fromtimestamp(x[3])).total_seconds() / 1000), x[5]], torrents))
-              # sort list
-              sorter = lambda x: (x[2] != "LukeTVShows", x[2] != "LukeFilms", x[2] != "LukeMusic", x[4])
+              # sort list by ratio rate with music torrents last
+              sorter = lambda x: (x[2] == "LukeMusic", x[4])
               torrents = sorted(torrents, key=sorter)
 
               # create list of torrents to erase
