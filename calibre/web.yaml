@@ -50,11 +50,13 @@ spec:
           httpGet:
             path: /login
             port: 8083
+          timeoutSeconds: 3
         livenessProbe:
           httpGet:
             path: /login
             port: 8083
           initialDelaySeconds: 60
+          timeoutSeconds: 10
       volumes:
       - name: books
         hostPath:
