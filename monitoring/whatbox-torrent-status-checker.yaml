@@ -71,7 +71,7 @@ spec:
                   if state != 1 or is_open != 1 or is_active != 1 or message != "":
                       if message.startswith('Tracker: [Failure reason "') and message.endswith('"]'):
                           failure_reason = message[len('Tracker: [Failure reason "'):len(message) - len('"]')]
-                          if failure_reason.startswith('Unregistered torrent'):
+                          if failure_reason == 'Unregistered torrent':
                               print("Erasing %s: %s" % (name, failure_reason))
                               server.d.erase(hash)
                               continue
