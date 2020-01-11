@@ -69,12 +69,30 @@ spec:
                   is_active = torrent[4]
                   message = torrent[5]
                   if state != 1 or is_open != 1 or is_active != 1 or message != "":
-                      if message.startswith('Tracker: [Failure reason "') and message.endswith('"]'):
-                          failure_reason = message[len('Tracker: [Failure reason "'):len(message) - len('"]')]
-                          if failure_reason == 'Unregistered torrent':
-                              print("Erasing %s: %s" % (name, failure_reason))
-                              server.d.erase(hash)
+
+                      if message.startswith('Tracker: [') and message.endswith(']'):
+                          tracker_message = message[len('Tracker: ['):len(message) - len(']')]
+
+                          if tracker_message == 'Timed out':
                               continue
+                          if tracker_message == "Couldn't connect to server":
+                              continue
+                          if tracker_message == "Timeout was reached":
+                              continue
+                          if tracker_message == "Could not parse bencoded data: 504 Gateway Time-out    504 Gateway Time-out  nginx":
+                              continue
+                          if tracker_message == "Could not parse bencoded data: 502 Bad Gateway    502 Bad Gateway  nginx":
+                              continue
+                          if tracker_message == "SSL connect error":
+                              continue
+
+                          if tracker_message.startswith('Failure reason "') and tracker_message.endswith('"'):
+                              tracker_failure_reason = tracker_message[len('Failure reason "'):len(tracker_message) - len('"')]
+                              if tracker_failure_reason == 'Unregistered torrent':
+                                  print("Erasing %s: %s" % (name, tracker_failure_reason))
+                                  server.d.erase(hash)
+                                  continue
+
                       irrecoverable_errors = True
                       print("Name: %s, Message: %s" % (name, message))
 
