@@ -14,7 +14,7 @@ spec:
           restartPolicy: Never
           containers:
           - name: queue-cleaner
-            image: python:3
+            image: dippynark/python
             env:
             - name: X_API_KEY
               valueFrom:
@@ -27,7 +27,6 @@ spec:
               - |
                 set -euo pipefail
   
-                pip install requests
                 cat > queue-cleaner.py <<'EOF'
                 import os
                 import sys

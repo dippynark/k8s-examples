@@ -14,7 +14,7 @@ spec:
           restartPolicy: Never
           containers:
           - name: whatbox-torrent-status-checker
-            image: python:3
+            image: dippynark/python
             env:
             - name: WHATBOX_USERNAME
               valueFrom:
@@ -57,7 +57,6 @@ spec:
             - |
               set -euo pipefail
 
-              pip install mechanicalsoup
               cat > whatbox-torrent-status-checker.py <<EOF
               import datetime
               import os

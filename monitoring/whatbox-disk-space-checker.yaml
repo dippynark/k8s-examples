@@ -14,7 +14,7 @@ spec:
           restartPolicy: Never
           containers:
           - name: whatbox-disk-space-checker
-            image: python:3
+            image: dippynark/python
             env:
             - name: WHATBOX_USERNAME
               valueFrom:
@@ -37,7 +37,6 @@ spec:
             - |
               set -euo pipefail
 
-              pip install requests
               cat > whatbox-disk-space-checker.py <<'EOF'
               import requests
               import os

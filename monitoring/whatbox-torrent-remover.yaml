@@ -14,7 +14,7 @@ spec:
           restartPolicy: Never
           containers:
           - name: whatbox-torrent-remover
-            image: python:3
+            image: dippynark/python
             env:
             - name: WHATBOX_USERNAME
               valueFrom:
@@ -36,8 +36,6 @@ spec:
             - -c
             - |
               set -euo pipefail
-
-              pip install requests
 
               cat > whatbox-torrent-orphan-remover.py <<EOF
               import os

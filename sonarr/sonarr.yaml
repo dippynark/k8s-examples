@@ -52,7 +52,7 @@ spec:
     spec:
       containers:
       - name: connect
-        image: python:3.7
+        image: dippynark/python
         env:
         - name: WHATBOX_USERNAME
           valueFrom:
@@ -99,7 +99,6 @@ spec:
         - sh
         - -c
         - |
-          pip install requests pushbullet.py
           while true; do
             find /connect -type f -exec /opt/bin/link.py $WHATBOX_USERNAME $WHATBOX_PASSWORD $WHATBOX_HOSTNAME $SONARR_USERNAME $SONARR_PASSWORD $SONARR_APIKEY $PUSHBULLET_ACCESS_TOKEN {} \;
             sleep 10
