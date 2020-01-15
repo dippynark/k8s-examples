@@ -112,6 +112,9 @@ spec:
                           if tracker_message.startswith('Failure reason "') and tracker_message.endswith('"'):
                               tracker_failure_reason = tracker_message[len('Failure reason "'):len(tracker_message) - len('"')]
 
+                              if tracker_failure_reason == "The tracker is down. We\'re working on fixing the problem":
+                                  continue
+
                               if tracker_failure_reason == 'Unregistered torrent':
                                   print("Erasing %s: %s" % (name, tracker_failure_reason))
                                   server.d.erase(hash)
