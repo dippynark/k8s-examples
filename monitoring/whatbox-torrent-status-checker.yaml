@@ -31,26 +31,41 @@ spec:
                 secretKeyRef:
                   name: whatbox
                   key: hostname
-            - name: TRACKER_EMAIL
+            - name: TRACKER_BOOK_EMAIL
               valueFrom:
                 secretKeyRef:
                   name: tracker
-                  key: email
-            - name: TRACKER_PASSWORD
+                  key: book-email
+            - name: TRACKER_BOOK_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: tracker
-                  key: password
-            - name: TRACKER_HOSTNAME
+                  key: book-password
+            - name: TRACKER_BOOK_HOSTNAME
               valueFrom:
                 secretKeyRef:
                   name: tracker
-                  key: hostname
-            - name: TRACKER_ID
+                  key: book-hostname
+            - name: TRACKER_BOOK_USER_ID
               valueFrom:
                 secretKeyRef:
                   name: tracker
-                  key: id
+                  key: book-user-id
+            - name: TRACKER_FILM_API_USER
+              valueFrom:
+                secretKeyRef:
+                  name: tracker
+                  key: film-api-user
+            - name: TRACKER_FILM_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: tracker
+                  key: film-api-key
+            - name: TRACKER_FILM_HOSTNAME
+              valueFrom:
+                secretKeyRef:
+                  name: tracker
+                  key: film-hostname
             args:
             - bash
             - -c
@@ -63,6 +78,10 @@ spec:
               import sys
               import xmlrpc.client
               import mechanicalsoup
+              import json
+              import requests
+              import urllib.parse as urlparse
+              from urllib.parse import parse_qs
 
               current_time = datetime.datetime.now().time()
               if current_time < datetime.time(10) or datetime.time(22) < current_time:
@@ -79,7 +98,8 @@ spec:
                   "d.state=",
                   "d.is_open=",
                   "d.is_active=",
-                  "d.message=")
+                  "d.message=",
+                  "d.custom1=")
 
               irrecoverable_errors = False
               for torrent in torrents:
@@ -89,6 +109,7 @@ spec:
                   is_open = torrent[3]
                   is_active = torrent[4]
                   message = torrent[5]
+                  label = torrent[6]
                   if state != 1 or is_open != 1 or is_active != 1 or message != "":
 
                       if message.startswith('Tracker: [') and message.endswith(']'):
@@ -120,17 +141,60 @@ spec:
                                   server.d.erase(hash)
                                   continue
 
+                              if tracker_failure_reason == 'Unregistered torrent: Specifically Banned: pre-retail':
+                                  print("Erasing %s: %s" % (name, tracker_failure_reason))
+                                  server.d.erase(hash)
+                                  continue
+
+                              if tracker_failure_reason.startswith('Unregistered torrent: Trump: '):
+                                  trump = tracker_failure_reason[len('Unregistered torrent: Trump: '):]
+
+                                  trump_tokens = trump.split(' - ')
+                                  trump_error = trump_tokens[0]
+                                  trump_url = trump_tokens[1]
+
+                                  if trump_url.startswith("https://%s" % os.environ['TRACKER_FILM_HOSTNAME']):
+                                      parsed = urlparse.urlparse(trump_url)
+                                      torrent_id = parse_qs(parsed.query)['torrentid'][0]
+
+                                      headers = {
+                                          'ApiUser': os.environ['TRACKER_FILM_API_USER'],
+                                          'ApiKey': os.environ['TRACKER_FILM_API_KEY']
+                                      }
+
+                                      print("Trying to download torrent for url: %s" % trump_url)
+                                      sys.exit(1)
+
+                                      r = requests.get(trump_url, headers=headers)
+                                      json_data = json.loads(r.text)
+
+                                      auth_key = json_data["AuthKey"]
+                                      torrent_pass = json_data["PassKey"]
+
+                                      download_url = "https://%s/torrents.php?action=download&id=%s&authkey=%s&torrent_pass=%s" % (os.environ['TRACKER_FILM_HOSTNAME'], torrent_id, auth_key, torrent_pass)
+
+                                      r = requests.get(download_url, headers=headers)
+                                      if r.content == b'Your popcorn quota has been reached, come back later!\n':
+                                          print("ERROR: popcorn quota reached")
+                                      else:
+                                          r = server.load.raw_start_verbose("", xmlrpc.client.Binary(r.content), "d.delete_tied=", "d.custom1.set=LukeFilms", "d.directory.set=~/files/luke/films/")
+                                          if r == 0:
+                                              print("Erasing %s: %s" % (name, tracker_failure_reason))
+                                              server.d.erase(hash)
+                                              continue
+                                          print("ERROR: failed to load torrent: %s" % str(r))
+
                               if tracker_failure_reason == "Not VIP":
-                                  login_url = "https:/%s/login.php" % os.environ['TRACKER_HOSTNAME']
-                                  user_url = "https://%s/u/%s" % (os.environ['TRACKER_HOSTNAME'], os.environ['TRACKER_ID'])
-                                  vip_buy_url = "https://%s/json/bonusBuy.php?spendtype=VIP&duration=4" % os.environ['TRACKER_HOSTNAME']
+                                  login_url = "https:/%s/login.php" % os.environ['TRACKER_BOOK_HOSTNAME']
+                                  user_url = "https://%s/u/%s" % (os.environ['TRACKER_BOOK_HOSTNAME'], os.environ['TRACKER_BOOK_USER_ID'])
+                                  vip_buy_url = "https://%s/json/bonusBuy.php?spendtype=VIP&duration=4" % os.environ['TRACKER_BOOK_HOSTNAME']
 
                                   browser = mechanicalsoup.StatefulBrowser()
                                   browser.open(login_url)
 
                                   browser.select_form('form[action="/takelogin.php"]')
-                                  browser["email"] = os.environ['TRACKER_EMAIL']
-                                  browser["password"] = os.environ['TRACKER_PASSWORD']
+                                  browser["email"] = os.environ['TRACKER_BOOK_EMAIL']
+                                  browser["password"] = os.environ['TRACKER_BOOK_PASSWORD']
                                   r = browser.submit_selected()
                                   r.raise_for_status()
 
