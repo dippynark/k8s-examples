@@ -99,7 +99,8 @@ spec:
                   "d.is_open=",
                   "d.is_active=",
                   "d.message=",
-                  "d.custom1=")
+                  "d.custom1=",
+                  "d.timestamp.finished=")
 
               irrecoverable_errors = False
               for torrent in torrents:
@@ -110,7 +111,14 @@ spec:
                   is_active = torrent[4]
                   message = torrent[5]
                   label = torrent[6]
+                  finished = torrent[7]
+
                   if state != 1 or is_open != 1 or is_active != 1 or message != "":
+
+                      # give failing torrents at least a day to be downloaded if finished
+                      now = datetime.datetime.now()
+                      if finished != 0 and (now - datetime.datetime.fromtimestamp(finished)).total_seconds() <= 60*60*24:
+                          continue
 
                       if message.startswith('Tracker: [') and message.endswith(']'):
                           tracker_message = message[len('Tracker: ['):len(message) - len(']')]
