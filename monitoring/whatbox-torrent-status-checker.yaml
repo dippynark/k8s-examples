@@ -186,6 +186,7 @@ spec:
                                           print("ERROR: popcorn quota reached")
                                       else:
                                           r = server.load.raw_start_verbose("", xmlrpc.client.Binary(r.content), "d.delete_tied=", "d.custom1.set=LukeFilms", "d.directory.set=~/files/luke/films/")
+                                          # TODO: trigger radarr if label != LukeFilms by adding the info hash to radarr's connect volume
                                           if r == 0:
                                               print("Erasing %s: %s" % (name, tracker_failure_reason))
                                               server.d.erase(hash)
