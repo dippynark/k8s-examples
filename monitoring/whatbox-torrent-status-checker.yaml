@@ -186,12 +186,20 @@ spec:
                                           print("ERROR: popcorn quota reached")
                                       else:
                                           r = server.load.raw_start_verbose("", xmlrpc.client.Binary(r.content), "d.delete_tied=", "d.custom1.set=LukeFilms", "d.directory.set=~/files/luke/films/")
-                                          # TODO: trigger radarr if label != LukeFilms by adding the info hash to radarr's connect volume
                                           if r == 0:
-                                              print("Erasing %s: %s" % (name, tracker_failure_reason))
-                                              server.d.erase(hash)
-                                              continue
-                                          print("ERROR: failed to load torrent: %s" % str(r))
+                                              new_torrent_hash = ""
+                                              for torrent in json_data["Torrents"]:
+                                                  if torrent["Id"] == torrent_id:
+                                                      new_torrent_hash = torrent["InfoHash"]
+                                              new_torrent_label = server.d.custom1(new_torrent_hash)
+                                              if new_torrent_label == "LukeFilms":
+                                                  print("Erasing %s: %s" % (name, tracker_failure_reason))
+                                                  server.d.erase(hash)
+                                                  continue
+                                              else:
+                                                  print("ERROR: unexpected label for new torrent: %s" % new_torrent_label)
+                                          else:
+                                              print("ERROR: failed to load torrent %s: %s" % (trump_url, str(r)))
 
                               if tracker_failure_reason == "Not VIP":
                                   login_url = "https:/%s/login.php" % os.environ['TRACKER_BOOK_HOSTNAME']
