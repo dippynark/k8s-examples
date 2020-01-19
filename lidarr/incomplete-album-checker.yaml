@@ -1,0 +1,73 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: incomplete-album-checker
+  namespace: lidarr
+spec:
+  schedule: "0 * * * *"
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: incomplete-album-checker
+            image: dippynark/python
+            env:
+            - name: REDIS_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: redis
+                  key: REDIS_PASS
+            - name: LIDARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: lidarr
+                  key: api-key
+            args:
+            - bash
+            - -c
+            - |
+              set -euo pipefail
+
+              cat > incomplete-album-checker.py <<EOF
+              import requests
+              import json
+              import sys
+              import redis
+              import os
+              from datetime import datetime, timedelta
+
+              url = "http://lidarr.lidarr.svc.cluster.local/api/v1/album"
+              r = requests.get(url, headers={"X-Api-Key": os.environ['LIDARR_API_KEY']})
+              r.raise_for_status()
+              json_data = json.loads(r.text)
+
+              missing_tracks = False
+              for album in json_data:
+                  if album["monitored"] == False:
+                      continue
+                  if "statistics" not in album:
+                      continue
+                  statistics = album["statistics"]
+                  if "percentOfTracks" in statistics and statistics["percentOfTracks"] != 0 and statistics["percentOfTracks"] != 100:
+                      missing_tracks = True
+                      print("%s: %s" % (album["artist"]["artistName"], album["title"]))
+
+              print("Missing tracks: %s" % missing_tracks)
+              r = redis.Redis(host='redis.monitoring.svc.cluster.local', port=6379, db=0, password=os.environ['REDIS_PASS'])
+              timestamp = r.get('lidarr:last.successful.incomplete.album.check.timestamp')
+
+              if timestamp == None or not missing_tracks:
+                  r.set('lidarr:last.successful.incomplete.album.check.timestamp', datetime.timestamp(datetime.now()))
+                  sys.exit(0)
+
+              last = datetime.fromtimestamp(float(timestamp))
+              delta = timedelta(days=1)
+              if last < datetime.now() - delta:
+                  print("ERROR: there have been missing tracks for a day")
+                  sys.exit(1)
+              EOF
+              python incomplete-album-checker.py
