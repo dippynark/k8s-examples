@@ -1,0 +1,51 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: unmonitored-film-checker
+  namespace: radarr
+spec:
+  schedule: "*/10 * * * *"
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: unmonitored-film-checker
+            image: dippynark/python
+            env:
+            - name: RADARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: radarr
+                  key: radarr_apikey
+            args:
+            - bash
+            - -c
+            - |
+              set -euo pipefail
+
+              cat > unmonitored-film-checker.py <<EOF
+              import requests
+              import json
+              import os
+              import sys
+
+              url = "http://radarr.radarr.svc.cluster.local/api/movie"
+              r = requests.get(url, headers={"X-Api-Key": os.environ['RADARR_API_KEY']})
+              r.raise_for_status()
+              json_data = json.loads(r.text)
+
+              unmonitored_film = False
+              for film in json_data:
+                  if film["monitored"] == False:
+                      print(film["title"])
+                      unmonitored_film = True
+
+              if unmonitored_film == True:
+                  print("ERROR: Unmonitored film")
+                  sys.exit(1)
+              EOF
+              python unmonitored-film-checker.py

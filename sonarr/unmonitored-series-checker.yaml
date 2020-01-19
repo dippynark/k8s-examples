@@ -1,0 +1,55 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: unmonitored-series-checker
+  namespace: sonarr
+spec:
+  schedule: "*/10 * * * *"
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: unmonitored-series-checker
+            image: dippynark/python
+            env:
+            - name: SONARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: sonarr
+                  key: sonarr_apikey
+            args:
+            - bash
+            - -c
+            - |
+              set -euo pipefail
+
+              cat > unmonitored-series-checker.py <<EOF
+              import requests
+              import json
+              import os
+              import sys
+
+              url = "http://sonarr.sonarr.svc.cluster.local/api/series"
+              r = requests.get(url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']})
+              r.raise_for_status()
+              json_data = json.loads(r.text)
+
+              unmonitored_series = False
+              for series in json_data:
+                  if series["monitored"] == False:
+                      print(series["title"])
+                      unmonitored_series = True
+                  for season in series["seasons"]:
+                      if season["seasonNumber"] != 0 and season["monitored"] == False:
+                          print("%s: Season %s" % (series["title"], season["seasonNumber"]))
+                          unmonitored_series = True
+
+              if unmonitored_series == True:
+                  print("ERROR: Unmonitored series or season")
+                  sys.exit(1)
+              EOF
+              python unmonitored-series-checker.py
