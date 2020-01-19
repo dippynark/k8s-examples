@@ -1,0 +1,73 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: incomplete-season-checker
+  namespace: sonarr
+spec:
+  schedule: "*/10 * * * *"
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: incomplete-season-checker
+            image: dippynark/python
+            env:
+            - name: REDIS_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: redis
+                  key: REDIS_PASS
+            - name: SONARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: sonarr
+                  key: sonarr_apikey
+            args:
+            - bash
+            - -c
+            - |
+              set -euo pipefail
+
+              cat > incomplete-season-checker.py <<EOF
+              import requests
+              import json
+              import sys
+              import redis
+              import os
+              from datetime import datetime, timedelta
+
+              url = "http://sonarr.sonarr.svc.cluster.local/api/series"
+              r = requests.get(url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']})
+              r.raise_for_status()
+              json_data = json.loads(r.text)
+
+              missing_episodes = False
+              for series in json_data:
+                  for season in series["seasons"]:
+                      # ignore unmonitored and specials
+                      if season["monitored"] == False or season["seasonNumber"] == 0:
+                          continue
+                      statistics = season["statistics"]
+                      if statistics["episodeCount"] != 0 and statistics["episodeCount"] != statistics["totalEpisodeCount"]:
+                          missing_episodes = True
+                          print("%s: Season %s" % (series["title"], season["seasonNumber"]))
+
+              print("Missing episodes: %s" % missing_episodes)
+              r = redis.Redis(host='redis.monitoring.svc.cluster.local', port=6379, db=0, password=os.environ['REDIS_PASS'])
+              timestamp = r.get('sonarr:last.successful.incomplete.season.check.timestamp')
+
+              if timestamp == None or not missing_episodes:
+                  r.set('sonarr:last.successful.incomplete.season.check.timestamp', datetime.timestamp(datetime.now()))
+                  sys.exit(0)
+
+              last = datetime.fromtimestamp(float(timestamp))
+              delta = timedelta(days=7)
+              if last < datetime.now() - delta:
+                  print("ERROR: there have been missing episodes for a week")
+                  sys.exit(1)
+              EOF
+              python incomplete-season-checker.py
