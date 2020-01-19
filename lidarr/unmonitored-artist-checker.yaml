@@ -1,0 +1,54 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: unmonitored-artist-checker
+  namespace: lidarr
+spec:
+  schedule: "30 * * * *"
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: unmonitored-artist-checker
+            image: dippynark/python
+            env:
+            - name: LIDARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: lidarr
+                  key: api-key
+            args:
+            - bash
+            - -c
+            - |
+              set -euo pipefail
+
+              cat > unmonitored-artist-checker.py <<EOF
+              import requests
+              import json
+              import sys
+              import os
+
+              url = "http://lidarr.lidarr.svc.cluster.local/api/v1/album"
+              r = requests.get(url, headers={"X-Api-Key": os.environ['LIDARR_API_KEY']})
+              r.raise_for_status()
+              json_data = json.loads(r.text)
+
+              unmonitored_artist = False
+              for album in json_data:
+                  if album["artist"]["monitored"] == False:
+                      print(album["artist"]["artistName"])
+                      unmonitored_artist = True
+                  if album["monitored"] == False:
+                      print("%s: %s" % (album["artist"]["artistName"], album["title"]))
+                      unmonitored_artist = True
+              
+              if unmonitored_artist == True:
+                  print("ERROR: Unmonitored artist or album")
+                  sys.exit(1)
+              EOF
+              python unmonitored-artist-checker.py
