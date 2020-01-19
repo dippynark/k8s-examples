@@ -1,0 +1,42 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: missing-film-search
+  namespace: radarr
+spec:
+  schedule: "0 0 * * *"
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: missing-film-search
+            image: dippynark/python
+            env:
+            - name: RADARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: radarr
+                  key: radarr_apikey
+            args:
+            - bash
+            - -c
+            - |
+              set -euo pipefail
+
+              cat > missing-film-search.py <<EOF
+              import requests
+              import json
+              import sys
+              import os
+
+              url = "http://radarr.radarr.svc.cluster.local/api/command"
+              data = json.dumps({"name": "missingMoviesSearch", "filterKey": "monitored", "filterValue": "true"})
+              headers = {"X-Api-Key": os.environ['RADARR_API_KEY']}
+              r = requests.post(url=url, data=data, headers=headers)
+              r.raise_for_status()
+              EOF
+              python missing-film-search.py

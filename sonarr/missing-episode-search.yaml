@@ -1,0 +1,42 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: missing-episode-search
+  namespace: sonarr
+spec:
+  schedule: "0 0 * * *"
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: missing-episode-search
+            image: dippynark/python
+            env:
+            - name: SONARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: sonarr
+                  key: sonarr_apikey
+            args:
+            - bash
+            - -c
+            - |
+              set -euo pipefail
+
+              cat > missing-episode-search.py <<EOF
+              import requests
+              import json
+              import sys
+              import os
+
+              url = "http://sonarr.sonarr.svc.cluster.local/api/command"
+              data = json.dumps({"name": "missingEpisodeSearch"})
+              headers = {"X-Api-Key": os.environ['SONARR_API_KEY']}
+              r = requests.post(url=url, data=data, headers=headers)
+              r.raise_for_status()
+              EOF
+              python missing-episode-search.py
