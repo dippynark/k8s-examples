@@ -56,5 +56,7 @@ spec:
               if unknown_warning:
                   print("ERROR: there are unknown warnings")
                   sys.exit(1)
+
+              print("Queue Ok - Nothing to do")
               EOF
               python queue-checker.py
