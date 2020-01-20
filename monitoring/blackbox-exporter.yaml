@@ -14,23 +14,6 @@ spec:
     scrapeTimeout: 30s
     params:
       module:
-      - http_2xx_radarr
-      target:
-      - http://radarr.radarr.svc.cluster.local/api/queue
-    metricRelabelings:
-      - sourceLabels: [__address__]
-        targetLabel: __param_target
-      - sourceLabels: [__param_target]
-        targetLabel: instance
-      - targetLabel: target
-        replacement: http://radarr.radarr.svc.cluster.local/api/queue
-  - port: http
-    scheme: http
-    path: "/probe"
-    interval: 30s
-    scrapeTimeout: 30s
-    params:
-      module:
       - http_2xx
       target:
       - https://www.lukeaddison.co.uk
