@@ -1,0 +1,60 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: queue-checker
+  namespace: sonarr
+spec:
+  schedule: "*/10 * * * *"
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: queue-checker
+            image: dippynark/python
+            env:
+            - name: SONARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: sonarr
+                  key: sonarr_apikey
+            args:
+            - bash
+            - -c
+            - |
+              set -euo pipefail
+
+              cat > queue-checker.py <<EOF
+              import requests
+              import json
+              import os
+              import sys
+
+              url = "http://sonarr.sonarr.svc.cluster.local/api/queue"
+              r = requests.get(url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']})
+              r.raise_for_status()
+              json_data = json.loads(r.text)
+
+              unknown_warning = False
+              for download in json_data:
+                  if download["trackedDownloadStatus"] != "Ok":
+                      known_reason = False
+                      unknown_reason = False
+                      for statusMessage in download["statusMessages"]:
+                          for message in statusMessage["messages"]:
+                              if message == 'Episode has a TBA title and recently aired':
+                                  known_reason = True
+                                  continue
+                              unknown_reason = True
+                              print("%s: %s" % (statusMessage["title"], message))
+                      if unknown_reason or not known_reason:
+                          unknown_warning = True
+
+              if unknown_warning:
+                  print("ERROR: there are unknown warnings")
+                  sys.exit(1)
+              EOF
+              python queue-checker.py
