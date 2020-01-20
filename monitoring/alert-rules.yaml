@@ -83,18 +83,18 @@ spec:
       annotations:
         message: CronJob {{ $labels.namespace }}/{{ $labels.owner_name }} is failing after a previous success
       expr: |
-        (max(kube_job_status_start_time * on(job_name) group_left(owner_name) ((kube_job_status_succeeded/kube_job_status_succeeded == 1) + on(job_name) group_left(owner_name) (0 * kube_job_owner{owner_kind="CronJob", owner_is_controller="true"}))) by (owner_name, namespace))
+        (max(kube_job_status_start_time * on(job_name, exported_namespace) group_left(owner_name) ((kube_job_status_succeeded/kube_job_status_succeeded == 1) + on(job_name, exported_namespace) group_left(owner_name) (0 * kube_job_owner{owner_kind="CronJob", owner_is_controller="true"}))) by (owner_name, exported_namespace))
         < bool
-        (max(kube_job_status_start_time * on(job_name) group_left(owner_name) ((kube_job_status_failed/kube_job_status_failed == 1) + on(job_name) group_left(owner_name) (0 * kube_job_owner{owner_kind="CronJob", owner_is_controller="true"}))) by (owner_name, namespace)) == 1
+        (max(kube_job_status_start_time * on(job_name, exported_namespace) group_left(owner_name) ((kube_job_status_failed/kube_job_status_failed == 1) + on(job_name, exported_namespace) group_left(owner_name) (0 * kube_job_owner{owner_kind="CronJob", owner_is_controller="true"}))) by (owner_name, exported_namespace)) == 1
       labels:
         severity: critical
     - alert: KubeCronJobNoSucceededJobs
       annotations:
         message: CronJob {{ $labels.namespace }}/{{ $labels.owner_name }} has no succeeded jobs
       expr: |
-        ((sum((kube_job_created > bool 0) + on(job_name) group_left(owner_name) (0 * kube_job_owner{owner_is_controller="true",owner_kind="CronJob"})) by (owner_name,namespace) > bool 0)
+        ((sum((kube_job_created > bool 0) + on(job_name, exported_namespace) group_left(owner_name) (0 * kube_job_owner{owner_is_controller="true",owner_kind="CronJob"})) by (owner_name,exported_namespace) > bool 0)
         -
-        (sum((kube_job_status_succeeded > bool 0) + on(job_name) group_left(owner_name) (0 * kube_job_owner{owner_is_controller="true",owner_kind="CronJob"})) by (owner_name,namespace) > bool 0)) == 1
+        (sum((kube_job_status_succeeded > bool 0) + on(job_name, exported_namespace) group_left(owner_name) (0 * kube_job_owner{owner_is_controller="true",owner_kind="CronJob"})) by (owner_name,exported_namespace) > bool 0)) == 1
       labels:
         severity: critical
   - name: kubernetes-system
