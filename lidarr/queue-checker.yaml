@@ -1,0 +1,67 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: queue-checker
+  namespace: lidarr
+spec:
+  schedule: "*/10 * * * *"
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: queue-checker
+            image: dippynark/python
+            env:
+            - name: X_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: x-api-key
+                  key: value
+            command:
+              - bash
+              - -c
+              - |
+                set -euo pipefail
+  
+                cat > queue-checker.py <<'EOF'
+                import os
+                import sys
+                import json
+                import requests
+
+                url = 'http://lidarr.lidarr.svc.cluster.local/api/v1/queue'
+                r = requests.get(url, headers={"X-Api-Key": os.environ['X_API_KEY']})
+                r.raise_for_status()
+                json = r.json()
+
+                unknown_warning = False
+                for record in json['records']:
+                    if record['trackedDownloadStatus'] != "Ok":
+                        known_reason = False
+                        unknown_reason = False
+                        for statusMessage in record["statusMessages"]:
+                            for message in statusMessage["messages"]:
+                                # Insert reasons here
+                                #if message == 'Missing tracks':
+                                #    known_reason = True
+                                #    print("Deleting %s" % record['title'])
+                                #    r = requests.delete(url+"/"+str(record['id'])+"?blacklist=true", headers={"X-Api-Key": os.environ['X_API_KEY']})
+                                #    r.raise_for_status()
+                                #    continue
+                                unknown_reason = True
+                                print("%s: %s" % (statusMessage["title"], message))
+                        if unknown_reason or not known_reason:
+                            unknown_warning = True
+
+                if unknown_warning:
+                    print("ERROR: there are unknown warnings")
+                    sys.exit(1)
+
+                print("Queue Ok - Nothing to do")
+                EOF
+                python queue-checker.py
+  
