@@ -45,10 +45,9 @@ spec:
                       unknown_reason = False
                       for statusMessage in download["statusMessages"]:
                           for message in statusMessage["messages"]:
-                              # Insert reasons here
-                              #if message == 'Episode has a TBA title and recently aired':
-                              #    known_reason = True
-                              #    continue
+                              if message == "Not an upgrade for existing movie file":
+                                  known_reason = True
+                                  continue
                               unknown_reason = True
                               print("%s: %s" % (statusMessage["title"], message))
                       if unknown_reason or not known_reason:
