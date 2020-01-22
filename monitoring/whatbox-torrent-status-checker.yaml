@@ -156,6 +156,11 @@ spec:
                                   server.d.erase(hash)
                                   continue
 
+                              if tracker_failure_reason == 'Unregistered torrent: Specifically Banned: pre-retail, HDRIP':
+                                  print("Erasing %s: %s" % (name, tracker_failure_reason))
+                                  server.d.erase(hash)
+                                  continue
+
                               if tracker_failure_reason.startswith('Unregistered torrent: Trump: '):
                                   trump = tracker_failure_reason[len('Unregistered torrent: Trump: '):]
 
@@ -170,9 +175,6 @@ spec:
                                           'ApiUser': os.environ['TRACKER_FILM_API_USER'],
                                           'ApiKey': os.environ['TRACKER_FILM_API_KEY']
                                       }
-
-                                      print("Trying to download torrent for url: %s" % trump_url)
-                                      sys.exit(1)
 
                                       r = requests.get(trump_url, headers=headers)
                                       json_data = json.loads(r.text)
