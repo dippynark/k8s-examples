@@ -4,7 +4,7 @@ metadata:
   name: missing-episode-search
   namespace: sonarr
 spec:
-  schedule: "0 0 * * *"
+  schedule: "15 0 * * *"
   successfulJobsHistoryLimit: 1
   jobTemplate:
     spec:
