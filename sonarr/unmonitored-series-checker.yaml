@@ -4,7 +4,7 @@ metadata:
   name: unmonitored-series-checker
   namespace: sonarr
 spec:
-  schedule: "*/10 * * * *"
+  schedule: "30 * * * *"
   successfulJobsHistoryLimit: 1
   jobTemplate:
     spec:
