@@ -114,6 +114,7 @@ spec:
           httpGet:
             path: /
             port: 8989
+          failureThreshold: 5
           timeoutSeconds: 30
           periodSeconds: 30
         livenessProbe:
