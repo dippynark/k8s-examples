@@ -58,13 +58,6 @@ spec:
           requests:
             cpu: 50m
             memory: 100Mi
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 8686
-          failureThreshold: 10
-          timeoutSeconds: 30
-          periodSeconds: 30
         ports:
         - containerPort: 8686
           name: http

@@ -1,0 +1,47 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: health-checker
+  namespace: lidarr
+spec:
+  schedule: "*/10 * * * *"
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: health-checker
+            image: dippynark/python
+            env:
+            - name: LIDARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: lidarr
+                  key: api-key
+            args:
+            - bash
+            - -c
+            - |
+              set -euo pipefail
+
+              cat > health-checker.py <<EOF
+              import requests
+              import json
+              import sys
+              import os
+
+              url = "http://lidarr.lidarr.svc.cluster.local/api/v1/health"
+              r = requests.get(url, headers={"X-Api-Key": os.environ['LIDARR_API_KEY']})
+              r.raise_for_status()
+              json_data = json.loads(r.text)
+
+              if len(json_data) > 0:
+                  for error in json_data:
+                      print(error)
+                  sys.exit(1)
+              print("Lidarr is healthy")
+              EOF
+              python health-checker.py
