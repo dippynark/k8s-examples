@@ -160,8 +160,7 @@ spec:
                                   trump = tracker_failure_reason[len('Unregistered torrent: Trump: '):]
 
                                   trump_tokens = trump.split(' - ')
-                                  trump_error = trump_tokens[0]
-                                  trump_url = trump_tokens[1]
+                                  trump_url = trump_tokens[-1]
 
                                   if trump_url.startswith("https://%s" % os.environ['TRACKER_FILM_HOSTNAME']):
                                       parsed = urlparse.urlparse(trump_url)
