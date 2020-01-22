@@ -104,7 +104,7 @@ spec:
             sleep 10
           done
       - name: sonarr
-        image: linuxserver/sonarr
+        image: dippynark/sonarr
         imagePullPolicy: Always
         resources:
           requests:
