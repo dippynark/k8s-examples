@@ -31,7 +31,7 @@ data:
 
     print("Torrent hash: %s" % torrent_hash)
 
-    sonarr_url = "https://%s:%s@sonarr.lukeaddison.co.uk/api/command?apikey=%s" % (sonarr_username, sonarr_password, sonarr_apikey);
+    sonarr_url = "https://%s:%s@sonarr.lukeaddison.co.uk/api/v3/command?apikey=%s" % (sonarr_username, sonarr_password, sonarr_apikey);
 
     server_url = "https://%s:%s@%s:443/xmlrpc" % (whatbox_username, whatbox_password, whatbox_hostname);
     server = xmlrpc.client.Server(server_url);

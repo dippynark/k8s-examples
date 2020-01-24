@@ -33,7 +33,7 @@ spec:
               import sys
               import os
 
-              url = "http://sonarr.sonarr.svc.cluster.local/api/command"
+              url = "http://sonarr.sonarr.svc.cluster.local/api/v3/command"
               data = json.dumps({"name": "missingEpisodeSearch"})
               headers = {"X-Api-Key": os.environ['SONARR_API_KEY']}
               r = requests.post(url=url, data=data, headers=headers)

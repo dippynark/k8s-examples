@@ -33,7 +33,7 @@ spec:
               import os
               import sys
 
-              url = "http://sonarr.sonarr.svc.cluster.local/api/series"
+              url = "http://sonarr.sonarr.svc.cluster.local/api/v3/series"
               r = requests.get(url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']})
               r.raise_for_status()
               json_data = json.loads(r.text)

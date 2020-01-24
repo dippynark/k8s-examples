@@ -33,7 +33,7 @@ spec:
               import sys
               import os
 
-              url = "http://sonarr.sonarr.svc.cluster.local/api/health"
+              url = "http://sonarr.sonarr.svc.cluster.local/api/v3/health"
               r = requests.get(url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']})
               r.raise_for_status()
               json_data = json.loads(r.text)

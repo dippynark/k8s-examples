@@ -33,17 +33,17 @@ spec:
               import os
               import sys
 
-              url = "http://sonarr.sonarr.svc.cluster.local/api/queue"
+              url = "http://sonarr.sonarr.svc.cluster.local/api/v3/queue"
               r = requests.get(url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']})
               r.raise_for_status()
               json_data = json.loads(r.text)
 
               unknown_warning = False
-              for download in json_data:
-                  if download["trackedDownloadStatus"] != "Ok":
+              for record in json_data["records"]:
+                  if record["trackedDownloadStatus"] != "ok":
                       known_reason = False
                       unknown_reason = False
-                      for statusMessage in download["statusMessages"]:
+                      for statusMessage in record["statusMessages"]:
                           for message in statusMessage["messages"]:
                               if message == 'Episode has a TBA title and recently aired':
                                   known_reason = True
