@@ -48,6 +48,7 @@ data:
                     'downloadClientId':torrent_hash,
                     'importMode':'Copy'}
             r = requests.post(url = radarr_url, data = json.dumps(data))
+            r.raise_for_status()
             print(r.text)
         else:
           raise Exception("%s torrent is not complete: %s" % (rtorrent_label, torrent_hash))

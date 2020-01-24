@@ -175,6 +175,7 @@ spec:
                                       }
 
                                       r = requests.get(trump_url, headers=headers)
+                                      r.raise_for_status()
                                       json_data = json.loads(r.text)
 
                                       auth_key = json_data["AuthKey"]
@@ -183,6 +184,7 @@ spec:
                                       download_url = "https://%s/torrents.php?action=download&id=%s&authkey=%s&torrent_pass=%s" % (os.environ['TRACKER_FILM_HOSTNAME'], torrent_id, auth_key, torrent_pass)
 
                                       r = requests.get(download_url, headers=headers)
+                                      r.raise_for_status()
                                       if r.content == b'Your popcorn quota has been reached, come back later!\n':
                                           print("ERROR: popcorn quota reached")
                                       else:
