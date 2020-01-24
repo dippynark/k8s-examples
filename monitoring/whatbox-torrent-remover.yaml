@@ -110,9 +110,6 @@ spec:
               if disk_space_allotted != expected_allotted_disk_space:
                   print("Allotted disk space has changed: %d to %d" % (expected_allotted_disk_space, disk_space_allotted))
                   sys.exit(1)
-              if disk_space_used/disk_space_allotted <= 0.95:
-                  print("Disk space usage less than 95% - nothing to do")
-                  sys.exit(0)
 
               # setup connection
               server_url = "https://%s:%s@%s/xmlrpc" % (os.environ['WHATBOX_USERNAME'], os.environ['WHATBOX_PASSWORD'], os.environ['WHATBOX_HOSTNAME']);
@@ -129,6 +126,12 @@ spec:
                   "d.ratio=",
                   "d.size_bytes=")
               now = datetime.now()
+
+              # get total size of selected torrents
+              total_size = 0
+              for torrent in torrents:
+                  total_size += torrent[5]
+
               # filter H&Rs
               torrents = [torrent for torrent in torrents if torrent[3] != 0]
               torrents = [torrent for torrent in torrents if torrent[2] != "LukeTVShows" or (now - datetime.fromtimestamp(torrent[3])).total_seconds() > tv_show_seeding_requirement_seconds*seeding_requirement_multiplier]
@@ -139,6 +142,11 @@ spec:
               # sort list by ratio rate with tv shows and films first
               sorter = lambda x: (x[2] != "LukeTVShows", x[2] != "LukeFilms", x[4])
               torrents = sorted(torrents, key=sorter)
+
+              # get total size of removable torrents
+              total_removable_size = 0
+              for torrent in torrents:
+                  total_removable_size += torrent[5]
 
               # create list of torrents to erase
               torrents_to_erase = []
@@ -154,9 +162,19 @@ spec:
                   break
 
               # erase torrents
-              for torrent in torrents_to_erase:
-                  print("Erasing: %s" % torrent[0])
-                  server.d.erase(torrent[1])
+              if len(torrents_to_erase) > 0:
+                  for torrent in torrents_to_erase:
+                      print("Erasing: %s" % torrent[0])
+                      server.d.erase(torrent[1])
+              else:
+                  print("Disk space usage less than 95% - nothing to remove")
+
+              # check ratio of removable to total
+              ratio = total_removable_size / total_size
+              if ratio < 0.5:
+                  print("A lot of content is not removable")
+                  # TODO: disable torrent clients
+                  sys.exit(1)
               EOF
               python whatbox-torrent-eraser.py
             volumeMounts:
