@@ -48,6 +48,9 @@ spec:
                               if message == "Not an upgrade for existing movie file":
                                   known_reason = True
                                   continue
+                              if message == "Has the same filesize as existing file":
+                                  known_reason = True
+                                  continue
                               unknown_reason = True
                               print("%s: %s" % (statusMessage["title"], message))
                       if unknown_reason or not known_reason:
