@@ -48,6 +48,12 @@ spec:
                               if message == 'Episode has a TBA title and recently aired':
                                   known_reason = True
                                   continue
+                              if message == 'Has the same filesize as existing file':
+                                  known_reason = True
+                                  continue
+                              if message.startswith("Episode file already imported at "):
+                                  known_reason = True
+                                  continue
                               unknown_reason = True
                               print("%s: %s" % (statusMessage["title"], message))
                       if unknown_reason or not known_reason:
