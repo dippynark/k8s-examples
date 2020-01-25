@@ -33,29 +33,38 @@ spec:
                 import json
                 import requests
 
-                url = 'http://lidarr.lidarr.svc.cluster.local/api/v1/queue'
-                r = requests.get(url, headers={"X-Api-Key": os.environ['X_API_KEY']})
-                r.raise_for_status()
-                json = r.json()
-
                 unknown_warning = False
-                for record in json['records']:
-                    if record['trackedDownloadStatus'] != "Ok":
-                        known_reason = False
-                        unknown_reason = False
-                        for statusMessage in record["statusMessages"]:
-                            for message in statusMessage["messages"]:
-                                # Insert reasons here
-                                #if message == 'Missing tracks':
-                                #    known_reason = True
-                                #    print("Deleting %s" % record['title'])
-                                #    r = requests.delete(url+"/"+str(record['id'])+"?blacklist=true", headers={"X-Api-Key": os.environ['X_API_KEY']})
-                                #    r.raise_for_status()
-                                #    continue
-                                unknown_reason = True
-                                print("%s: %s" % (statusMessage["title"], message))
-                        if unknown_reason or not known_reason:
-                            unknown_warning = True
+                for page in range(1, 10):
+
+                    url = "http://lidarr.lidarr.svc.cluster.local/api/v1/queue?pageSize=100&page=%s" % str(page)
+                    r = requests.get(url, headers={"X-Api-Key": os.environ['X_API_KEY']})
+                    r.raise_for_status()
+                    json = r.json()
+
+                    if page != json_data["page"]:
+                        # we have cycled through all the items
+                        break
+
+                    for record in json['records']:
+                        if record['trackedDownloadStatus'] != "Ok":
+                            known_reason = False
+                            unknown_reason = False
+                            for statusMessage in record["statusMessages"]:
+                                for message in statusMessage["messages"]:
+                                    # Insert reasons here
+                                    #if message == 'Missing tracks':
+                                    #    known_reason = True
+                                    #    print("Deleting %s" % record['title'])
+                                    #    r = requests.delete(url+"/"+str(record['id'])+"?blacklist=true", headers={"X-Api-Key": os.environ['X_API_KEY']})
+                                    #    r.raise_for_status()
+                                    #    continue
+                                    unknown_reason = True
+                                    print("%s: %s" % (statusMessage["title"], message))
+                            if unknown_reason or not known_reason:
+                                unknown_warning = True
+                else:
+                    print("ERROR: did not page through all items")
+                    sys.exit(1)
 
                 if unknown_warning:
                     print("ERROR: there are unknown warnings")
