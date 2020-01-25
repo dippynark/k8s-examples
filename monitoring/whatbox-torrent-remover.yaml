@@ -108,10 +108,10 @@ spec:
 
               expected_allotted_disk_space = 2968681394995
 
-              tv_show_seeding_requirement_seconds = 60*60*120
-              film_seeding_requirement_seconds = 60*60*48
-              music_seeding_requirement_seconds = 60*60*72
-              seeding_requirement_multiplier = 2
+              three_days_seconds = 60*60*72
+              tv_show_seeding_requirement_seconds = 60*60*120 + three_days_seconds
+              film_seeding_requirement_seconds = 60*60*48 + three_days_seconds
+              music_seeding_requirement_seconds = 60*60*72 + three_days_seconds
 
               # check disk usage
               s = requests.Session()
@@ -149,9 +149,9 @@ spec:
 
               # filter H&Rs
               torrents = [torrent for torrent in torrents if torrent[3] != 0]
-              torrents = [torrent for torrent in torrents if torrent[2] != "LukeTVShows" or (now - datetime.fromtimestamp(torrent[3])).total_seconds() > tv_show_seeding_requirement_seconds*seeding_requirement_multiplier]
-              torrents = [torrent for torrent in torrents if torrent[2] != "LukeFilms" or (now - datetime.fromtimestamp(torrent[3])).total_seconds() > film_seeding_requirement_seconds*seeding_requirement_multiplier]
-              torrents = [torrent for torrent in torrents if torrent[2] != "LukeMusic" or (now - datetime.fromtimestamp(torrent[3])).total_seconds() > music_seeding_requirement_seconds*seeding_requirement_multiplier]
+              torrents = [torrent for torrent in torrents if torrent[2] != "LukeTVShows" or (now - datetime.fromtimestamp(torrent[3])).total_seconds() > tv_show_seeding_requirement_seconds]
+              torrents = [torrent for torrent in torrents if torrent[2] != "LukeFilms" or (now - datetime.fromtimestamp(torrent[3])).total_seconds() > film_seeding_requirement_seconds]
+              torrents = [torrent for torrent in torrents if torrent[2] != "LukeMusic" or (now - datetime.fromtimestamp(torrent[3])).total_seconds() > music_seeding_requirement_seconds]
               # replace ratio with ratio rate
               torrents = list(map(lambda x: [x[0], x[1], x[2], x[3], x[4] / ((now - datetime.fromtimestamp(x[3])).total_seconds() / 1000), x[5]], torrents))
               # sort list by ratio rate with tv shows and films first
