@@ -88,11 +88,11 @@ spec:
                   if directory not in torrent_directories:
                       print("Removing: %s" % directory)
                       if os.path.isfile(directory):
-                        os.remove(directory)
-                        continue
+                          os.remove(directory)
+                          continue
                       if os.path.isdir(directory):
-                        rmtree(directory)
-                        continue
+                          rmtree(directory)
+                          continue
                       print("ERROR: path is neither a file nor a directory: %s" % directory)
                       sys.exit(1)
               EOF
