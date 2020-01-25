@@ -31,6 +31,21 @@ spec:
                 secretKeyRef:
                   name: whatbox
                   key: hostname
+            - name: SONARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: pvr
+                  key: sonarr-api-key
+            - name: RADARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: pvr
+                  key: radarr-api-key
+            - name: LIDARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: pvr
+                  key: lidarr-api-key
             args:
             - bash
             - -c
@@ -169,12 +184,60 @@ spec:
               else:
                   print("Disk space usage less than 95% - nothing to remove")
 
+              sonarr_url = "http://sonarr.sonarr.svc.cluster.local/api/v3/downloadclient"
+              r = requests.get(sonarr_url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']})
+              r.raise_for_status()
+              sonarr_clients = json.loads(r.text)
+
+              radarr_url = "http://radarr.radarr.svc.cluster.local/api/downloadclient"
+              r = requests.get(radarr_url, headers={"X-Api-Key": os.environ['RADARR_API_KEY']})
+              r.raise_for_status()
+              radarr_clients = json.loads(r.text)
+
+              lidarr_url = "http://lidarr.lidarr.svc.cluster.local/api/v1/downloadclient"
+              r = requests.get(lidarr_url, headers={"X-Api-Key": os.environ['LIDARR_API_KEY']})
+              r.raise_for_status()
+              lidarr_clients = json.loads(r.text)
+
               # check ratio of removable to total
               ratio = total_removable_size / total_size
               if ratio < 0.5:
-                  print("A lot of content is not removable")
-                  # TODO: disable torrent clients
+                  print("Less than 50% of torrent data is removable - disabling torrent clients")
+
+                  # disable torrent clients
+                  for client in sonarr_clients:
+                      if client["enable"] == True:
+                          client["enable"] = False
+                          r = requests.put(sonarr_url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']}, data=json.dumps(client))
+                          r.raise_for_status()
+                  for client in radarr_clients:
+                      if client["enable"] == True:
+                          client["enable"] = False
+                          r = requests.put(radarr_url, headers={"X-Api-Key": os.environ['RADARR_API_KEY']}, data=json.dumps(client))
+                          r.raise_for_status()
+                  for client in lidarr_clients:
+                      if client["enable"] == True:
+                          client["enable"] = False
+                          r = requests.put(lidarr_url, headers={"X-Api-Key": os.environ['LIDARR_API_KEY']}, data=json.dumps(client))
+                          r.raise_for_status()
+
                   sys.exit(1)
+              else:
+                  for client in sonarr_clients:
+                      if client["enable"] == False:
+                          client["enable"] = True
+                          r = requests.put(sonarr_url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']}, data=json.dumps(client))
+                          r.raise_for_status()
+                  for client in radarr_clients:
+                      if client["enable"] == False:
+                          client["enable"] = True
+                          r = requests.put(radarr_url, headers={"X-Api-Key": os.environ['RADARR_API_KEY']}, data=json.dumps(client))
+                          r.raise_for_status()
+                  for client in lidarr_clients:
+                      if client["enable"] == False:
+                          client["enable"] = True
+                          r = requests.put(lidarr_url, headers={"X-Api-Key": os.environ['LIDARR_API_KEY']}, data=json.dumps(client))
+                          r.raise_for_status()
               EOF
               python whatbox-torrent-eraser.py
             volumeMounts:
