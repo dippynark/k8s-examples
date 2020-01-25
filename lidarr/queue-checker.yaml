@@ -39,13 +39,13 @@ spec:
                     url = "http://lidarr.lidarr.svc.cluster.local/api/v1/queue?pageSize=100&page=%s" % str(page)
                     r = requests.get(url, headers={"X-Api-Key": os.environ['X_API_KEY']})
                     r.raise_for_status()
-                    json = r.json()
+                    json_data = r.json()
 
                     if page != json_data["page"]:
                         # we have cycled through all the items
                         break
 
-                    for record in json['records']:
+                    for record in json_data['records']:
                         if record['trackedDownloadStatus'] != "Ok":
                             known_reason = False
                             unknown_reason = False
