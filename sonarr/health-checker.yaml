@@ -38,10 +38,16 @@ spec:
               r.raise_for_status()
               json_data = json.loads(r.text)
 
-              if len(json_data) > 0:
-                  for error in json_data:
-                      print(error)
+              unrecognised_error = False
+              for error in json_data:
+                  if error["source"] == 'DownloadClientCheck' and error["message"] == 'No download client is available':
+                      continue
+                  print(error)
+                  unrecognised_error = True
+
+              if unrecognised_error == True:
                   sys.exit(1)
+
               print("Sonarr is healthy")
               EOF
               python health-checker.py
