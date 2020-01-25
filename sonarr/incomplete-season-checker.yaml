@@ -65,9 +65,9 @@ spec:
                   sys.exit(0)
 
               last = datetime.fromtimestamp(float(timestamp))
-              delta = timedelta(days=3)
+              delta = timedelta(days=7)
               if last < datetime.now() - delta:
-                  print("ERROR: there have been missing episodes for three days")
+                  print("ERROR: there have been missing episodes for a week")
                   sys.exit(1)
               EOF
               python incomplete-season-checker.py
