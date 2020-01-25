@@ -8,6 +8,14 @@ metadata:
   namespace: monitoring
 spec:
   groups:
+  - name: deadman
+    rules:
+    - alert: Deadman
+      annotations:
+        description: This is a DeadMansSwitch meant to ensure that the entire Alerting pipeline is functional.
+      expr: vector(1)
+      labels:
+        severity: deadman
   - name: instance-down
     rules:
     - alert: KubeStateMetricsDown

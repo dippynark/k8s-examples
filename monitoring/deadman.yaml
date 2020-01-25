@@ -1,0 +1,53 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: deadman
+  namespace: monitoring
+spec:
+  ports:
+  - name: alertmanager
+    port: 9095
+  selector:
+    app: deadman
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deadman
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: deadman
+  template:
+    metadata:
+      labels:
+        app: deadman
+    spec:
+      containers:
+      - name: deadman
+        image: dippynark/deadman:latest
+        args:
+        - --pushbullet-device-nickname=$(PUSHBULLET_DEVICE_NICKNAME)
+        ports:
+        - containerPort: 9095
+        env:
+        - name: PUSHBULLET_ACCESS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: pushbullet
+              key: access-token
+        - name: PUSHBULLET_DEVICE_NICKNAME
+          valueFrom:
+            secretKeyRef:
+              name: pushbullet
+              key: device-nickname
+        volumeMounts:
+        - name: certs
+          mountPath: /etc/ssl/certs
+      volumes:
+      - name: certs
+        hostPath:
+          path: /etc/ssl/certs
+          type: Directory
