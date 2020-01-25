@@ -114,7 +114,7 @@ spec:
               seeding_requirement_multiplier = 2
 
               # check disk usage
-              s = requests.Session() 
+              s = requests.Session()
               r = s.post("https://%s/login" % os.environ['WHATBOX_HOSTNAME'], data={'username': os.environ['WHATBOX_USERNAME'], 'password': os.environ['WHATBOX_PASSWORD']})
               r = s.get("https://%s/api/disk_usage" % os.environ['WHATBOX_HOSTNAME'])
 
