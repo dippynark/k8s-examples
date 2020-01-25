@@ -52,7 +52,7 @@ spec:
                       if season["monitored"] == False or season["seasonNumber"] == 0:
                           continue
                       statistics = season["statistics"]
-                      if statistics["episodeCount"] != 0 and statistics["episodeCount"] != statistics["totalEpisodeCount"]:
+                      if "percentOfEpisodes" in statistics and statistics["percentOfEpisodes"] != 0 and statistics["percentOfEpisodes"] != 100:
                           missing_episodes = True
                           print("%s: Season %s" % (series["title"], season["seasonNumber"]))
 
