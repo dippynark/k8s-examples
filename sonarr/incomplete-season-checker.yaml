@@ -46,6 +46,7 @@ spec:
               json_data = json.loads(r.text)
 
               missing_episodes = False
+              missing_episodes_title = ""
               for series in json_data:
                   for season in series["seasons"]:
                       # ignore unmonitored and specials
@@ -54,20 +55,33 @@ spec:
                       statistics = season["statistics"]
                       if "percentOfEpisodes" in statistics and statistics["percentOfEpisodes"] != 0 and statistics["percentOfEpisodes"] != 100:
                           missing_episodes = True
+                          missing_episodes_title = "%s-%s" % (series["title"], str(season["seasonNumber"]))
                           print("%s: Season %s" % (series["title"], season["seasonNumber"]))
+                          break
+                  if missing_episodes:
+                      break
 
               print("Missing episodes: %s" % missing_episodes)
               r = redis.Redis(host='redis.monitoring.svc.cluster.local', port=6379, db=0, password=os.environ['REDIS_PASS'])
               timestamp = r.get('sonarr:last.successful.incomplete.season.check.timestamp')
 
+              # reset timer if there are no missing episodes
               if timestamp == None or not missing_episodes:
                   r.set('sonarr:last.successful.incomplete.season.check.timestamp', datetime.timestamp(datetime.now()))
                   sys.exit(0)
 
+              # we have missing episodes and a timestamp of the last successful check
+
+              # if the title has changed, reset timer
+              current_title = r.get('sonarr:last.failed.incomplete.season.check.title')
+              if current_title == None or current_title != missing_episodes_title:
+                  r.set('sonarr:last.failed.incomplete.season.check.title', missing_episodes_title)
+                  r.set('sonarr:last.successful.incomplete.season.check.timestamp', datetime.timestamp(datetime.now()))
+
               last = datetime.fromtimestamp(float(timestamp))
-              delta = timedelta(days=7)
+              delta = timedelta(days=3)
               if last < datetime.now() - delta:
-                  print("ERROR: there have been missing episodes for a week")
+                  print("ERROR: there have been missing episodes for three days: %s" % missing_episodes_title)
                   sys.exit(1)
               EOF
               python incomplete-season-checker.py
