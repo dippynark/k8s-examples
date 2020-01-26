@@ -10,9 +10,9 @@ spec:
   groups:
   - name: deadman
     rules:
-    - alert: Deadman
+    - alert: DeadMansSwitch
       annotations:
-        description: This is a DeadMansSwitch meant to ensure that the entire Alerting pipeline is functional.
+        description: This is a dead man's switch meant to ensure that the entire alerting pipeline is functional.
       expr: vector(1)
       labels:
         severity: deadman
