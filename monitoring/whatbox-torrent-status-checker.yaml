@@ -133,6 +133,8 @@ spec:
                               continue
                           if tracker_message == "Could not parse bencoded data: bibliotik.me | 502: Bad gateway body{margin:0;padding:0} ":
                               continue
+                          if tracker_message == "Could not parse bencoded data: bibliotik.me | 502: Bad gateway        body{margin:0;padding:0}                                    ":
+                              continue
                           if tracker_message == "SSL connect error":
                               continue
                           if tracker_message == "Server returned nothing (no headers, no data)":
