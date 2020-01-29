@@ -52,7 +52,7 @@ data:
             print(r.text)
         else:
           raise Exception("%s torrent is not complete: %s" % (rtorrent_label, torrent_hash))
-    except:
+    except Exception:
       error_message = "Error downloading torrent %s:\n%s" % (torrent_hash, traceback.format_exc())
       print(error_message)
       pb = Pushbullet(pushbullet_access_token)
