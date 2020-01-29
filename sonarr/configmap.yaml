@@ -59,5 +59,6 @@ data:
       push = pb.push_note("Sonarr - Connect error", error_message)
       print(push)
 
+    # always remove path to avoid continuous alerts if there is an issue
     os.remove(trigger_path)
       
