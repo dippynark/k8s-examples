@@ -104,11 +104,28 @@ spec:
 
               if [ $RET -eq 0 ]; then
                   LATEST_SHA=$(echo $DATA | jq -r '[.images[] | select(.os == "linux" and .architecture == "amd64")][0].digest' | sed 's/.*://')
-                  kubectl patch deployment/plex -n plex -p "{\"spec\": {\"template\": {\"metadata\": {\"annotations\": {\"sha256\": \"$LATEST_SHA\"}}}}}"
+                  CURRENT_SHA=$(kubectl get deployment plex -n plex -o jsonpath='{.spec.template.metadata.annotations.sha256}')
                   RET=$?
                   if [ $RET -ne 0 ]; then
-                      echo "Failed to set latest image SHA annotation"
+                      echo "Failed to retrieve current image SHA annotation"
                       exit 1
+                  fi
+                  if [ "$LATEST_SHA" != "$CURRENT_SHA" ]; then
+                      kubectl patch deployment/plex -n plex -p "{\"spec\": {\"template\": {\"metadata\": {\"annotations\": {\"sha256\": \"$LATEST_SHA\"}}}}}"
+                      RET=$?
+                      if [ $RET -ne 0 ]; then
+                          echo "Failed to set latest image SHA annotation"
+                          exit 1
+                      fi
+                      # clear cache
+                      # https://ntdln.com/2017/10/19/clearing-plex-caches/
+                      echo "Clearing cache"
+                      rm -Rf /cache/*
+                      RET=$?
+                      if [ $RET -ne 0 ]; then
+                          echo "Failed to clear cache"
+                          exit 1
+                      fi
                   fi
               else
                   echo "Failed to retrieve latest tag"
@@ -118,3 +135,10 @@ spec:
               echo 'Latest image SHA annotation set'
 
               exit 0
+            volumeMounts:
+            - name: cache
+              mountPath: /cache
+          volumes:
+          - name: cache
+            persistentVolumeClaim:
+              claimName: cache

@@ -54,3 +54,17 @@ spec:
   - ReadOnlyMany
   volumeName: plex-films
   storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cache
+  namespace: plex
+spec:
+  resources:
+    requests:
+      storage: 10Gi
+  accessModes:
+  - ReadWriteOnce
+  volumeName: plex-cache
+  storageClassName: ""
