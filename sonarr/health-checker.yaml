@@ -40,8 +40,12 @@ spec:
 
               unrecognised_error = False
               for error in json_data:
-                  if error["source"] == 'DownloadClientCheck' and error["message"] == 'No download client is available':
+                  source = error["source"]
+                  message = error["message"]
+                  if source == 'DownloadClientCheck' and message == 'No download client is available':
                       continue
+                  if source == 'DownloadClientCheck' and message == 'Unable to communicate with Whatbox. Unable to connect to rTorrent, please check your settings':
+                    continue
                   print(error)
                   unrecognised_error = True
 
