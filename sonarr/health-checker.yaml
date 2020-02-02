@@ -45,7 +45,9 @@ spec:
                   if source == 'DownloadClientCheck' and message == 'No download client is available':
                       continue
                   if source == 'DownloadClientCheck' and message == 'Unable to communicate with Whatbox. Unable to connect to rTorrent, please check your settings':
-                    continue
+                      continue
+                  if source == "ImportMechanismCheck" and message == "Enable Completed Download Handling":
+                      continue
                   print(error)
                   unrecognised_error = True
 
