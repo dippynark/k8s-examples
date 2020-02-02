@@ -79,9 +79,9 @@ spec:
                   r.set('sonarr:last.successful.incomplete.season.check.timestamp', datetime.timestamp(datetime.now()))
 
               last = datetime.fromtimestamp(float(timestamp))
-              delta = timedelta(days=3)
+              delta = timedelta(days=1)
               if last < datetime.now() - delta:
-                  print("ERROR: there have been missing episodes for three days: %s" % missing_episodes_title)
+                  print("ERROR: there have been missing episodes for a day: %s" % missing_episodes_title)
                   sys.exit(1)
               EOF
               python incomplete-season-checker.py
