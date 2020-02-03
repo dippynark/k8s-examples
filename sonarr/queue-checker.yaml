@@ -25,44 +25,81 @@ spec:
             - bash
             - -c
             - |
-              set -euo pipefail
+                set -euo pipefail
 
-              cat > queue-checker.py <<EOF
-              import requests
-              import json
-              import os
-              import sys
+                cat > queue-checker.py <<EOF
+                import requests
+                import json
+                import os
+                import sys
 
-              url = "http://sonarr.sonarr.svc.cluster.local/api/v3/queue"
-              r = requests.get(url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']})
-              r.raise_for_status()
-              json_data = json.loads(r.text)
+                importing = False
+                trigger_manual_import = False
+                unknown_warning = False
+                for page in range(1, 10):
 
-              unknown_warning = False
-              for record in json_data["records"]:
-                  if record["trackedDownloadStatus"] != "ok":
-                      known_reason = False
-                      unknown_reason = False
-                      for statusMessage in record["statusMessages"]:
-                          for message in statusMessage["messages"]:
-                              if message == 'Episode has a TBA title and recently aired':
-                                  known_reason = True
-                                  continue
-                              if message == 'Has the same filesize as existing file':
-                                  known_reason = True
-                                  continue
-                              if message.startswith("Episode file already imported at "):
-                                  known_reason = True
-                                  continue
-                              unknown_reason = True
-                              print("%s: %s" % (statusMessage["title"], message))
-                      if unknown_reason or not known_reason:
-                          unknown_warning = True
+                    url = "http://sonarr.sonarr.svc.cluster.local/api/v3/queue?pageSize=100&page=%s" % str(page)
+                    r = requests.get(url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']})
+                    r.raise_for_status()
+                    json_data = json.loads(r.text)
 
-              if unknown_warning:
-                  print("ERROR: there are unknown warnings")
-                  sys.exit(1)
+                    if page != json_data["page"]:
+                        # we have cycled through all the items
+                        break
 
-              print("Queue Ok - Nothing to do")
-              EOF
-              python queue-checker.py
+                    for record in json_data["records"]:
+                        if record["trackedDownloadState"] == "importing":
+                            print('Importing %s' % record["title"])
+                            importing = True
+                        if record["trackedDownloadStatus"] != "ok":
+                            known_reason = False
+                            unknown_reason = False
+                            for statusMessage in record["statusMessages"]:
+                                for message in statusMessage["messages"]:
+                                    if message == 'Episode has a TBA title and recently aired':
+                                        known_reason = True
+                                        continue
+                                    if message == 'Has the same filesize as existing file':
+                                        known_reason = True
+                                        continue
+                                    if message == "Not an upgrade for existing episode file(s)":
+                                        known_reason = True
+                                        continue
+                                    if message == "Single episode file contains all episodes in seasons":
+                                        known_reason = True
+                                        continue
+                                    if message == "Failed to import episode":
+                                        trigger_manual_import = True
+                                        known_reason = True
+                                        continue
+                                    if message.startswith("Episode file already imported at "):
+                                        known_reason = True
+                                        continue
+                                    unknown_reason = True
+                                    print("%s: %s" % (statusMessage["title"], message))
+                            if unknown_reason or not known_reason:
+                                unknown_warning = True
+                else:
+                    print("ERROR: did not page through all items")
+                    sys.exit(1)
+
+                if not importing and trigger_manual_import:
+                    # curl -X POST http://sonarr.sonarr.svc.cluster.local/api/v3/manualimport
+
+                    print("Manually importing")
+                    # doesn't look like this is needed in v3
+                    sys.exit(0)
+
+                    url = "http://sonarr.sonarr.svc.cluster.local/api/v3/manualimport"
+                    r = requests.post(url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']})
+                    r.raise_for_status()
+                    print("Content:\n%s\n" % str(r.content))
+                    print("Text:\n%s\n" % str(r.text))
+
+                if unknown_warning:
+                    print("ERROR: there are unknown warnings")
+                    sys.exit(1)
+
+                print("Queue Ok - Nothing to do")
+                EOF
+                python queue-checker.py
