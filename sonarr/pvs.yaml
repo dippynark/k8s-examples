@@ -29,7 +29,7 @@ spec:
   accessModes:
   - ReadWriteOnce
   local:
-    path: /mnt/google-drive/Media/TV Shows
+    path: /mnt/google-drive/media/TV Shows
   nodeAffinity:
     required:
       nodeSelectorTerms:
