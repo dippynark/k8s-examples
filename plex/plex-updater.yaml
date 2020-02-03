@@ -43,6 +43,7 @@ spec:
       backoffLimit: 1
       template:
         spec:
+          hostNetwork: true
           serviceAccount: plex-updater
           restartPolicy: Never
           containers:
@@ -92,6 +93,11 @@ spec:
                   # If all streams are paused, we consider the server to not be active.
                   mediacount="$(awk -F'"' '/<MediaContainer size="[0-9]+">/ {count+=$2}; /<Player[^>]* state="paused"/ {count--}; END {print count}' <<< "${DATA}")"
                   printf '%s\nActivity check reports a count of %i based on the data above\n\n' "$DATA" "$mediacount" >&2
+                  [ $mediacount -gt 5 ] && /opt/bin/rclone rc core/bwlimit rate=1k || /opt/bin/rclone rc core/bwlimit rate=off
+                  if [ $? -ne 0 ]; then
+                      echo "Failed to set bandwidth limit"
+                      exit 1
+                  fi
                   [ $mediacount -gt 0 ] && exit 0
               else
                   echo "Failed to retrieve Plex sessions"
@@ -138,7 +144,13 @@ spec:
             volumeMounts:
             - name: cache
               mountPath: /cache
+            - name: rclone
+              mountPath: /opt/bin/rclone
           volumes:
           - name: cache
             persistentVolumeClaim:
               claimName: cache
+          - name: rclone
+            hostPath:
+              path: /opt/bin/rclone
+              type: File
