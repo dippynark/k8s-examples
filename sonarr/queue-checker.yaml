@@ -33,8 +33,6 @@ spec:
                 import os
                 import sys
 
-                importing = False
-                trigger_manual_import = False
                 unknown_warning = False
                 for page in range(1, 10):
 
@@ -48,9 +46,6 @@ spec:
                         break
 
                     for record in json_data["records"]:
-                        if record["trackedDownloadState"] == "importing":
-                            print('Importing %s' % record["title"])
-                            importing = True
                         if record["trackedDownloadStatus"] != "ok":
                             known_reason = False
                             unknown_reason = False
@@ -69,7 +64,6 @@ spec:
                                         known_reason = True
                                         continue
                                     if message == "Failed to import episode":
-                                        trigger_manual_import = True
                                         known_reason = True
                                         continue
                                     if message.startswith("Episode file already imported at "):
@@ -82,19 +76,6 @@ spec:
                 else:
                     print("ERROR: did not page through all items")
                     sys.exit(1)
-
-                if not importing and trigger_manual_import:
-                    # curl -X POST http://sonarr.sonarr.svc.cluster.local/api/v3/manualimport
-
-                    print("Manually importing")
-                    # doesn't look like this is needed in v3
-                    sys.exit(0)
-
-                    url = "http://sonarr.sonarr.svc.cluster.local/api/v3/manualimport"
-                    r = requests.post(url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']})
-                    r.raise_for_status()
-                    print("Content:\n%s\n" % str(r.content))
-                    print("Text:\n%s\n" % str(r.text))
 
                 if unknown_warning:
                     print("ERROR: there are unknown warnings")
