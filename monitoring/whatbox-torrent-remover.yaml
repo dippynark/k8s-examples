@@ -98,7 +98,7 @@ spec:
               EOF
               python whatbox-torrent-orphan-remover.py
 
-              cat > whatbox-torrent-eraser.py <<EOF
+              cat > whatbox-torrent-eraser.py <<'EOF'
               import os
               import sys
               import requests
@@ -159,9 +159,19 @@ spec:
                   total_removable_size += torrent[5]
 
               # create list of torrents to erase
+              # also determine whether the ratio of removable torrents to the total will be less than a given ratio
+              # this ensures we don't delete too many torrents by accident or necessity
+              minimum_ratio = 0.4
+              ratio = 0
+              ratio_will_be_below_minimum = True
               torrents_to_erase = []
               total_size_to_erase = 0
               for torrent in torrents:
+                  ratio = (total_removable_size - total_size_to_erase)/(total_size - total_size_to_erase)
+                  if ratio < minimum_ratio:
+                      ratio_will_be_below_minimum = True
+                      break
+                  ratio_will_be_below_minimum = False
                   if disk_space_used - total_size_to_erase > 0.95 * disk_space_allotted:
                       name = torrent[0]
                       hash = torrent[1]
@@ -179,96 +189,113 @@ spec:
               else:
                   print("Disk space usage less than 95% - nothing to remove")
 
-              sonarr_url = "http://sonarr.sonarr.svc.cluster.local/api/v3/downloadclient"
-              r = requests.get(sonarr_url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']})
-              r.raise_for_status()
-              sonarr_clients = json.loads(r.text)
+              if not ratio_will_be_below_minimum and disk_space_used/disk_space_allotted <= 0.95:
+                  # start all incomplete torrents
+                  r = server.d.multicall.filtered("",
+                    "main",
+                    "and=\"d.incomplete=,cat=1\",\"or=\\\"equal=d.custom1=,cat=LukeBooks\\\",\\\"equal=d.custom1=,cat=LukeFilms\\\",\\\"equal=d.custom1=,cat=LukeMusic\\\",\\\"equal=d.custom1=,cat=LukeTVShows\\\",\\\"equal=d.custom1=,cat=LukeApplications\\\",\\\"equal=d.custom1=,cat=LukeGames\\\"\"",
+                    "d.start=")
 
-              radarr_url = "http://radarr.radarr.svc.cluster.local/api/downloadclient"
-              r = requests.get(radarr_url, headers={"X-Api-Key": os.environ['RADARR_API_KEY']})
-              r.raise_for_status()
-              radarr_clients = json.loads(r.text)
+              stopping_torrents_failed = False
+              if ratio_will_be_below_minimum:
+                  try:
+                      # stop all incomplete torrents
+                      server.d.multicall.filtered("",
+                        "main",
+                        "and=\"d.incomplete=,cat=1\",\"or=\\\"equal=d.custom1=,cat=LukeBooks\\\",\\\"equal=d.custom1=,cat=LukeFilms\\\",\\\"equal=d.custom1=,cat=LukeMusic\\\",\\\"equal=d.custom1=,cat=LukeTVShows\\\",\\\"equal=d.custom1=,cat=LukeApplications\\\",\\\"equal=d.custom1=,cat=LukeGames\\\"\"",
+                        "d.stop=")
+                  except Exception:
+                      stopping_torrents_failed = True
+                      traceback.print_exc()
 
-              lidarr_url = "http://lidarr.lidarr.svc.cluster.local/api/v1/downloadclient"
-              r = requests.get(lidarr_url, headers={"X-Api-Key": os.environ['LIDARR_API_KEY']})
-              r.raise_for_status()
-              lidarr_clients = json.loads(r.text)
+              # enable/disable torrent clients
+              download_client_update_failed = False
+              try:
+                  sonarr_url = "http://sonarr.sonarr.svc.cluster.local/api/v3/downloadclient"
+                  r = requests.get(sonarr_url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']})
+                  r.raise_for_status()
+                  sonarr_clients = json.loads(r.text)
 
-              # check ratio of removable to total
-              ratio = total_removable_size / total_size
-              if ratio < 0.5:
-                  print("Less than 50% of torrent data is removable - disabling torrent clients")
-
-                  # disable torrent clients
-                  disable_failed = False
-                  for client in sonarr_clients:
-                      if client["enable"] == True:
-                          try:
+                  if ratio_will_be_below_minimum:
+                      for client in sonarr_clients:
+                          if client["enable"] == True:
                               client["enable"] = False
                               r = requests.put(sonarr_url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']}, data=json.dumps(client))
                               r.raise_for_status()
-                          except Exception:
-                              disable_failed = True
-                              traceback.print_exc()
-                  for client in radarr_clients:
-                      if client["enable"] == True:
-                          try:
+                  else:
+                      for client in sonarr_clients:
+                          if client["enable"] == False:
+                              client["enable"] = True
+                              r = requests.put(sonarr_url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']}, data=json.dumps(client))
+                              r.raise_for_status()
+              except Exception:
+                  download_client_update_failed = True
+                  traceback.print_exc()
+
+              try:
+                  radarr_url = "http://radarr.radarr.svc.cluster.local/api/downloadclient"
+                  r = requests.get(radarr_url, headers={"X-Api-Key": os.environ['RADARR_API_KEY']})
+                  r.raise_for_status()
+                  radarr_clients = json.loads(r.text)
+
+                  if ratio_will_be_below_minimum:
+                      for client in radarr_clients:
+                          if client["enable"] == True:
                               client["enable"] = False
                               r = requests.put(radarr_url, headers={"X-Api-Key": os.environ['RADARR_API_KEY']}, data=json.dumps(client))
                               r.raise_for_status()
-                          except Exception:
-                              disable_failed = True
-                              traceback.print_exc()
-                  for client in lidarr_clients:
-                      if client["enable"] == True:
-                          try:
+                  else:
+                      for client in radarr_clients:
+                          if client["enable"] == False:
+                              client["enable"] = True
+                              r = requests.put(radarr_url, headers={"X-Api-Key": os.environ['RADARR_API_KEY']}, data=json.dumps(client))
+                              r.raise_for_status()
+              except Exception:
+                  download_client_update_failed = True
+                  traceback.print_exc()
+
+              try:
+                  lidarr_url = "http://lidarr.lidarr.svc.cluster.local/api/v1/downloadclient"
+                  r = requests.get(lidarr_url, headers={"X-Api-Key": os.environ['LIDARR_API_KEY']})
+                  r.raise_for_status()
+                  lidarr_clients = json.loads(r.text)
+
+                  if ratio_will_be_below_minimum:
+                      for client in lidarr_clients:
+                          if client["enable"] == True:
                               client["enable"] = False
                               r = requests.put(lidarr_url, headers={"X-Api-Key": os.environ['LIDARR_API_KEY']}, data=json.dumps(client))
                               r.raise_for_status()
-                          except Exception:
-                              disable_failed = True
-                              traceback.print_exc()
-                  if disable_failed:
+                  else:
+                      for client in lidarr_clients:
+                          if client["enable"] == False:
+                              client["enable"] = True
+                              r = requests.put(lidarr_url, headers={"X-Api-Key": os.environ['LIDARR_API_KEY']}, data=json.dumps(client))
+                              r.raise_for_status()
+              except Exception:
+                  download_client_update_failed = True
+                  traceback.print_exc()
+
+              if ratio_will_be_below_minimum:
+                  # we cannot delete any more torrents but we need more space
+                  print("Less than {:.0%} ({:.1%}) of torrent data is removable - disabling enabled torrent clients".format(minimum_ratio, ratio))
+
+                  if stopping_torrents_failed:
+                      print("ERROR: stopping torrents failed")
+                  if download_client_update_failed:
                       print("ERROR: disabling download clients failed")
                   sys.exit(1)
               else:
-                  enable_failed = False
-                  for client in sonarr_clients:
-                      if client["enable"] == False:
-                          try:
-                              client["enable"] = True
-                              r = requests.put(sonarr_url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']}, data=json.dumps(client))
-                              r.raise_for_status()
-                          except Exception:
-                              enable_failed = True
-                              traceback.print_exc()
-                  for client in radarr_clients:
-                      if client["enable"] == False:
-                          try:
-                              client["enable"] = True
-                              r = requests.put(radarr_url, headers={"X-Api-Key": os.environ['RADARR_API_KEY']}, data=json.dumps(client))
-                              r.raise_for_status()
-                          except Exception:
-                              enable_failed = True
-                              traceback.print_exc()
-                  for client in lidarr_clients:
-                      if client["enable"] == False:
-                          try:
-                              client["enable"] = True
-                              r = requests.put(lidarr_url, headers={"X-Api-Key": os.environ['LIDARR_API_KEY']}, data=json.dumps(client))
-                              r.raise_for_status()
-                          except Exception:
-                              enable_failed = True
-                              traceback.print_exc()
-                  if enable_failed:
+                  print("More than {:.0%} ({:.1%}) of torrent data is removable - enabling disabled torrent clients".format(minimum_ratio, ratio))
+                  if download_client_update_failed:
                       print("ERROR: enabling download clients failed")
                       sys.exit(1)
               EOF
               python whatbox-torrent-eraser.py
             volumeMounts:
-              - name: whatbox-luke
-                mountPath: /mnt/whatbox/luke
-          volumes:
             - name: whatbox-luke
-              persistentVolumeClaim:
-                claimName: whatbox-luke
+              mountPath: /mnt/whatbox/luke
+          volumes:
+          - name: whatbox-luke
+            persistentVolumeClaim:
+              claimName: whatbox-luke
