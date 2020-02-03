@@ -75,16 +75,14 @@ spec:
       annotations:
         message: Container {{ $labels.container }} in Pod {{ $labels.exported_namespace }}/{{ $labels.exported_pod }} changing it's readiness status regularly for 10m
       expr: |
-        changes(kube_pod_container_status_ready[5m]) > 0
-      for: 10m
+        changes(kube_pod_container_status_ready[15m]) > 2
       labels:
         severity: critical
     - alert: KubeContainerCrashLooping
       annotations:
         message: Container {{ $labels.container }} in Pod {{ $labels.exported_namespace }}/{{ $labels.exported_pod }} has restarted regularly for 30m
       expr: |
-        rate(kube_pod_container_status_restarts_total{job="kube-state-metrics"}[15m]) > 0
-      for: 30m
+        delta(kube_pod_container_status_restarts_total{job="kube-state-metrics"}[30m]) > 1
       labels:
         severity: critical
     - alert: KubeCronJobLastJobFailedAfterSuccess
@@ -94,6 +92,7 @@ spec:
         (max(kube_job_status_start_time * on(job_name, exported_namespace) group_left(owner_name) ((kube_job_status_succeeded/kube_job_status_succeeded == 1) + on(job_name, exported_namespace) group_left(owner_name) (0 * kube_job_owner{owner_kind="CronJob", owner_is_controller="true"}))) by (owner_name, exported_namespace))
         < bool
         (max(kube_job_status_start_time * on(job_name, exported_namespace) group_left(owner_name) ((kube_job_status_failed/kube_job_status_failed == 1) + on(job_name, exported_namespace) group_left(owner_name) (0 * kube_job_owner{owner_kind="CronJob", owner_is_controller="true"}))) by (owner_name, exported_namespace)) == 1
+      # allow cronjob job to fail once before retrying
       for: 1m
       labels:
         severity: critical
