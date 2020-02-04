@@ -149,6 +149,9 @@ spec:
                               if tracker_failure_reason == "The tracker is down. We\'re working on fixing the problem":
                                   continue
 
+                              if tracker_failure_reason == "Tracker load too high: try again in a few minutes.":
+                                  continue
+
                               if tracker_failure_reason == 'Unregistered torrent':
                                   print("Erasing %s: %s" % (name, tracker_failure_reason))
                                   server.d.erase(hash)
