@@ -71,7 +71,7 @@ spec:
 
               echo 'Retrieving a X-Plex-Token using Plex login/password...'
 
-              wget -qO -t3 /tmp/plex_sign_in --http-user="$PLEX_LOGIN" --http-password="$PLEX_PASSWORD" 'https://plex.tv/users/sign_in.xml' \
+              wget -t3 -qO /tmp/plex_sign_in --http-user="$PLEX_LOGIN" --http-password="$PLEX_PASSWORD" 'https://plex.tv/users/sign_in.xml' \
                   --post-data='' \
                   --header='X-Plex-Client-Identifier: PlexMediaServerUpdater'
               RET=$?
