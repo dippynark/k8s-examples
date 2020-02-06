@@ -75,7 +75,11 @@ spec:
                   --post-data='' \
                   --header='X-Plex-Client-Identifier: PlexMediaServerUpdater'
               RET=$?
-              if [ $RET -eq 4 ] || [ $RET -eq 8 ]; then
+              if [ $RET -eq 8 ]; then
+                  echo "plex.tv issued an error response"
+                  exit 0
+              fi
+              if [ $RET -eq 4 ]; then
                   ping -c 1 google.com
                   if [ $? -eq 0 ]; then
                       echo "plex.tv might be down!"
