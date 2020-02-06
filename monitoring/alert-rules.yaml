@@ -82,7 +82,7 @@ spec:
       annotations:
         message: Container {{ $labels.container }} in Pod {{ $labels.exported_namespace }}/{{ $labels.exported_pod }} has restarted regularly for 30m
       expr: |
-        delta(kube_pod_container_status_restarts_total{job="kube-state-metrics"}[30m]) > 1
+        round(increase(kube_pod_container_status_restarts_total{job="kube-state-metrics"}[30m]))>1
       labels:
         severity: critical
     - alert: KubeCronJobLastJobFailedAfterSuccess
