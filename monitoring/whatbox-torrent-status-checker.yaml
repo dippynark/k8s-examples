@@ -139,6 +139,8 @@ spec:
                               continue
                           if tracker_message == "Server returned nothing (no headers, no data)":
                               continue
+                          if tracker_message == "Could not parse bencoded data: 500 Internal Server Error    500 Internal Server Error  nginx/1.14.0 (Ubuntu)":
+                              continue
 
                           if tracker_message.startswith('Failure reason "') and tracker_message.endswith('"'):
                               tracker_failure_reason = tracker_message[len('Failure reason "'):len(tracker_message) - len('"')]
