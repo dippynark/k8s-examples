@@ -49,6 +49,10 @@ spec:
             port: 3579
           timeoutSeconds: 10
           initialDelaySeconds: 60
+        resources:
+          requests:
+            cpu: 50m
+            memory: 150Mi
         volumeMounts:
         - name: config
           mountPath: /config

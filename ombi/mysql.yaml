@@ -57,6 +57,10 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 2
           timeoutSeconds: 1
+        resources:
+          requests:
+            cpu: 50m
+            memory: 500Mi
   volumeClaimTemplates:
   - metadata:
       name: data
