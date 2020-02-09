@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: calibre-web
-        image: linuxserver/calibre-web
+        image: linuxserver/calibre-web:0.6.5-ls47
         ports:
         - containerPort: 8083
         env:
@@ -50,13 +50,19 @@ spec:
           httpGet:
             path: /login
             port: 8083
-          timeoutSeconds: 3
+          timeoutSeconds: 10
+          failureThreshold: 5
         livenessProbe:
           httpGet:
             path: /login
             port: 8083
-          initialDelaySeconds: 60
+          initialDelaySeconds: 120
+          failureThreshold: 5
           timeoutSeconds: 10
+        resources:
+          requests:
+            cpu: 50m
+            memory: 100Mi
       volumes:
       - name: books
         hostPath:
