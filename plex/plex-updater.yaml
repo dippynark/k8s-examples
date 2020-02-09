@@ -38,6 +38,7 @@ metadata:
 spec:
   schedule: "*/10 * * * *"
   successfulJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       backoffLimit: 1
