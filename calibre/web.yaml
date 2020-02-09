@@ -65,8 +65,8 @@ spec:
             memory: 100Mi
       volumes:
       - name: books
-        hostPath:
-          path: /mnt/data/media/Books
+        persistentVolumeClaim:
+          claimName: web-books
       - name: config
         persistentVolumeClaim:
           claimName: web-config
