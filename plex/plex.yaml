@@ -11,7 +11,7 @@ spec:
   selector:
     app: plex
   ports:
-  - name: http
+  - name: https
     protocol: TCP
     port: 32400
     nodePort: 32400
@@ -48,23 +48,25 @@ spec:
             cpu: 0.2
             memory: 1Gi
         readinessProbe:
-          exec:
-            command:
-            - /healthcheck.sh
+          httpGet:
+            scheme: HTTPS
+            path: /identity
+            port: 32400
           failureThreshold: 5
           timeoutSeconds: 15
           periodSeconds: 15
         livenessProbe:
-          exec:
-            command:
-            - /healthcheck.sh
+          httpGet:
+            scheme: HTTPS
+            path: /identity
+            port: 32400
           initialDelaySeconds: 120
           failureThreshold: 5
           timeoutSeconds: 15
           periodSeconds: 15
         ports:
         - containerPort: 32400
-          name: http
+          name: https
         env:
         - name: TZ
           value: Europe/London
@@ -102,6 +104,7 @@ spec:
         persistentVolumeClaim:
           claimName: config
       - name: transcode
-        emptyDir: {}
+        emptyDir:
+          medium: Memory
       - name: tmp
         emptyDir: {}
