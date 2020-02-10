@@ -34,11 +34,11 @@ spec:
                 import os
                 import sys
 
+                url = "http://sonarr.sonarr.svc.cluster.local/api/v3/queue"
                 unknown_warning = False
                 for page in range(1, 10):
 
-                    url = "http://sonarr.sonarr.svc.cluster.local/api/v3/queue?pageSize=100&page=%s" % str(page)
-                    r = requests.get(url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']})
+                    r = requests.get(url+"?pageSize=100&page=%s" % str(page), headers={"X-Api-Key": os.environ['SONARR_API_KEY']})
                     r.raise_for_status()
                     json_data = json.loads(r.text)
 
@@ -46,6 +46,7 @@ spec:
                         # we have cycled through all the items
                         break
 
+                    record_ids_to_delete = []
                     for record in json_data["records"]:
                         if record["trackedDownloadStatus"] != "ok":
                             known_reason = False
@@ -61,14 +62,19 @@ spec:
                                     if message == "Not an upgrade for existing episode file(s)":
                                         known_reason = True
                                         continue
-                                    if message == "Single episode file contains all episodes in seasons":
-                                        known_reason = True
-                                        continue
                                     if message == "Failed to import episode":
                                         known_reason = True
                                         continue
                                     if message.startswith("Episode file already imported at "):
                                         known_reason = True
+                                        continue
+                                    if message == "Sample":
+                                        if record['id'] not in record_ids_to_delete:
+                                            record_ids_to_delete.append(record['id'])
+                                        continue
+                                    if message == "Single episode file contains all episodes in seasons":
+                                        if record['id'] not in record_ids_to_delete:
+                                            record_ids_to_delete.append(record['id'])
                                         continue
                                     unknown_reason = True
                                     print("%s: %s" % (statusMessage["title"], message))
@@ -77,6 +83,11 @@ spec:
                 else:
                     print("ERROR: did not page through all items")
                     sys.exit(1)
+
+                for record_id in record_ids_to_delete:
+                    print("Deleting %s" % str(record_id))
+                    r = requests.delete(url+"?blacklist=true&removeFromClient=false&id=%s" % str(record["id"]), headers={"X-Api-Key": os.environ['SONARR_API_KEY']})
+                    r.raise_for_status()
 
                 if unknown_warning:
                     print("ERROR: there are unknown warnings")

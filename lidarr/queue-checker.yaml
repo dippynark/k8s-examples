@@ -69,7 +69,7 @@ spec:
                 for record_id in record_ids_to_delete:
                     print("Deleting %s" % str(record_id))
                     url = "http://lidarr.lidarr.svc.cluster.local/api/v1/queue"
-                    r = requests.delete(url+"/"+str(record_id)+"?blacklist=true", headers={"X-Api-Key": os.environ['X_API_KEY']})
+                    r = requests.delete(url+"/"+str(record_id)+"?blacklist=true&skipredownload=false", headers={"X-Api-Key": os.environ['X_API_KEY']})
                     r.raise_for_status()
 
                 if unknown_warning:
