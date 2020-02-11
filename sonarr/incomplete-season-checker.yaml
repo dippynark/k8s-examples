@@ -47,7 +47,7 @@ spec:
               json_data = json.loads(r.text)
 
               missing_episodes = False
-              missing_episodes_title = ""
+              missing_episodes_title_season = ""
               for series in json_data:
                   for season in series["seasons"]:
                       # ignore unmonitored and specials
@@ -56,8 +56,7 @@ spec:
                       statistics = season["statistics"]
                       if "percentOfEpisodes" in statistics and statistics["percentOfEpisodes"] != 0 and statistics["percentOfEpisodes"] != 100:
                           missing_episodes = True
-                          missing_episodes_title = "%s-%s" % (series["title"], str(season["seasonNumber"]))
-                          print("%s: Season %s" % (series["title"], season["seasonNumber"]))
+                          missing_episodes_title_season = "%s: Season %s" % (series["title"], str(season["seasonNumber"]))
                           break
                   if missing_episodes:
                       break
@@ -72,17 +71,21 @@ spec:
                   sys.exit(0)
 
               # we have missing episodes and a timestamp of the last successful check
+              last = datetime.fromtimestamp(float(timestamp))
 
               # if the title has changed, reset timer
-              current_title = r.get('sonarr:last.failed.incomplete.season.check.title')
-              if current_title == None or current_title != missing_episodes_title:
-                  r.set('sonarr:last.failed.incomplete.season.check.title', missing_episodes_title)
-                  r.set('sonarr:last.successful.incomplete.season.check.timestamp', datetime.timestamp(datetime.now()))
+              current_title = r.get('sonarr:last.failed.incomplete.season.check.title').decode("utf-8")
+              if current_title == None or current_title != missing_episodes_title_season:
+                  r.set('sonarr:last.failed.incomplete.season.check.title', missing_episodes_title_season)
+                  last = datetime.now()
+                  r.set('sonarr:last.successful.incomplete.season.check.timestamp', datetime.timestamp(last))
+
+              print("%s missing since %s" % (missing_episodes_title_season, last.strftime("%m/%d/%Y %H:%M:%S")))
 
               last = datetime.fromtimestamp(float(timestamp))
               delta = timedelta(days=1)
               if last < datetime.now() - delta:
-                  print("ERROR: there have been missing episodes for a day: %s" % missing_episodes_title)
+                  print("ERROR: there have been missing episodes for a day")
                   sys.exit(1)
               EOF
               python incomplete-season-checker.py
