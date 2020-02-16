@@ -58,8 +58,6 @@ spec:
     metadata:
       labels:
         k8s-app: node-exporter
-      annotations:
-        scheduler.alpha.kubernetes.io/critical-pod: ''
     spec:
       containers:
         - name: prometheus-node-exporter
@@ -92,8 +90,6 @@ spec:
               name: root
               readOnly: true
           resources:
-            limits:
-              memory: 50Mi
             requests:
               cpu: 100m
               memory: 50Mi
