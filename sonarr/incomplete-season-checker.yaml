@@ -83,9 +83,9 @@ spec:
               print("%s missing since %s" % (missing_episodes_title_season, last.strftime("%m/%d/%Y %H:%M:%S")))
 
               last = datetime.fromtimestamp(float(timestamp))
-              delta = timedelta(days=1)
+              delta = timedelta(days=7)
               if last < datetime.now() - delta:
-                  print("ERROR: there have been missing episodes for a day")
+                  print("ERROR: there have been missing episodes for 7 days")
                   sys.exit(1)
               EOF
               python incomplete-season-checker.py
