@@ -180,6 +180,11 @@ spec:
                                   server.d.erase(hash)
                                   continue
 
+                              if tracker_failure_reason == "Unregistered torrent: Trump":
+                                  print("Erasing %s: %s" % (name, tracker_failure_reason))
+                                  server.d.erase(hash)
+                                  continue
+
                               if tracker_failure_reason.startswith('Unregistered torrent: Trump: ') or tracker_failure_reason.startswith('Unregistered torrent: Dupe: '):
                                   trump = tracker_failure_reason[len('Unregistered torrent: Trump: '):]
                                   if tracker_failure_reason.startswith('Unregistered torrent: Dupe: '):
