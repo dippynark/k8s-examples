@@ -43,6 +43,8 @@ spec:
               for error in json_data:
                   if error["message"] == 'No download client is available':
                       continue
+                  if error["message"] == 'Unable to communicate with Whatbox. Gateway Time-out':
+                      continue
                   print(error)
                   unrecognised_error = True
 

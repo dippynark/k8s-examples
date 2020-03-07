@@ -43,6 +43,12 @@ spec:
               for error in json_data:
                   if error["source"] == 'DownloadClientCheck' and error["message"] == 'No download client is available':
                       continue
+                  if error["source"] == 'IndexerStatusCheck' and error["message"] == 'All indexers are unavailable due to failures':
+                     continue
+                  if error["source"] == 'IndexerSearchCheck' and error["message"] == 'All search-capable indexers are temporarily unavailable due to recent indexer errors':
+                      continue
+                  if error["source"] == 'IndexerRssCheck' and error["message"] == 'All rss-capable indexers are temporarily unavailable due to recent indexer errors':
+                      continue
                   print(error)
                   unrecognised_error = True
 
