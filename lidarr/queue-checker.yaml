@@ -56,7 +56,7 @@ spec:
                                     if message == "Failed to import track, Destination already exists." or message == "Has the same filesize as existing file":
                                         known_reason = True
                                         continue
-                                    if message.startswith("Couldn't find similar album for ") or message.startswith("Worst track match: ") or message.startswith("Album match is not close enough: ") or message == "Has unmatched tracks" or message == "Has fewer tracks than existing release" or message == "Has missing tracks":
+                                    if message.startswith("No files found are eligible for import in ") or message.startswith("Couldn't find similar album for ") or message.startswith("Worst track match: ") or message.startswith("Album match is not close enough: ") or message == "Has unmatched tracks" or message == "Has fewer tracks than existing release" or message == "Has missing tracks":
                                         known_reason = True
                                         if record['id'] not in record_ids_to_delete:
                                             record_ids_to_delete.append(record['id'])
