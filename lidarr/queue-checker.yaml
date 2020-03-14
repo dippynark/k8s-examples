@@ -35,7 +35,7 @@ spec:
                 import requests
 
                 unknown_warning = False
-                for page in range(1, 10):
+                for page in range(1, 1000):
 
                     url = "http://lidarr.lidarr.svc.cluster.local/api/v1/queue?pageSize=100&page=%s" % str(page)
                     r = requests.get(url, headers={"X-Api-Key": os.environ['X_API_KEY']})
