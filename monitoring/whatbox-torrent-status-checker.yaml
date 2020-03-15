@@ -190,6 +190,11 @@ spec:
                                   server.d.erase(hash)
                                   continue
 
+                              if tracker_failure_reason == "Unregistered torrent: Bad Tags":
+                                  print("Erasing %s: %s" % (name, tracker_failure_reason))
+                                  server.d.erase(hash)
+                                  continue
+
                               if tracker_failure_reason == "Access denied, leeching forbidden":
                                   continue
 
