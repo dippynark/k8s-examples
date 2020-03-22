@@ -65,6 +65,9 @@ spec:
                                     if message == "Failed to import episode":
                                         known_reason = True
                                         continue
+                                    if message == "Invalid season or episode":
+                                        known_reason = True
+                                        continue
                                     if message.startswith("Episode file already imported at "):
                                         known_reason = True
                                         continue
