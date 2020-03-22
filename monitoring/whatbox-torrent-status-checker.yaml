@@ -201,9 +201,9 @@ spec:
                                   continue
 
                               if tracker_failure_reason == "Unregistered torrent: Specifically Banned: preretail, we'll keep this in biohazard containement for now":
-                                print("Erasing %s: %s" % (name, tracker_failure_reason))
-                                server.d.erase(hash)
-                                continue
+                                  print("Erasing %s: %s" % (name, tracker_failure_reason))
+                                  server.d.erase(hash)
+                                  continue
 
                               if tracker_failure_reason.startswith('Unregistered torrent: Problem w/ File: '):
                                 print("Erasing %s: %s" % (name, tracker_failure_reason))
