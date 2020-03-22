@@ -21,6 +21,7 @@ metadata:
   labels:
     app: mysql
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: mysql
@@ -40,10 +41,6 @@ spec:
         ports:
         - name: mysql
           containerPort: 3306
-        volumeMounts:
-        - name: data
-          mountPath: /var/lib/mysql
-          subPath: mysql
         livenessProbe:
           exec:
             command: ["mysqladmin", "ping"]
@@ -61,11 +58,11 @@ spec:
           requests:
             cpu: 50m
             memory: 500Mi
-  volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      resources:
-        requests:
-          storage: 10Gi
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/mysql
+          subPath: mysql
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: mysql
