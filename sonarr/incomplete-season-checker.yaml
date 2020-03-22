@@ -77,7 +77,7 @@ spec:
                   last = datetime.now()
                   r.set('sonarr:last.successful.incomplete.season.check.timestamp', datetime.timestamp(last))
 
-              print("%s missing since %s" % (current_title, last.strftime("%m/%d/%Y %H:%M:%S")))
+              print("%s\nMissing since %s" % (current_title, last.strftime("%m/%d/%Y %H:%M:%S")))
 
               last = datetime.fromtimestamp(float(timestamp))
               delta = timedelta(days=5)
