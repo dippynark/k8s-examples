@@ -53,6 +53,8 @@ spec:
                             unknown_reason = False
                             for statusMessage in record["statusMessages"]:
                                 for message in statusMessage["messages"]:
+                                    # A queue entry could have mutliple errors
+                                    # So only delete if it's blocking something else
                                     if message == 'Episode has a TBA title and recently aired':
                                         known_reason = True
                                         continue
