@@ -79,7 +79,6 @@ spec:
 
               print("%s\nMissing since %s" % (current_title, last.strftime("%m/%d/%Y %H:%M:%S")))
 
-              last = datetime.fromtimestamp(float(timestamp))
               delta = timedelta(days=5)
               if last < datetime.now() - delta:
                   print("ERROR: there have been missing episodes for 5 days")
