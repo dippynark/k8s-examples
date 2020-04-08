@@ -53,7 +53,7 @@ spec:
                             unknown_reason = False
                             for statusMessage in record["statusMessages"]:
                                 for message in statusMessage["messages"]:
-                                    if message == "Failed to import track, Destination already exists." or message == "Has the same filesize as existing file" or message == "Has fewer tracks than existing release":
+                                    if message == "Not an upgrade for existing track file(s)" or message == "Failed to import track, Destination already exists." or message == "Has the same filesize as existing file" or message == "Has fewer tracks than existing release":
                                         known_reason = True
                                         continue
                                     if message.startswith("No files found are eligible for import in ") or message.startswith("Couldn't find similar album for ") or message.startswith("Worst track match: ") or message.startswith("Album match is not close enough: ") or message == "Has unmatched tracks" or message == "Has missing tracks":
