@@ -6,7 +6,7 @@ metadata:
 spec:
   ports:
   - name: web
-    port: 9093
+    port: 80
     protocol: TCP
     targetPort: web
   selector:
@@ -19,7 +19,7 @@ metadata:
   namespace: monitoring
 spec:
   baseImage: quay.io/prometheus/alertmanager
-  externalUrl: http://alertmanager.monitoring.svc.cluster.local:9093
+  externalUrl: https://alertmanager.lukeaddison.co.uk
   listenLocal: false
   logFormat: logfmt
   logLevel: info
@@ -34,5 +34,5 @@ spec:
     runAsNonRoot: true
     runAsUser: 1000
   #serviceAccountName: prometheus-operator-alertmanager
-  version: v0.17.0
+  version: v0.20.0
 ---
