@@ -33,23 +33,6 @@ spec:
       module:
       - http_2xx
       target:
-      - https://wiki.lukeaddison.co.uk
-    metricRelabelings:
-      - sourceLabels: [__address__]
-        targetLabel: __param_target
-      - sourceLabels: [__param_target]
-        targetLabel: instance
-      - targetLabel: target
-        replacement: https://wiki.lukeaddison.co.uk
-  - port: http
-    scheme: http
-    path: "/probe"
-    interval: 30s
-    scrapeTimeout: 30s
-    params:
-      module:
-      - http_2xx
-      target:
       - https://dippystreams.co.uk/web/index.html
     metricRelabelings:
       - sourceLabels: [__address__]
