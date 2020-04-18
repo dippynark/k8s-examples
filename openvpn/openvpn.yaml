@@ -221,7 +221,7 @@ metadata:
     release: openvpn
     heritage: Tiller
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: openvpn
