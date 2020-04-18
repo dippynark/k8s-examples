@@ -89,9 +89,8 @@ metadata:
   annotations:
     certmanager.k8s.io/cluster-issuer: letsencrypt-prod
     kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/auth-realm: Authentication Required
-    nginx.ingress.kubernetes.io/auth-secret: basic-auth
-    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-url: "https://oauth2.lukeaddison.co.uk/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://oauth2.lukeaddison.co.uk/oauth2/start?rd=https://$host$request_uri"
 spec:
   tls:
   - secretName: prometheus-tls
