@@ -53,8 +53,8 @@ spec:
                             unknown_reason = False
                             for statusMessage in record["statusMessages"]:
                                 for message in statusMessage["messages"]:
-                                    # A queue entry could have mutliple errors
-                                    # So only delete if it's blocking something else
+                                    # A queue entry could have multiple errors so we check harmless
+                                    # ones first and only delete if it's blocking something else
                                     if message == 'Episode has a TBA title and recently aired':
                                         known_reason = True
                                         continue
@@ -78,6 +78,10 @@ spec:
                                             record_ids_to_delete.append(record['id'])
                                         continue
                                     if message == "Single episode file contains all episodes in seasons":
+                                        if record['id'] not in record_ids_to_delete:
+                                            record_ids_to_delete.append(record['id'])
+                                        continue
+                                    if message == "Unable to parse file":
                                         if record['id'] not in record_ids_to_delete:
                                             record_ids_to_delete.append(record['id'])
                                         continue

@@ -46,6 +46,8 @@ spec:
                       unknown_reason = False
                       for statusMessage in download["statusMessages"]:
                           for message in statusMessage["messages"]:
+                              # Radarr doesn't seem to support deletion of queue records without
+                              # deleting from the torrent client so we just ignore known reasons
                               if message == "Not an upgrade for existing movie file":
                                   known_reason = True
                                   continue
