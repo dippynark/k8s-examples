@@ -95,7 +95,7 @@ spec:
 
                 for record_id in record_ids_to_delete:
                     print("Deleting %s" % str(record_id))
-                    r = requests.delete(url+"?blacklist=true&removeFromClient=false&id=%s" % str(record["id"]), headers={"X-Api-Key": os.environ['SONARR_API_KEY']})
+                    r = requests.delete(url+"?blacklist=true&removeFromClient=false&id=%s" % str(record_id), headers={"X-Api-Key": os.environ['SONARR_API_KEY']})
                     r.raise_for_status()
 
                 if unknown_warning:
