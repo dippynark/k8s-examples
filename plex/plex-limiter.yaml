@@ -1,0 +1,59 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: plex-limiter
+  namespace: plex
+spec:
+  schedule: "*/2 * * * *"
+  successfulJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: plex-limiter
+            image: dippynark/python
+            env:
+            - name: PLEX_LOGIN
+              valueFrom:
+                secretKeyRef:
+                  name: plex
+                  key: PLEX_LOGIN
+            - name: PLEX_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: plex
+                  key: PLEX_PASSWORD
+            - name: PLEX_SERVER
+              value: Dippystreams
+            args:
+            - bash
+            - -c
+            - |
+              set -euo pipefail
+
+              cat > plex-limiter.py <<EOF
+              import os
+              from plexapi.myplex import MyPlexAccount
+
+              account = MyPlexAccount(os.environ['PLEX_LOGIN'], os.environ['PLEX_PASSWORD'])
+              plex = account.resource(os.environ['PLEX_SERVER']).connect()
+
+              sessions = plex.sessions()
+              sessionCount = len(sessions)
+
+              target = 12000
+              if sessionCount > 2:
+                target = 8000
+              if sessionCount > 5:
+                target = 4000
+
+              maxUploadRate = plex.settings.get("wanPerStreamMaxUploadRate")
+              if maxUploadRate.value != target:
+                maxUploadRate.set(target)
+                plex.settings.save()
+              EOF
+              python plex-limiter.py

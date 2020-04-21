@@ -108,13 +108,13 @@ spec:
                   mediacount="$(awk -F'"' '/<MediaContainer size="[0-9]+">/ {count+=$2}; /<Player[^>]* state="paused"/ {count--}; END {print count}' <<< "${DATA}")"
                   printf '%s\nActivity check reports a count of %i based on the data above\n\n' "$DATA" "$mediacount" >&2
                   if [ $mediacount -gt 5 ]; then
-                      /opt/bin/rclone rc core/bwlimit rate=512k
+                      /opt/bin/rclone rc core/bwlimit rate=256k
                       if [ $? -ne 0 ]; then
                           echo "Failed to set rclone bandwidth limit"
                           exit 1
                       fi
                   fi
-                  if [ $mediacount -lt 4 ]; then
+                  if [ $mediacount -lt 5 ]; then
                       /opt/bin/rclone rc core/bwlimit rate=off
                       if [ $? -ne 0 ]; then
                           echo "Failed to remove rclone bandwidth limit"
