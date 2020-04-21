@@ -62,7 +62,7 @@ spec:
               if disk_space_used/disk_space_allotted > 0.96:
                   print("Disk space usage is over 96% - pausing all incomplete torrents")
 
-                  # pause all incomplete torrents
+                  # stop all incomplete torrents
                   server.d.multicall.filtered("",
                     "main",
                     "and=\"d.incomplete=,cat=1\",\"or=\\\"equal=d.custom1=,cat=LukeBooks\\\",\\\"equal=d.custom1=,cat=LukeFilms\\\",\\\"equal=d.custom1=,cat=LukeMusic\\\",\\\"equal=d.custom1=,cat=LukeTVShows\\\",\\\"equal=d.custom1=,cat=LukeApplications\\\",\\\"equal=d.custom1=,cat=LukeGames\\\"\"",

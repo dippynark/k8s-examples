@@ -160,25 +160,23 @@ spec:
                   total_removable_size += torrent[5]
 
               # create list of torrents to erase
-              # also determine whether the ratio of removable torrents to the total will be less than a given ratio
-              # this ensures we don't delete too many torrents by accident or necessity
+              # also determine whether the ratio of removable torrents to the total will be less
+              # than a given ratio so can prevent further downloads
               minimum_ratio = 0.5
-              ratio = 0
-              ratio_will_be_below_minimum = True
+              ratio = total_removable_size / total_size
+              ratio_will_be_below_minimum = False
               torrents_to_erase = []
               total_size_to_erase = 0
               for torrent in torrents:
-                  ratio = (total_removable_size - total_size_to_erase)/(total_size - total_size_to_erase)
                   if ratio < minimum_ratio:
                       ratio_will_be_below_minimum = True
-                      break
-                  ratio_will_be_below_minimum = False
                   if disk_space_used - total_size_to_erase > 0.95 * disk_space_allotted:
                       name = torrent[0]
                       hash = torrent[1]
                       size = torrent[5]
                       total_size_to_erase += size
                       torrents_to_erase.append([name, hash])
+                      ratio = (total_removable_size - total_size_to_erase)/(total_size - total_size_to_erase)
                       continue
                   break
 
@@ -283,9 +281,10 @@ spec:
 
                   if stopping_torrents_failed:
                       print("ERROR: stopping torrents failed")
+                      sys.exit(1)
                   if download_client_update_failed:
                       print("ERROR: disabling download clients failed")
-                  sys.exit(1)
+                      sys.exit(1)
               else:
                   print("More than {:.0%} ({:.1%}) of torrent data is removable - enabling disabled torrent clients".format(minimum_ratio, ratio))
                   if download_client_update_failed:

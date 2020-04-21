@@ -48,7 +48,8 @@ spec:
 
                     record_ids_to_delete = []
                     for record in json_data["records"]:
-                        if record["trackedDownloadStatus"] != "ok":
+                        # This key does no exist when the download client is unavailable
+                        if "trackedDownloadStatus" in record and record["trackedDownloadStatus"] != "ok":
                             known_reason = False
                             unknown_reason = False
                             for statusMessage in record["statusMessages"]:
