@@ -47,6 +47,8 @@ spec:
           requests:
             cpu: 0.2
             memory: 1Gi
+          limits:
+            nvidia.com/gpu: 1
         readinessProbe:
           httpGet:
             scheme: HTTPS
@@ -74,6 +76,12 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
+        # Refresh shared library cache
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /sbin/ldconfig
         volumeMounts:
         - name: music
           mountPath: /data/Music
@@ -87,6 +95,9 @@ spec:
           mountPath: /transcode
         - name: tmp
           mountPath: /tmp
+        - name: ldconfig
+          mountPath: /etc/ld.so.conf.d/nvidia.conf
+          subPath: nvidia.conf
       volumes:
       - name: music
         persistentVolumeClaim:
@@ -108,3 +119,9 @@ spec:
           medium: Memory
       - name: tmp
         emptyDir: {}
+      - name: ldconfig
+        configMap:
+          name: ldconfig
+          items:
+          - key: nvidia.conf
+            path: nvidia.conf
