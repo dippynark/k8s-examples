@@ -36,6 +36,26 @@ subjects:
   name: prometheus
   namespace: monitoring
 ---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: monitoring-prometheus
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+  - ReadWriteOnce
+  local:
+    path: /mnt/data/kubernetes/volumes/monitoring-prometheus
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - core1
+---
 apiVersion: monitoring.coreos.com/v1
 kind: Prometheus
 metadata:
@@ -69,6 +89,16 @@ spec:
   ruleSelector:
     matchLabels:
       role: alert-rules
+  storage:
+    volumeClaimTemplate:
+      spec:
+        resources:
+          requests:
+            storage: 10Gi
+        accessModes:
+        - ReadWriteOnce
+        volumeName: monitoring-prometheus
+        storageClassName: ""
 ---
 apiVersion: v1
 kind: Service
