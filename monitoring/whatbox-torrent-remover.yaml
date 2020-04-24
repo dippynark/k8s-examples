@@ -4,7 +4,7 @@ metadata:
   name: whatbox-torrent-remover
   namespace: monitoring
 spec:
-  schedule: "*/2 * * * *"
+  schedule: "*/1 * * * *"
   successfulJobsHistoryLimit: 1
   concurrencyPolicy: Forbid
   jobTemplate:
@@ -162,7 +162,7 @@ spec:
               # create list of torrents to erase
               # also determine whether the ratio of removable torrents to the total will be less
               # than a given ratio so can prevent further downloads
-              minimum_ratio = 0.5
+              minimum_ratio = 0.2
               ratio = total_removable_size / total_size
               ratio_will_be_below_minimum = False
               torrents_to_erase = []
