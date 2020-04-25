@@ -164,12 +164,11 @@ spec:
               # than a given ratio so can prevent further downloads
               minimum_ratio = 0.2
               ratio = total_removable_size / total_size
-              ratio_will_be_below_minimum = False
+              ratio_will_be_below_minimum = ratio < minimum_ratio
               torrents_to_erase = []
               total_size_to_erase = 0
               for torrent in torrents:
-                  if ratio < minimum_ratio:
-                      ratio_will_be_below_minimum = True
+                  ratio = total_removable_size / total_size
                   if disk_space_used - total_size_to_erase > 0.95 * disk_space_allotted:
                       name = torrent[0]
                       hash = torrent[1]
