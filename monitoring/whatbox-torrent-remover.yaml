@@ -168,7 +168,7 @@ spec:
               torrents_to_erase = []
               total_size_to_erase = 0
               for torrent in torrents:
-                  ratio = total_removable_size / total_size
+                  ratio_will_be_below_minimum = ratio < minimum_ratio
                   if disk_space_used - total_size_to_erase > 0.95 * disk_space_allotted:
                       name = torrent[0]
                       hash = torrent[1]
