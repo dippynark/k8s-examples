@@ -49,6 +49,12 @@ spec:
                       continue
                   if source == "ImportMechanismCheck" and message == "Enable Completed Download Handling":
                       continue
+                  if source == "IndexerStatusCheck" and message == "All indexers are unavailable due to failures":
+                      continue
+                  if source == "IndexerSearchCheck" and message == "All search-capable indexers are temporarily unavailable due to recent indexer errors":
+                      continue
+                  if source == "IndexerRssCheck" and message == "All rss-capable indexers are temporarily unavailable due to recent indexer errors":
+                      continue
                   print(error)
                   unrecognised_error = True
 
