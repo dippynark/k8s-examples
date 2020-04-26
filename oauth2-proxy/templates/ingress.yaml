@@ -1,20 +1,24 @@
+{{- range .Values.deployments }}
+---
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: oauth2-proxy
+  name: oauth2-proxy{{ .suffix }}
   namespace: oauth2-proxy
   annotations:
     kubernetes.io/ingress.class: nginx
     certmanager.k8s.io/cluster-issuer: letsencrypt-prod
 spec:
   tls:
-  - secretName: oauth2-tls
+  - secretName: oauth2-{{ .suffix }}-tls
     hosts:
-    - oauth2.lukeaddison.co.uk
+    - {{ .hostname }}
   rules:
-  - host: oauth2.lukeaddison.co.uk
+  - host: {{ .hostname }}
     http:
       paths:
-      - backend:
-          serviceName: oauth2-proxy
+      - path: /oauth2
+        backend:
+          serviceName: oauth2-proxy{{ .suffix }}
           servicePort: 4180
+{{- end }}

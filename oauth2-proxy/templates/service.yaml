@@ -1,9 +1,11 @@
+{{- range .Values.deployments }}
+---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: oauth2-proxy
-  name: oauth2-proxy
+    app: oauth2-proxy{{ .suffix }}
+  name: oauth2-proxy{{ .suffix }}
   namespace: oauth2-proxy
 spec:
   ports:
@@ -12,4 +14,5 @@ spec:
     protocol: TCP
     targetPort: 4180
   selector:
-    app: oauth2-proxy
+    app: oauth2-proxy{{ .suffix }}
+{{- end }}

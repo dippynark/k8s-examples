@@ -1,0 +1,10 @@
+image:
+  repository: quay.io/pusher/oauth2_proxy
+  tag: v5.1.0
+domain: lukeaddison.co.uk
+deployments:
+- suffix: ""
+  hostname: oauth2.lukeaddison.co.uk
+  authenticatedEmails: |-
+    luke@lukeaddison.co.uk
+    lukeaddison785@gmail.com
