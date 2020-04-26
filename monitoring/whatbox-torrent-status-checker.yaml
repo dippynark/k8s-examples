@@ -112,16 +112,25 @@ spec:
 
                   if state != 1 or is_open != 1 or is_active != 1 or message != "":
 
-                      # This is the signature for torrents that have been purposely stopped due to a
-                      # high download rate - potentially this can cause false negatives
+                      # This is the signature for torrents that have been purposely stopped after
+                      # being added due to a high download rate - potentially this can cause false
+                      # negatives
                       # TODO: check whether torrents have actually been purposely stopped
                       if state == 0 and is_open == 1 and is_active == 0 and message == "":
                           print("%s is in a stopped state" % name)
                           continue
 
-                      # give failing torrents at least a day to be downloaded if finished
+                      # This is the signature for torrents that have been added in a stopped state
+                      # due to a low ratio - potentially this can cause false negatives
+                      # TODO: check whether torrents have actually been purposely stopped
+                      if state == 0 and is_open == 0 and is_active == 0 and message == "":
+                          print("%s is in a stopped state" % name)
+                          continue
+
+                      # give failing torrents at least three days to be downloaded if finished. This
+                      # could happen if an early release is banned for example
                       now = datetime.datetime.now()
-                      if finished != 0 and (now - datetime.datetime.fromtimestamp(finished)).total_seconds() <= 60*60*24:
+                      if finished != 0 and (now - datetime.datetime.fromtimestamp(finished)).total_seconds() <= 60*60*24*3:
                           continue
 
                       if message.startswith('Tracker: [') and message.endswith(']'):

@@ -216,16 +216,32 @@ spec:
 
                   if ratio_will_be_below_minimum:
                       for client in sonarr_clients:
-                          if client["enable"] == True:
-                              client["enable"] = False
-                              r = requests.put(sonarr_url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']}, data=json.dumps(client))
-                              r.raise_for_status()
+                          add_stopped_setting_found = False
+                          for field in client["fields"]:
+                              if field["name"] == "addStopped":
+                                  add_stopped_setting_found = True
+                                  if field["value"] == False:
+                                      field["value"] = True
+                                      r = requests.put(sonarr_url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']}, data=json.dumps(client))
+                                      r.raise_for_status()
+                                      break
+                          if not add_stopped_setting_found:
+                              download_client_update_failed = True
+                              print("addStopped setting not found for Sonarr client %s" % client["name"])
                   else:
                       for client in sonarr_clients:
-                          if client["enable"] == False:
-                              client["enable"] = True
-                              r = requests.put(sonarr_url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']}, data=json.dumps(client))
-                              r.raise_for_status()
+                          add_stopped_setting_found = False
+                          for field in client["fields"]:
+                              if field["name"] == "addStopped":
+                                  add_stopped_setting_found = True
+                                  if field["value"] == True:
+                                      field["value"] = False
+                                      r = requests.put(sonarr_url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']}, data=json.dumps(client))
+                                      r.raise_for_status()
+                                      break
+                          if not add_stopped_setting_found:
+                              download_client_update_failed = True
+                              print("addStopped setting not found for Sonarr client %s" % client["name"])
               except Exception:
                   download_client_update_failed = True
                   traceback.print_exc()
@@ -238,16 +254,32 @@ spec:
 
                   if ratio_will_be_below_minimum:
                       for client in radarr_clients:
-                          if client["enable"] == True:
-                              client["enable"] = False
-                              r = requests.put(radarr_url, headers={"X-Api-Key": os.environ['RADARR_API_KEY']}, data=json.dumps(client))
-                              r.raise_for_status()
+                          add_stopped_setting_found = False
+                          for field in client["fields"]:
+                              if field["name"] == "DontStartAutomatically":
+                                  add_stopped_setting_found = True
+                                  if field["value"] == False:
+                                      field["value"] = True
+                                      r = requests.put(radarr_url, headers={"X-Api-Key": os.environ['RADARR_API_KEY']}, data=json.dumps(client))
+                                      r.raise_for_status()
+                                      break
+                          if not add_stopped_setting_found:
+                              download_client_update_failed = True
+                              print("DontStartAutomatically setting not found for Radarr client %s" % client["name"])
                   else:
                       for client in radarr_clients:
-                          if client["enable"] == False:
-                              client["enable"] = True
-                              r = requests.put(radarr_url, headers={"X-Api-Key": os.environ['RADARR_API_KEY']}, data=json.dumps(client))
-                              r.raise_for_status()
+                          add_stopped_setting_found = False
+                          for field in client["fields"]:
+                              if field["name"] == "DontStartAutomatically":
+                                  add_stopped_setting_found = True
+                                  if field["value"] == True:
+                                      field["value"] = False
+                                      r = requests.put(radarr_url, headers={"X-Api-Key": os.environ['RADARR_API_KEY']}, data=json.dumps(client))
+                                      r.raise_for_status()
+                                      break
+                          if not add_stopped_setting_found:
+                              download_client_update_failed = True
+                              print("DontStartAutomatically setting not found for Radarr client %s" % client["name"])
               except Exception:
                   download_client_update_failed = True
                   traceback.print_exc()
@@ -260,16 +292,32 @@ spec:
 
                   if ratio_will_be_below_minimum:
                       for client in lidarr_clients:
-                          if client["enable"] == True:
-                              client["enable"] = False
-                              r = requests.put(lidarr_url, headers={"X-Api-Key": os.environ['LIDARR_API_KEY']}, data=json.dumps(client))
-                              r.raise_for_status()
+                          add_stopped_setting_found = False
+                          for field in client["fields"]:
+                              if field["name"] == "addStopped":
+                                  add_stopped_setting_found = True
+                                  if field["value"] == False:
+                                      field["value"] = True
+                                      r = requests.put(lidarr_url, headers={"X-Api-Key": os.environ['LIDARR_API_KEY']}, data=json.dumps(client))
+                                      r.raise_for_status()
+                                      break
+                          if not add_stopped_setting_found:
+                              download_client_update_failed = True
+                              print("addStopped setting not found for Lidarr client %s" % client["name"])
                   else:
                       for client in lidarr_clients:
-                          if client["enable"] == False:
-                              client["enable"] = True
-                              r = requests.put(lidarr_url, headers={"X-Api-Key": os.environ['LIDARR_API_KEY']}, data=json.dumps(client))
-                              r.raise_for_status()
+                          add_stopped_setting_found = False
+                          for field in client["fields"]:
+                              if field["name"] == "addStopped":
+                                  add_stopped_setting_found = True
+                                  if field["value"] == True:
+                                      field["value"] = False
+                                      r = requests.put(lidarr_url, headers={"X-Api-Key": os.environ['LIDARR_API_KEY']}, data=json.dumps(client))
+                                      r.raise_for_status()
+                                      break
+                          if not add_stopped_setting_found:
+                              download_client_update_failed = True
+                              print("addStopped setting not found for Lidarr client %s" % client["name"])
               except Exception:
                   download_client_update_failed = True
                   traceback.print_exc()
