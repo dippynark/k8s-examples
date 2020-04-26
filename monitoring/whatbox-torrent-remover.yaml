@@ -162,7 +162,7 @@ spec:
               # create list of torrents to erase
               # also determine whether the ratio of removable torrents to the total will be less
               # than a given ratio so can prevent further downloads
-              minimum_ratio = 0.2
+              minimum_ratio = 0.4
               ratio = total_removable_size / total_size
               ratio_will_be_below_minimum = ratio < minimum_ratio
               torrents_to_erase = []
