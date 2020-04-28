@@ -46,13 +46,6 @@ spec:
       for: 5m
       labels:
         severity: critical
-    - alert: FluentBitDaemonSetDown
-      annotations:
-        message: FluentBit Daemonset has disappeared from Prometheus target discovery for 5m
-      expr: absent(up{job="fluent-bit", pod=~".+"} == 1)
-      for: 5m
-      labels:
-        severity: critical
   - name: kubernetes-applications
     rules:
     - alert: KubePodNotRunning
