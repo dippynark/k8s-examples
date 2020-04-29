@@ -69,7 +69,7 @@ spec:
   accessModes:
   - ReadOnlyMany
   local:
-    path: /mnt/data/media/Films
+    path: /mnt/google-drive/media-ro/Films
   nodeAffinity:
     required:
       nodeSelectorTerms:

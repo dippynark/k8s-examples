@@ -29,7 +29,7 @@ spec:
   accessModes:
   - ReadWriteOnce
   local:
-    path: /mnt/data/media/Films
+    path: /mnt/google-drive/media/Films
   nodeAffinity:
     required:
       nodeSelectorTerms:
