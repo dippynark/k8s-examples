@@ -1,0 +1,48 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/auth-url: "https://oauth2.lukeaddison.co.uk/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://oauth2.lukeaddison.co.uk/oauth2/start?rd=https://$host$request_uri"
+  name: lidarr
+  namespace: lidarr
+spec:
+  tls:
+  - hosts:
+    - lidarr.lukeaddison.co.uk
+    secretName: lidarr-tls
+  rules:
+  - host: lidarr.lukeaddison.co.uk
+    http:
+      paths:
+      - backend:
+          serviceName: lidarr
+          servicePort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/auth-realm: Authentication Required
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-type: basic
+  name: lidarr-api
+  namespace: lidarr
+spec:
+  tls:
+  - hosts:
+    - api.lidarr.lukeaddison.co.uk
+    secretName: lidarr-api-tls
+  rules:
+  - host: api.lidarr.lukeaddison.co.uk
+    http:
+      paths:
+      - path: /api
+        backend:
+          serviceName: lidarr
+          servicePort: 80

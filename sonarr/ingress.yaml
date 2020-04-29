@@ -1,0 +1,48 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/auth-url: "https://oauth2.lukeaddison.co.uk/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://oauth2.lukeaddison.co.uk/oauth2/start?rd=https://$host$request_uri"
+  name: sonarr
+  namespace: sonarr
+spec:
+  tls:
+  - hosts:
+    - sonarr.lukeaddison.co.uk
+    secretName: sonarr-tls
+  rules:
+  - host: sonarr.lukeaddison.co.uk
+    http:
+      paths:
+      - backend:
+          serviceName: sonarr
+          servicePort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/auth-realm: Authentication Required
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-type: basic
+  name: sonarr-api
+  namespace: sonarr
+spec:
+  tls:
+  - hosts:
+    - api.sonarr.lukeaddison.co.uk
+    secretName: sonarr-api-tls
+  rules:
+  - host: api.sonarr.lukeaddison.co.uk
+    http:
+      paths:
+      - path: /api
+        backend:
+          serviceName: sonarr
+          servicePort: 80

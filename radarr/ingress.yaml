@@ -1,0 +1,48 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/auth-url: "https://oauth2.lukeaddison.co.uk/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://oauth2.lukeaddison.co.uk/oauth2/start?rd=https://$host$request_uri"
+  name: radarr
+  namespace: radarr
+spec:
+  tls:
+  - hosts:
+    - radarr.lukeaddison.co.uk
+    secretName: radarr-tls
+  rules:
+  - host: radarr.lukeaddison.co.uk
+    http:
+      paths:
+      - backend:
+          serviceName: radarr
+          servicePort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/auth-realm: Authentication Required
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-type: basic
+  name: radarr-api
+  namespace: radarr
+spec:
+  tls:
+  - hosts:
+    - api.radarr.lukeaddison.co.uk
+    secretName: radarr-api-tls
+  rules:
+  - host: api.radarr.lukeaddison.co.uk
+    http:
+      paths:
+      - path: /api
+        backend:
+          serviceName: radarr
+          servicePort: 80
