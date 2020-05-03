@@ -57,6 +57,9 @@ spec:
                               if message == "Sample":
                                   known_reason = True
                                   continue
+                              if message == "Failed to import movie":
+                                  known_reason = True
+                                  continue
                               unknown_reason = True
                               print("%s: %s" % (statusMessage["title"], message))
                       if unknown_reason or not known_reason:
