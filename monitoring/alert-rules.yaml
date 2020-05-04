@@ -25,13 +25,6 @@ spec:
       for: 5m
       labels:
         severity: critical
-    - alert: NodeExporterUbntDown
-      annotations:
-        message: NodeExporter ubnt.lukeaddison.co.uk:9100 has disappeared from Prometheus target discovery for 5m
-      expr: absent(up{job="node-exporter", instance="ubnt.lukeaddison.co.uk:9100"} == 1)
-      for: 5m
-      labels:
-        severity: critical
     - alert: NodeExporterDaemonSetDown
       annotations:
         message: NodeExporter Daemonset has disappeared from Prometheus target discovery for 5m
