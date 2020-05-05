@@ -97,7 +97,8 @@ spec:
                   "d.is_active=",
                   "d.message=",
                   "d.custom1=",
-                  "d.timestamp.finished=")
+                  "d.timestamp.finished=",
+                  "t.multicall=,\"\",\"t.url=\"")
 
               irrecoverable_errors = False
               for torrent in torrents:
@@ -109,6 +110,7 @@ spec:
                   message = torrent[5]
                   label = torrent[6]
                   finished = torrent[7]
+                  tracker_url = torrent[8][0][1]
 
                   if state != 1 or is_open != 1 or is_active != 1 or message != "":
 
@@ -243,6 +245,10 @@ spec:
 
                               if tracker_failure_reason == "Access denied, leeching forbidden":
                                   continue
+
+                              if tracker_failure_reason == "Downloading disabled":
+                                  if tracker_url.startswith('http://bibliotik.me'):
+                                      continue
 
                               if tracker_failure_reason.startswith('Unregistered torrent: Trump: ') or tracker_failure_reason.startswith('Unregistered torrent: Dupe: '):
                                   trump = tracker_failure_reason[len('Unregistered torrent: Trump: '):]
