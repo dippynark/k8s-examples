@@ -138,9 +138,9 @@ spec:
     rules:
     - alert: NodeDiskUsageHigh
       annotations:
-        message: Filesystem at {{ $labels.mountpoint }} on instance {{ $labels.instance }} has less than 5% available space
+        message: Filesystem at {{ $labels.mountpoint }} on instance {{ $labels.instance }} has less than 10% available space
       expr: |
-        (node_filesystem_avail_bytes*100)/node_filesystem_size_bytes < 5
+        (node_filesystem_avail_bytes{device!="/dev/mapper/usr"} * 100) / node_filesystem_size_bytes{device!="/dev/mapper/usr"} < 10
       labels:
         severity: critical
   - name: node-memory
