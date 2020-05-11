@@ -17,7 +17,8 @@ spec:
     spec:
       hostPID: true
       initContainers:
-      - image: squat/modulus:9d71ba20502914204cbb468e5de905b95dfe2bb0
+      - image: dippynark/modulus
+        imagePullPolicy: Always
         name: modulus
         args:
         - compile
