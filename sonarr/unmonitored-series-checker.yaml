@@ -32,25 +32,19 @@ spec:
               import requests
               import json
               import os
-              import sys
 
               url = "http://sonarr.sonarr.svc.cluster.local/api/v3/series"
               r = requests.get(url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']})
               r.raise_for_status()
               json_data = json.loads(r.text)
 
-              unmonitored_series = False
               for series in json_data:
                   if series["monitored"] == False:
-                      print(series["title"])
-                      unmonitored_series = True
+                      series["monitored"] = True
                   for season in series["seasons"]:
                       if season["seasonNumber"] != 0 and season["monitored"] == False:
-                          print("%s: Season %s" % (series["title"], season["seasonNumber"]))
-                          unmonitored_series = True
-
-              if unmonitored_series == True:
-                  print("ERROR: Unmonitored series or season")
-                  sys.exit(1)
+                          season["monitored"] = True
+                  r = requests.put(url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']}, data=json.dumps(series))
+                  r.raise_for_status()
               EOF
               python unmonitored-series-checker.py
