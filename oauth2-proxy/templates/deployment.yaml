@@ -18,6 +18,8 @@ spec:
     metadata:
       labels:
         app: oauth2-proxy{{ .suffix }}
+      annotations:
+        authenticatedEmails/sha256sum: {{ sha256sum .authenticatedEmails }}
     spec:
       containers:
       - name: oauth2-proxy
