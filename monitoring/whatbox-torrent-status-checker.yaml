@@ -251,9 +251,6 @@ spec:
                                       continue
 
                               if tracker_failure_reason.startswith('Unregistered torrent: Trump: ') or tracker_failure_reason.startswith('Unregistered torrent: Dupe: '):
-                                  trump = tracker_failure_reason[len('Unregistered torrent: Trump: '):]
-                                  if tracker_failure_reason.startswith('Unregistered torrent: Dupe: '):
-                                      trump = tracker_failure_reason[len('Unregistered torrent: Dupe: '):]
 
                                   trump_url_index = trump.index("https://")
                                   trump_url = trump[trump_url_index:]
