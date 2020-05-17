@@ -39,12 +39,16 @@ spec:
               json_data = json.loads(r.text)
 
               for series in json_data:
+                  unmonitored_series = False
                   if series["monitored"] == False:
                       series["monitored"] = True
+                      unmonitored_series = True
                   for season in series["seasons"]:
                       if season["seasonNumber"] != 0 and season["monitored"] == False:
                           season["monitored"] = True
-                  r = requests.put(url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']}, data=json.dumps(series))
-                  r.raise_for_status()
+                          unmonitored_series = True
+                  if unmonitored_series:
+                      r = requests.put(url, headers={"X-Api-Key": os.environ['SONARR_API_KEY']}, data=json.dumps(series))
+                      r.raise_for_status()
               EOF
               python unmonitored-series-checker.py
