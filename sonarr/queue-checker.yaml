@@ -69,13 +69,15 @@ spec:
                                     if message == "Failed to import episode":
                                         known_reason = True
                                         continue
-                                    if message == "Invalid season or episode":
-                                        known_reason = True
-                                        continue
                                     if message.startswith("Episode file already imported at "):
                                         known_reason = True
                                         continue
                                     if message == "Sample":
+                                        if record['id'] not in record_ids_to_delete:
+                                            record_ids_to_delete.append(record['id'])
+                                        known_reason = True
+                                        continue
+                                    if message == "Invalid season or episode":
                                         if record['id'] not in record_ids_to_delete:
                                             record_ids_to_delete.append(record['id'])
                                         known_reason = True
