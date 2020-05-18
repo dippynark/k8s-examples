@@ -252,8 +252,8 @@ spec:
 
                               if tracker_failure_reason.startswith('Unregistered torrent: Trump: ') or tracker_failure_reason.startswith('Unregistered torrent: Dupe: '):
 
-                                  trump_url_index = trump.index("https://")
-                                  trump_url = trump[trump_url_index:]
+                                  trump_url_index = tracker_failure_reason.index("https://")
+                                  trump_url = tracker_failure_reason[trump_url_index:]
 
                                   if trump_url.startswith("https://%s" % os.environ['TRACKER_FILM_HOSTNAME']):
                                       parsed = urlparse.urlparse(trump_url)
