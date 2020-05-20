@@ -1,0 +1,58 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: history-checker
+  namespace: radarr
+spec:
+  schedule: "*/10 * * * *"
+  successfulJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: history-checker
+            image: dippynark/python
+            env:
+            - name: RADARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: radarr
+                  key: radarr_apikey
+            args:
+            - bash
+            - -c
+            - |
+              set -euo pipefail
+
+              cat > history-checker.py <<EOF
+              import requests
+              import json
+              import os
+              import sys
+
+              page_size = 100
+              url = "http://radarr.radarr.svc.cluster.local/api/history?page=1&pageSize=%d&sortKey=date&sortDir=desc" % page_size
+              r = requests.get(url, headers={"X-Api-Key": os.environ['RADARR_API_KEY']})
+              r.raise_for_status()
+              json_data = json.loads(r.text)
+
+              grabbed = {}
+              imported = []
+              for record in json_data['records']:
+                if record['eventType'] == 'downloadFolderImported' and record['sourceTitle'] not in imported:
+                  imported.append(record['sourceTitle'])
+                if record['eventType'] == 'grabbed' and record['sourceTitle'] not in imported:
+                  grabbed[record['sourceTitle']] = grabbed.get(record['sourceTitle'], 0) + 1
+
+              grabbed = {k: v for k, v in grabbed.items() if v > 2}
+              if len(grabbed) > 0:
+                for k, v in grabbed.items():
+                  print(k)
+                print("ERROR: Films are being grabbed repeatedly")
+                sys.exit(1)
+              EOF
+              python history-checker.py
