@@ -1,0 +1,26 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ddns
+  namespace: ddns
+spec:
+  selector:
+    matchLabels:
+      app: ddns
+  template:
+    metadata:
+      labels:
+        app: ddns
+    spec:
+      containers:
+      - name: ddns
+        image: oznu/cloudflare-ddns@sha256:3fcdc6031a615cd939ad0793be598522ce3adfa79773d15d5a7ca955e3cf736c
+        env:
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: cloudflare-api-token
+              key: value
+        - name: ZONE
+          value: lukeaddison.co.uk
