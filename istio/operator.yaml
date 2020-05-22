@@ -1,0 +1,15 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  addonComponents:
+    prometheus:
+      enabled: true #false
+  values:
+    global:
+      proxy:
+        accessLogFile: /dev/stdout
+      outboundTrafficPolicy:
+        mode: REGISTRY_ONLY
+    sidecarInjectorWebhook:
+      #enableNamespacesByDefault: true
+      rewriteAppHTTPProbe: true
