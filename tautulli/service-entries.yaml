@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: dippystreams
+  namespace: tautulli
+spec:
+  hosts:
+  - dippystreams.co.uk
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: plex
+  namespace: tautulli
+spec:
+  hosts:
+  - 82-34-151-96.c3522e83926d4dfba44f77bc49954d69.plex.direct
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 32400
+    name: https
+    protocol: HTTPS
