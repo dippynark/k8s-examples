@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: xorg
+  namespace: desktop
+spec:
+  selector:
+    matchLabels:
+      app: xorg
+  template:
+    metadata:
+      labels:
+        app: xorg
+    spec:
+      containers:
+      - name: xorg
+        image: dippynark/xorg
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: tmp-x-unix
+          mountPath: /tmp/.X11-unix
+        - name: nvidia
+          mountPath: /usr/local/nvidia
+          readOnly: true
+        - name: var-run-dbus-system-bus-socket
+          mountPath: /var/run/dbus/system_bus_socket
+      volumes:
+      - name: tmp-x-unix
+        hostPath:
+          path: /tmp/.X11-unix
+      - name: nvidia
+        hostPath:
+          path: /opt/drivers/nvidia
+      - name: var-run-dbus-system-bus-socket
+        hostPath:
+          path: /var/run/dbus/system_bus_socket
+          type: Socket

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ldconfig
+  namespace: desktop
+data:
+  nvidia.conf: |
+    /usr/local/nvidia/lib32
+    /usr/local/nvidia/lib

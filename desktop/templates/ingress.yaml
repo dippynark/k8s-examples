@@ -1,0 +1,26 @@
+#{{- $root := . }}
+{{- range .Values.users }}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ . }}-desktop
+  namespace: desktop
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/auth-url: "https://oauth2.desktop.lukeaddison.co.uk/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://oauth2.desktop.lukeaddison.co.uk/oauth2/start?rd=https://$host$request_uri"
+spec:
+  tls:
+  - secretName: {{ . }}-desktop-tls
+    hosts:
+    - {{ . }}.desktop.lukeaddison.co.uk  
+  rules:
+  - host: {{ . }}.desktop.lukeaddison.co.uk
+    http:
+      paths:
+      - backend:
+          serviceName: {{ . }}-desktop
+          servicePort: 6901
+{{- end }}

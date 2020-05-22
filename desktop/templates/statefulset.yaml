@@ -1,0 +1,80 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: desktop
+  namespace: desktop
+spec:
+  replicas: {{ len .Values.users }}
+  serviceName: desktop
+  selector:
+    matchLabels:
+      app: desktop
+  template:
+    metadata:
+      labels:
+        app: desktop
+    spec:
+      # TODO: support SIGTERM properly
+      terminationGracePeriodSeconds: 1
+      containers:
+      - name: desktop
+        image: dippynark/desktop
+        env:
+        - name: VNC_COL_DEPTH
+          value: "24"
+        - name: VNC_RESOLUTION
+          value: 800x600
+        - name: VNC_PW
+          value: vnc
+        - name: VNC_PORT
+          value: "5901"
+        - name: NO_VNC_PORT
+          value: "6901"
+        - name: DISPLAY
+          value: :1
+        ports:
+        - name: vnc
+          containerPort: 5901
+        - name: novnc
+          containerPort: 6901
+        # Refresh shared library cache
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /usr/bin/sudo
+              - /sbin/ldconfig
+        securityContext:
+          privileged: true
+          runAsUser: 0
+          #runAsUser: 1000
+        volumeMounts:
+        - name: tmp-x11-unix-x0
+          mountPath: /tmp/.X11-unix/X0
+        - name: nvidia
+          mountPath: /usr/local/nvidia
+          readOnly: true
+        - name: ldconfig
+          mountPath: /etc/ld.so.conf.d/nvidia.conf
+          subPath: nvidia.conf
+        - name: var-run-dbus-system-bus-socket
+          mountPath: /var/run/dbus/system_bus_socket
+      volumes:
+      - name: tmp-x11-unix-x0
+        hostPath:
+          path: /tmp/.X11-unix/X0
+          type: Socket
+      - name: nvidia
+        hostPath:
+          path: /opt/drivers/nvidia
+      - name: var-run-dbus-system-bus-socket
+        hostPath:
+          path: /var/run/dbus/system_bus_socket
+          type: Socket
+      - name: ldconfig
+        configMap:
+          name: ldconfig
+          items:
+          - key: nvidia.conf
+            path: nvidia.conf  

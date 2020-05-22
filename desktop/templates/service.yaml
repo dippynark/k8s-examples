@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: desktop
+  namespace: desktop
+spec:
+  clusterIP: None
+  ports:
+  - name: vnc
+    port: 5901
+  - name: novnc
+    port: 6901
+  selector:
+    app: desktop
+#{{- $root := . }}
+{{- range $index, $user := .Values.users }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $user }}-desktop
+  namespace: desktop
+spec:
+  ports:
+  - name: novnc
+    port: 6901
+    targetPort: novnc
+  selector:
+    app: desktop
+    statefulset.kubernetes.io/pod-name: desktop-{{ $index }}
+{{- end }}
