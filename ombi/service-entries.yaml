@@ -1,11 +1,11 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: api-broadcasthe-net
-  namespace: sonarr
+  name: api-pushbullet-com
+  namespace: ombi
 spec:
   hosts:
-  - api.broadcasthe.net
+  - api.pushbullet.com
   exportTo:
   - "."
   resolution: DNS
@@ -18,11 +18,11 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: neptune-whatbox-ca
-  namespace: sonarr
+  name: plex-tv
+  namespace: ombi
 spec:
   hosts:
-  - neptune.whatbox.ca
+  - plex.tv
   exportTo:
   - "."
   resolution: DNS
@@ -36,7 +36,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
   name: dippystreams-co-uk
-  namespace: sonarr
+  namespace: ombi
 spec:
   hosts:
   - dippystreams.co.uk
@@ -52,11 +52,79 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: thexem-de
-  namespace: sonarr
+  name: webservice-fanart-tv
+  namespace: ombi
 spec:
   hosts:
-  - thexem.de
+  - webservice.fanart.tv
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: raw-githubusercontent-com
+  namespace: ombi
+spec:
+  hosts:
+  - raw.githubusercontent.com
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: api-github-com
+  namespace: ombi
+spec:
+  hosts:
+  - api.github.com
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: api-trakt-tv
+  namespace: ombi
+spec:
+  hosts:
+  - api.trakt.tv
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: https
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: api-tvmaze-com
+  namespace: ombi
+spec:
+  hosts:
+  - api.tvmaze.com
   exportTo:
   - "."
   resolution: DNS
@@ -69,50 +137,16 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: skyhook-sonarr-tv
-  namespace: sonarr
+  name: api-themoviedb-org
+  namespace: ombi
 spec:
   hosts:
-  - skyhook.sonarr.tv
+  - api.themoviedb.org
   exportTo:
   - "."
   resolution: DNS
   location: MESH_EXTERNAL
   ports:
-  - number: 443
-    name: https
-    protocol: HTTPS
----
-apiVersion: networking.istio.io/v1alpha3
-kind: ServiceEntry
-metadata:
-  name: services-sonarr-tv
-  namespace: sonarr
-spec:
-  hosts:
-  - services.sonarr.tv
-  exportTo:
-  - "."
-  resolution: DNS
-  location: MESH_EXTERNAL
-  ports:
-  - number: 443
-    name: https
-    protocol: HTTPS
----
-apiVersion: networking.istio.io/v1alpha3
-kind: ServiceEntry
-metadata:
-  name: api-pushbullet-com
-  namespace: sonarr
-spec:
-  hosts:
-  - api.pushbullet.com
-  exportTo:
-  - "."
-  resolution: DNS
-  location: MESH_EXTERNAL
-  ports:
-  - number: 443
-    name: https
-    protocol: HTTPS
+  - number: 80
+    name: http
+    protocol: HTTP

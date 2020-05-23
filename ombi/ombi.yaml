@@ -9,7 +9,8 @@ spec:
   selector:
     app: ombi
   ports:
-  - port: 80
+  - name: http
+    port: 80
     targetPort: 3579
 ---
 apiVersion: apps/v1
@@ -30,7 +31,8 @@ spec:
       - name: ombi
         image: linuxserver/ombi:v3.0.4892-ls38
         ports:
-        - containerPort: 3579
+        - name: http
+          containerPort: 3579
         env:
         - name: TZ
           value: Europe/London
@@ -42,12 +44,14 @@ spec:
           httpGet:
             path: /login
             port: 3579
+          periodSeconds: 3
           timeoutSeconds: 10
         livenessProbe:
           httpGet:
             path: /login
             port: 3579
           timeoutSeconds: 10
+          failureThreshold: 10
           initialDelaySeconds: 60
         resources:
           requests:
