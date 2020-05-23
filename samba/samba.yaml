@@ -15,7 +15,6 @@ spec:
       labels:
         app: samba
     spec:
-      hostNetwork: true
       initContainers:
       - name: busybox
         image: busybox
@@ -44,12 +43,13 @@ spec:
           requests:
             cpu: 50m
             memory: 100Mi
-          limits:
-            cpu: 200m
-            memory: 500Mi
         ports:
-        - containerPort: 139
-        - containerPort: 445
+        - name: tcp-netbios
+          containerPort: 139
+          hostPort: 139
+        - name: tcp-smb
+          containerPort: 445
+          hostPort: 445
         env:
         - name: TZ
           value: Europe/London
