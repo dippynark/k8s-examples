@@ -72,13 +72,7 @@ spec:
   enableAdminAPI: true
   scrapeInterval: 30s
   serviceAccountName: prometheus
-  additionalScrapeConfigs:
-    name: additional-scrape-configs
-    key: prometheus-additional.yaml
-  serviceMonitorSelector:
-    matchExpression:
-    - name: type
-      operator: Exists
+  serviceMonitorSelector: {}
   resources:
     requests:
       memory: 400Mi

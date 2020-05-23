@@ -3,7 +3,7 @@ kind: IstioOperator
 spec:
   addonComponents:
     prometheus:
-      enabled: true #false
+      enabled: false
   values:
     global:
       proxy:
