@@ -5,5 +5,6 @@
 
 ```sh
 kubectl get namespace oauth2-proxy || kubectl create namespace oauth2-proxy
+kubectl label namespace oauth2-proxy istio-injection=enabled --overwrite
 helm upgrade --install oauth2-proxy -n oauth2-proxy .
 ```
