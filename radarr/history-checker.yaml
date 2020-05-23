@@ -53,7 +53,7 @@ spec:
               grabbed = {k: v for k, v in grabbed.items() if len(v) > 1}
               if len(grabbed) > 0:
                 for k, v in grabbed.items():
-                  print("%s %s %s %s" % (k, v[-1]["movie"]["title"], v[-1]["quality"]["quality"]["name"], ' '.join([customFormat.name for customFormat in v[-1]["quality"]["customFormats"]])))
+                  print("%s %s %s %s" % (k, v[-1]["movie"]["title"], v[-1]["quality"]["quality"]["name"], ' '.join([customFormat["name"] for customFormat in v[-1]["quality"]["customFormats"]])))
                 print("ERROR: Films are being grabbed repeatedly")
                 sys.exit(1)
               EOF
