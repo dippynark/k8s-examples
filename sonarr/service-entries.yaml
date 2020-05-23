@@ -65,3 +65,37 @@ spec:
   - number: 80
     name: http
     protocol: HTTP
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: skyhook-sonarr-tv
+  namespace: sonarr
+spec:
+  hosts:
+  - skyhook.sonarr.tv
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: services-sonarr-tv
+  namespace: sonarr
+spec:
+  hosts:
+  - services.sonarr.tv
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
