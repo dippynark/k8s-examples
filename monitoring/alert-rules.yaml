@@ -16,6 +16,14 @@ spec:
       expr: vector(1)
       labels:
         severity: deadman
+  - name: prometheus
+    rules:
+    - alert: PrometheusConfigLastReloadFailed
+      annotations:
+        message: Prometheus configuration failed to reload
+      expr: prometheus_config_last_reload_successful == 0
+      labels:
+        severity: critical
   - name: instance-down
     rules:
     - alert: KubeStateMetricsDown
@@ -174,7 +182,7 @@ spec:
       expr: changes(node_network_up{job="node-exporter",device!~"veth.+"}[2m]) > 2
       for: 2m
       labels:
-        severity: warning
+        severity: critical
   - name: probe-failed
     rules:
     - alert: ProbeFailed
@@ -183,5 +191,21 @@ spec:
       expr: |
         probe_success == 0
       for: 2m
+      labels:
+        severity: critical
+  - name: istio
+    rules:
+    - alert: IstioTCPConnectionBlocked
+      annotations:
+        message: 'TCP connection blocked from {{ $labels.source_workload_namespace }}/{{ $labels.source_workload }} in the last 10mins'
+      expr: |
+        increase(istio_tcp_connections_closed_total{destination_service_name="BlackHoleCluster"}[10m]) > 0
+      labels:
+        severity: critical
+    - alert: IstioHTTPRequestBlocked
+      annotations:
+        message: 'HTTP request blocked from {{ $labels.source_workload_namespace }}/{{ $labels.source_workload }} to {{ $labels.destination_service }} in the last 10mins'
+      expr: |
+        increase(istio_requests_total{destination_service_name="BlackHoleCluster"}[10m]) > 0
       labels:
         severity: critical

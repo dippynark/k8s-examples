@@ -99,9 +99,13 @@ kind: Service
 metadata:
   name: prometheus
   namespace: monitoring
+  labels:
+    app: prometheus
 spec:
   ports:
-  - port: 9090
+  - name: http-web
+    port: 9090
+    targetPort: web
   selector:
     app: prometheus
 ---
@@ -127,3 +131,16 @@ spec:
       - backend:
           serviceName: prometheus
           servicePort: 9090
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus
+  namespace: monitoring
+spec:
+  jobLabel: prometheus
+  selector:
+    matchLabels:
+      app: prometheus
+  endpoints:
+  - port: http-web
