@@ -144,21 +144,11 @@ spec:
                               continue
                           if tracker_message == "Timeout was reached":
                               continue
-                          if tracker_message == "Could not parse bencoded data: 504 Gateway Time-out    504 Gateway Time-out  nginx":
-                              continue
-                          if tracker_message == "Could not parse bencoded data: 502 Bad Gateway    502 Bad Gateway  nginx":
-                              continue
-                          if tracker_message == "Could not parse bencoded data: landof.tv | 502: Bad gateway        body{margin:0;padding:0}                                       ":
-                              continue
-                          if tracker_message == "Could not parse bencoded data: bibliotik.me | 502: Bad gateway body{margin:0;padding:0} ":
-                              continue
-                          if tracker_message == "Could not parse bencoded data: bibliotik.me | 502: Bad gateway        body{margin:0;padding:0}                                    ":
-                              continue
                           if tracker_message == "SSL connect error":
                               continue
                           if tracker_message == "Server returned nothing (no headers, no data)":
                               continue
-                          if tracker_message == "Could not parse bencoded data: 500 Internal Server Error    500 Internal Server Error  nginx/1.14.0 (Ubuntu)":
+                          if tracker_message.startswith("Could not parse bencoded data: "):
                               continue
 
                           if tracker_message.startswith('Failure reason "') and tracker_message.endswith('"'):
