@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: dippystreams
+  name: dippystreams-co-uk
   namespace: tautulli
 spec:
   hosts:
@@ -18,7 +18,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: plex
+  name: 82-34-151-96-c3522e83926d4dfba44f77bc49954d69-plex-direct
   namespace: tautulli
 spec:
   hosts:

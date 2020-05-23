@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: btn
+  name: api-broadcasthe-net
   namespace: sonarr
 spec:
   hosts:
@@ -18,7 +18,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: whatbox
+  name: neptune-whatbox-ca
   namespace: sonarr
 spec:
   hosts:
@@ -35,7 +35,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: dippystreams
+  name: dippystreams-co-uk
   namespace: sonarr
 spec:
   hosts:
@@ -52,7 +52,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: thexem
+  name: thexem-de
   namespace: sonarr
 spec:
   hosts:
