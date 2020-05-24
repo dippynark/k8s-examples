@@ -5,7 +5,8 @@ https://firxworx.com/blog/it-devops/sysadmin/creating-certificates-and-keys-for-
 ```
 cd ~/vpn/easyrsa
 openvpn --genkey --secret pki/private/ta.key
-kubectl create ns openvpn
+kubectl get ns openvpn || kubectl create ns openvpn
+kubectl label ns openvpn istio-injection=enabled --overwrite
 kubectl create secret generic openvpn -n openvpn \
     --from-file=$HOME/vpn/easyrsa/pki/private/server.key \
     --from-file=$HOME/vpn/easyrsa/pki/ca.crt \
