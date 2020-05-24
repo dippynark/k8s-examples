@@ -73,6 +73,9 @@ spec:
   scrapeInterval: 30s
   serviceAccountName: prometheus
   serviceMonitorSelector: {}
+  podMetadata:
+    annotations:
+      sidecar.istio.io/inject: "false"
   resources:
     requests:
       memory: 400Mi

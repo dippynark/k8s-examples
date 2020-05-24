@@ -116,3 +116,55 @@ spec:
   - number: 443
     name: https
     protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: coverartarchive-org
+  namespace: lidarr
+spec:
+  hosts:
+  - coverartarchive.org
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+# https://istio.io/docs/tasks/traffic-management/egress/wildcard-egress-hosts/#configure-direct-traffic-to-a-wildcard-host
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: archive-org
+  namespace: lidarr
+spec:
+  hosts:
+  - archive.org
+  - "*.archive.org"
+  exportTo:
+  - "."
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: tls
+    protocol: TLS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: assets-fanart-tv
+  namespace: lidarr
+spec:
+  hosts:
+  - assets.fanart.tv
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 80
+    name: http
+    protocol: HTTP
