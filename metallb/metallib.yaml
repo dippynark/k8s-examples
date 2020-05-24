@@ -3,7 +3,7 @@ kind: Namespace
 metadata:
   name: metallb-system
   labels:
-    app: metallb
+    istio-injection: enabled
 ---
 
 apiVersion: v1
