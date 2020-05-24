@@ -31,3 +31,108 @@ spec:
   - number: 443
     name: https
     protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: www-howsmyssl-com
+  namespace: lazylibrarian
+spec:
+  hosts:
+  - www.howsmyssl.com
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: bootswatch-com
+  namespace: lazylibrarian
+spec:
+  hosts:
+  - bootswatch.com
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 80
+    name: http
+    protocol: HTTP
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: auth-docker-io
+  namespace: lazylibrarian
+spec:
+  hosts:
+  - auth.docker.io
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: registry-1-docker-io
+  namespace: lazylibrarian
+spec:
+  hosts:
+  - registry-1.docker.io
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: neptune-whatbox-ca
+  namespace: lazylibrarian
+spec:
+  hosts:
+  - neptune.whatbox.ca
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: gitlab-com
+  namespace: lazylibrarian
+spec:
+  hosts:
+  - gitlab.com
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
