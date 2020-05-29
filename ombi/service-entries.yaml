@@ -150,3 +150,20 @@ spec:
   - number: 80
     name: http
     protocol: HTTP
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: cert-int-x3-letsencrypt-org
+  namespace: ombi
+spec:
+  hosts:
+  - cert.int-x3.letsencrypt.org
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 80
+    name: http
+    protocol: HTTP
