@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: acme-v02-api-letsencrypt-org
+  namespace: cert-manager
+spec:
+  hosts:
+  - acme-v02.api.letsencrypt.org
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+# https://istio.io/docs/tasks/traffic-management/egress/wildcard-egress-hosts/#configure-direct-traffic-to-a-wildcard-host
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: ingress-domains
+  namespace: cert-manager
+spec:
+  hosts:
+  - "*.lukeaddison.co.uk"
+  - "*.dippystreams.co.uk"
+  - "dippystreams.co.uk"
+  exportTo:
+  - "."
+  location: MESH_EXTERNAL
+  ports:
+  - number: 80
+    name: http
+    protocol: HTTP
