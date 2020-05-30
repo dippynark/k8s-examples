@@ -1,0 +1,193 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: dippystreams-co-uk
+  namespace: plex
+spec:
+  hosts:
+  - dippystreams.co.uk
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+# https://istio.io/docs/tasks/traffic-management/egress/wildcard-egress-hosts/#configure-direct-traffic-to-a-wildcard-host
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: plex-tv
+  namespace: plex
+spec:
+  hosts:
+  - plex.tv
+  - "*.plex.tv"
+  exportTo:
+  - "."
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: tls
+    protocol: TLS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: plex-bz
+  namespace: plex
+spec:
+  hosts:
+  - plex.bz
+  - "*.plex.bz"
+  exportTo:
+  - "."
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: tls
+    protocol: TLS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: 82-34-151-96-c3522e83926d4dfba44f77bc49954d69-plex-direct
+  namespace: plex
+spec:
+  hosts:
+  - 82-34-151-96.c3522e83926d4dfba44f77bc49954d69.plex.direct
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: 10-100-96-39-abcdefghijklmnopqrstuvwxyz012345-plex.direct
+  namespace: plex
+spec:
+  hosts:
+  - 10-100-96-39.abcdefghijklmnopqrstuvwxyz012345.plex.direct
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: resources-cdn-plexapp-com
+  namespace: plex
+spec:
+  hosts:
+  - resources-cdn.plexapp.com
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 80
+    name: http
+    protocol: HTTP
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: api-tmdb-org
+  namespace: plex
+spec:
+  hosts:
+  - api.tmdb.org
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: image-tmdb-org
+  namespace: plex
+spec:
+  hosts:
+  - image.tmdb.org
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 80
+    name: http
+    protocol: HTTP
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: api-cinematerial-com
+  namespace: plex
+spec:
+  hosts:
+  - api.cinematerial.com
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: me-plexapp-com
+  namespace: plex
+spec:
+  hosts:
+  - me.plexapp.com
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: lastfm-z-plexapp-com
+  namespace: plex
+spec:
+  hosts:
+  - lastfm-z.plexapp.com
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
