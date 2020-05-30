@@ -11,11 +11,12 @@ spec:
   values:
     global:
       proxy:
-        accessLogFile: /dev/stdout
         resources:
           requests:
             cpu: 20m
             memory: 20Mi
+    meshConfig:
+      accessLogFile: /dev/stdout
       outboundTrafficPolicy:
         mode: REGISTRY_ONLY
     sidecarInjectorWebhook:
