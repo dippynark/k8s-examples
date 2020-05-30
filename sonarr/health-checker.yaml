@@ -58,6 +58,8 @@ spec:
                       continue
                   if source == "IndexerRssCheck" and message == "All rss-capable indexers are temporarily unavailable due to recent indexer errors":
                       continue
+                  if source == "RemovedSeriesCheck" and message == "Series Robot Wars (2016) (tvdbid 314683) was removed from TheTVDB":
+                      continue
                   print(error)
                   unrecognised_error = True
 

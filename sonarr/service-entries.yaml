@@ -18,6 +18,23 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
+  name: broadcasthe-net
+  namespace: sonarr
+spec:
+  hosts:
+  - broadcasthe.net
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
   name: neptune-whatbox-ca
   namespace: sonarr
 spec:
@@ -86,6 +103,23 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
+  name: sentry-sonarr-tv
+  namespace: sonarr
+spec:
+  hosts:
+  - sentry.sonarr.tv
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
   name: services-sonarr-tv
   namespace: sonarr
 spec:
@@ -125,6 +159,23 @@ metadata:
 spec:
   hosts:
   - plex.tv
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: artworks-thetvdb-com
+  namespace: sonarr
+spec:
+  hosts:
+  - artworks.thetvdb.com
   exportTo:
   - "."
   resolution: DNS
