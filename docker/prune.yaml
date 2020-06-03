@@ -22,7 +22,13 @@ spec:
         - -c
         - |
           while true; do
-            docker system prune -f --filter "until=48h"
+            #docker system prune -f --filter "until=48h"
+            #docker container prune -f --filter "until=48h"
+            # Cannot use system or conntainer prune as this triggers Kubernetes to restart init
+            # containers
+            # https://github.com/kubernetes/kubernetes/issues/86531
+            docker image prune -af --filter "until=48h"
+
             docker volume prune -f
             sleep 3600
           done
