@@ -53,36 +53,21 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: 82-34-151-96-c3522e83926d4dfba44f77bc49954d69-plex-direct
+  name: plex-direct
   namespace: plex
 spec:
   hosts:
-  - 82-34-151-96.c3522e83926d4dfba44f77bc49954d69.plex.direct
+  - "*.plex.direct"
   exportTo:
   - "."
-  resolution: DNS
   location: MESH_EXTERNAL
   ports:
   - number: 443
-    name: https
-    protocol: HTTPS
----
-apiVersion: networking.istio.io/v1alpha3
-kind: ServiceEntry
-metadata:
-  name: 10-100-96-39-abcdefghijklmnopqrstuvwxyz012345-plex.direct
-  namespace: plex
-spec:
-  hosts:
-  - 10-100-96-39.abcdefghijklmnopqrstuvwxyz012345.plex.direct
-  exportTo:
-  - "."
-  resolution: DNS
-  location: MESH_EXTERNAL
-  ports:
-  - number: 443
-    name: https
-    protocol: HTTPS
+    name: tls
+    protocol: TLS
+  - number: 32400
+    name: tls-plex
+    protocol: TLS
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
@@ -188,6 +173,9 @@ spec:
   resolution: DNS
   location: MESH_EXTERNAL
   ports:
+  - number: 80
+    name: http
+    protocol: HTTP
   - number: 443
     name: https
     protocol: HTTPS
@@ -200,6 +188,23 @@ metadata:
 spec:
   hosts:
   - artworks.thetvdb.com
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: lastfm-freetls-fastly-net
+  namespace: plex
+spec:
+  hosts:
+  - lastfm.freetls.fastly.net
   exportTo:
   - "."
   resolution: DNS
