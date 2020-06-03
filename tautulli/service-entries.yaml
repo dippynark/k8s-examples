@@ -18,19 +18,21 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: 82-34-151-96-c3522e83926d4dfba44f77bc49954d69-plex-direct
-  namespace: tautulli
+  name: plex-direct
+  namespace: plex
 spec:
   hosts:
-  - 82-34-151-96.c3522e83926d4dfba44f77bc49954d69.plex.direct
+  - "*.plex.direct"
   exportTo:
   - "."
-  resolution: DNS
   location: MESH_EXTERNAL
   ports:
+  - number: 443
+    name: tls
+    protocol: TLS
   - number: 32400
-    name: https
-    protocol: HTTPS
+    name: tls-plex
+    protocol: TLS
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
