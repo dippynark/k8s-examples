@@ -50,3 +50,20 @@ spec:
   - number: 32400
     name: tls-plex
     protocol: TLS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: plex-tv
+  namespace: tautulli
+spec:
+  hosts:
+  - plex.tv
+  - "*.plex.tv"
+  exportTo:
+  - "."
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: tls
+    protocol: TLS
