@@ -18,6 +18,12 @@ deployments:
     aleksbhowmick@googlemail.com
     notanotheremailaddress93@gmail.com
     mattheweppy@gmail.com
+- suffix: -wordpress
+  hostname: oauth2.wordpress.lukeaddison.co.uk
+  authenticatedEmails: |-
+    luke@lukeaddison.co.uk
+    lukeaddison785@gmail.com
+    addisondaniel43@gmail.com
 - suffix: -desktop
   hostname: oauth2.desktop.lukeaddison.co.uk
   authenticatedEmails: |-
