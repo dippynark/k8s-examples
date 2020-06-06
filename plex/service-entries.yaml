@@ -183,11 +183,11 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: artworks-thetvdb-com
+  name: lastfm-freetls-fastly-net
   namespace: plex
 spec:
   hosts:
-  - artworks.thetvdb.com
+  - lastfm.freetls.fastly.net
   exportTo:
   - "."
   resolution: DNS
@@ -200,11 +200,45 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: lastfm-freetls-fastly-net
+  name: thetvdb-com
   namespace: plex
 spec:
   hosts:
-  - lastfm.freetls.fastly.net
+  - thetvdb.com
+  - "*.thetvdb.com"
+  exportTo:
+  - "."
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: tls
+    protocol: TLS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: gravatar-com
+  namespace: plex
+spec:
+  hosts:
+  - gravatar.com
+  - "*.gravatar.com"
+  exportTo:
+  - "."
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: tls
+    protocol: TLS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: artworks-thetvdb-com
+  namespace: plex
+spec:
+  hosts:
+  - artworks.thetvdb.com
   exportTo:
   - "."
   resolution: DNS
