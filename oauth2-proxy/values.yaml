@@ -4,12 +4,12 @@ image:
 domain: lukeaddison.co.uk
 deployments:
 - suffix: ""
-  hostname: oauth2.lukeaddison.co.uk
+  subdomain: oauth2
   authenticatedEmails: |-
     luke@lukeaddison.co.uk
     lukeaddison785@gmail.com
 - suffix: -wiki
-  hostname: oauth2.wiki.lukeaddison.co.uk
+  subdomain: oauth2.wiki
   authenticatedEmails: |-
     luke@lukeaddison.co.uk
     lukeaddison785@gmail.com
@@ -19,13 +19,13 @@ deployments:
     notanotheremailaddress93@gmail.com
     mattheweppy@gmail.com
 - suffix: -wordpress
-  hostname: oauth2.wordpress.lukeaddison.co.uk
+  subdomain: oauth2.wordpress
   authenticatedEmails: |-
     luke@lukeaddison.co.uk
     lukeaddison785@gmail.com
     addisondaniel43@gmail.com
 - suffix: -desktop
-  hostname: oauth2.desktop.lukeaddison.co.uk
+  subdomain: oauth2.desktop
   authenticatedEmails: |-
     luke@lukeaddison.co.uk
     lukeaddison785@gmail.com

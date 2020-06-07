@@ -1,3 +1,4 @@
+{{- $root := . }}
 {{- range .Values.deployments }}
 ---
 apiVersion: networking.k8s.io/v1beta1
@@ -12,9 +13,9 @@ spec:
   tls:
   - secretName: oauth2-{{ .suffix }}-tls
     hosts:
-    - {{ .hostname }}
+    - {{ .subdomain }}.{{ $root.Values.domain }}
   rules:
-  - host: {{ .hostname }}
+  - host: {{ .subdomain }}.{{ $root.Values.domain }}
     http:
       paths:
       - path: /oauth2
