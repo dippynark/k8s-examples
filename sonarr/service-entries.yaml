@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: api-broadcasthe-net
+  name: api.broadcasthe.net
   namespace: sonarr
 spec:
   hosts:
@@ -18,7 +18,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: broadcasthe-net
+  name: broadcasthe.net
   namespace: sonarr
 spec:
   hosts:
@@ -35,7 +35,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: neptune-whatbox-ca
+  name: neptune.whatbox.ca
   namespace: sonarr
 spec:
   hosts:
@@ -52,7 +52,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: dippystreams-co-uk
+  name: dippystreams.co.uk
   namespace: sonarr
 spec:
   hosts:
@@ -69,7 +69,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: thexem-de
+  name: thexem.de
   namespace: sonarr
 spec:
   hosts:
@@ -86,7 +86,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: skyhook-sonarr-tv
+  name: skyhook.sonarr.tv
   namespace: sonarr
 spec:
   hosts:
@@ -103,7 +103,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: sentry-sonarr-tv
+  name: sentry.sonarr.tv
   namespace: sonarr
 spec:
   hosts:
@@ -120,7 +120,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: services-sonarr-tv
+  name: services.sonarr.tv
   namespace: sonarr
 spec:
   hosts:
@@ -137,7 +137,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: api-pushbullet-com
+  name: api.pushbullet.com
   namespace: sonarr
 spec:
   hosts:
@@ -154,7 +154,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: plex-tv
+  name: plex.tv
   namespace: sonarr
 spec:
   hosts:
@@ -171,7 +171,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: artworks-thetvdb-com
+  name: artworks.thetvdb.com
   namespace: sonarr
 spec:
   hosts:

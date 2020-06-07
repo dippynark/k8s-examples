@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: bibliotik-me
+  name: bibliotik.me
   namespace: jackett
 spec:
   hosts:
@@ -18,7 +18,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: api-broadcasthe-net
+  name: api.broadcasthe.net
   namespace: jackett
 spec:
   hosts:
@@ -35,7 +35,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: gazellegames-net
+  name: gazellegames.net
   namespace: jackett
 spec:
   hosts:
@@ -52,7 +52,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: www-myanonamouse-net
+  name: www.myanonamouse.net
   namespace: jackett
 spec:
   hosts:
@@ -69,7 +69,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: passthepopcorn-me
+  name: passthepopcorn.me
   namespace: jackett
 spec:
   hosts:
@@ -86,7 +86,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: redacted-ch
+  name: redacted.ch
   namespace: jackett
 spec:
   hosts:

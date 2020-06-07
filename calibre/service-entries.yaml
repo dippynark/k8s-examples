@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: www-goodreads-com
+  name: www.goodreads.com
   namespace: calibre
 spec:
   hosts:
@@ -18,7 +18,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: smtp-gmail-com
+  name: smtp.gmail.com
   namespace: calibre
 spec:
   hosts:

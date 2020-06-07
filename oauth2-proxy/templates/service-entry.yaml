@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: www-googleapis-com
+  name: www.googleapis.com
   namespace: oauth2-proxy
 spec:
   hosts:

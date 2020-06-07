@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: passthepopcorn-me
+  name: passthepopcorn.me
   namespace: radarr
 spec:
   hosts:
@@ -18,7 +18,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: neptune-whatbox-ca
+  name: neptune.whatbox.ca
   namespace: radarr
 spec:
   hosts:
@@ -35,7 +35,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: dippystreams-co-uk
+  name: dippystreams.co.uk
   namespace: radarr
 spec:
   hosts:
@@ -52,7 +52,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: radarr-aeonlucid-com
+  name: radarr.aeonlucid.com
   namespace: radarr
 spec:
   hosts:
@@ -69,7 +69,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: api-pushbullet-com
+  name: api.pushbullet.com
   namespace: radarr
 spec:
   hosts:
@@ -86,7 +86,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: api-themoviedb-org
+  name: api.themoviedb.org
   namespace: radarr
 spec:
   hosts:
@@ -103,7 +103,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: image-tmdb-org
+  name: image.tmdb.org
   namespace: radarr
 spec:
   hosts:
@@ -120,7 +120,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: api-radarr-video
+  name: api.radarr.video
   namespace: radarr
 spec:
   hosts:
@@ -137,7 +137,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: plex-tv
+  name: plex.tv
   namespace: radarr
 spec:
   hosts:

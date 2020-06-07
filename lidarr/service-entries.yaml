@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: neptune-whatbox-ca
+  name: neptune.whatbox.ca
   namespace: lidarr
 spec:
   hosts:
@@ -18,7 +18,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: dippystreams-co-uk
+  name: dippystreams.co.uk
   namespace: lidarr
 spec:
   hosts:
@@ -35,7 +35,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: api-pushbullet-com
+  name: api.pushbullet.com
   namespace: lidarr
 spec:
   hosts:
@@ -52,7 +52,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: plex-tv
+  name: plex.tv
   namespace: lidarr
 spec:
   hosts:
@@ -69,7 +69,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: api-lidarr-audio
+  name: api.lidarr.audio
   namespace: lidarr
 spec:
   hosts:
@@ -86,7 +86,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: www-theaudiodb-com
+  name: www.theaudiodb.com
   namespace: lidarr
 spec:
   hosts:
@@ -103,7 +103,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: services-lidarr-audio
+  name: services.lidarr.audio
   namespace: lidarr
 spec:
   hosts:
@@ -120,7 +120,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: coverartarchive-org
+  name: coverartarchive.org
   namespace: lidarr
 spec:
   hosts:
@@ -138,7 +138,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: archive-org
+  name: archive.org
   namespace: lidarr
 spec:
   hosts:
@@ -155,7 +155,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: assets-fanart-tv
+  name: assets.fanart.tv
   namespace: lidarr
 spec:
   hosts:
