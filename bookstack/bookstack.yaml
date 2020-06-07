@@ -4,7 +4,7 @@ metadata:
   name: mysql
   namespace: bookstack
   labels:
-    app: bookstack
+    app: mysql
 spec:
   ports:
     - port: 3306
@@ -73,7 +73,6 @@ spec:
       port: 80
   selector:
     app: bookstack
-    tier: bookstack
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -88,12 +87,10 @@ spec:
   selector:
     matchLabels:
       app: bookstack
-      tier: bookstack
   template:
     metadata:
       labels:
         app: bookstack
-        tier: bookstack
     spec:
       containers:
       - image: solidnerd/bookstack:0.25.5
