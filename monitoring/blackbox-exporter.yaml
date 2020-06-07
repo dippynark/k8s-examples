@@ -84,6 +84,7 @@ spec:
   template:
     metadata:
       labels:
+        app: blackbox-exporter
         app.kubernetes.io/name: blackbox-exporter
     spec:
       restartPolicy: Always

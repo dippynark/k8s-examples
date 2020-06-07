@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         name: nvidia-driver-installer
+        app: nvidia-driver-installer
         app.kubernetes.io/name: nvidia-driver-installer
     spec:
       hostPID: true

@@ -9,8 +9,7 @@ spec:
   ports:
     - port: 3306
   selector:
-    app: bookstack
-    tier: mysql
+    app: mysql
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -18,19 +17,17 @@ metadata:
   name: mysql
   namespace: bookstack
   labels:
-    app: bookstack
+    app: mysql
 spec:
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: bookstack
-      tier: mysql
+      app: mysql
   template:
     metadata:
       labels:
-        app: bookstack
-        tier: mysql
+        app: mysql
     spec:
       containers:
       - image: mysql:5.6
