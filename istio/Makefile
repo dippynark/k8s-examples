@@ -8,3 +8,5 @@ init:
 
 install: init
 	$(ISTIOCTL) manifest apply -f operator.yaml
+	kubectl apply -f kiali-secret.yaml -f kiali-config.yaml -f kiali-ingress.yaml
+	kubectl delete pods -n istio-system -l app=kiali

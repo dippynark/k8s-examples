@@ -5,6 +5,8 @@ spec:
   addonComponents:
     prometheus:
       enabled: false
+    kiali:
+      enabled: true
   components:
     ingressGateways:
     - enabled: false
