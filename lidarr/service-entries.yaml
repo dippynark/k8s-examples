@@ -168,3 +168,20 @@ spec:
   - number: 80
     name: http
     protocol: HTTP
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: api.acoustid.org
+  namespace: lidarr
+spec:
+  hosts:
+  - api.acoustid.org
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
