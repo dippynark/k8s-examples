@@ -1,8 +1,9 @@
+# Danny
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: wordpress
+  name: danny-wordpress
   namespace: wordpress
 spec:
   resources:
@@ -10,13 +11,13 @@ spec:
       storage: 10Gi
   accessModes:
   - ReadWriteOnce
-  volumeName: wordpress-wordpress
+  volumeName: wordpress-danny-wordpress
   storageClassName: ""
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mariadb
+  name: danny-mariadb
   namespace: wordpress
 spec:
   resources:
@@ -24,5 +25,34 @@ spec:
       storage: 10Gi
   accessModes:
   - ReadWriteOnce
-  volumeName: wordpress-mariadb
+  volumeName: wordpress-danny-mariadb
+  storageClassName: ""
+# Tom
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tom-wordpress
+  namespace: wordpress
+spec:
+  resources:
+    requests:
+      storage: 10Gi
+  accessModes:
+  - ReadWriteOnce
+  volumeName: wordpress-tom-wordpress
+  storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tom-mariadb
+  namespace: wordpress
+spec:
+  resources:
+    requests:
+      storage: 10Gi
+  accessModes:
+  - ReadWriteOnce
+  volumeName: wordpress-tom-mariadb
   storageClassName: ""

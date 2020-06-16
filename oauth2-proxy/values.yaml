@@ -24,6 +24,7 @@ deployments:
     luke@lukeaddison.co.uk
     lukeaddison785@gmail.com
     addisondaniel43@gmail.com
+    tomaddison98@gmail.com
 - suffix: -desktop
   subdomain: oauth2.desktop
   authenticatedEmails: |-

@@ -1,15 +1,16 @@
+# Danny
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: wordpress-wordpress
+  name: wordpress-danny-wordpress
 spec:
   capacity:
     storage: 10Gi
   accessModes:
   - ReadWriteOnce
   local:
-    path: /var/lib/kubernetes/volumes/wordpress-wordpress
+    path: /var/lib/kubernetes/volumes/wordpress-danny-wordpress
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -22,14 +23,55 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: wordpress-mariadb
+  name: wordpress-danny-mariadb
 spec:
   capacity:
     storage: 10Gi
   accessModes:
   - ReadWriteOnce
   local:
-    path: /var/lib/kubernetes/volumes/wordpress-mariadb
+    path: /var/lib/kubernetes/volumes/wordpress-danny-mariadb
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - core1
+# Tom
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: wordpress-tom-wordpress
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+  - ReadWriteOnce
+  local:
+    path: /var/lib/kubernetes/volumes/wordpress-tom-wordpress
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - core1
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: wordpress-tom-mariadb
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+  - ReadWriteOnce
+  local:
+    path: /var/lib/kubernetes/volumes/wordpress-tom-mariadb
   nodeAffinity:
     required:
       nodeSelectorTerms:
