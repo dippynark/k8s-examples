@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: lidarr
-        image: linuxserver/lidarr:0.7.1.1381-ls1
+        image: linuxserver/lidarr:0.7.1.1381-ls3
         imagePullPolicy: Always
         resources:
           requests:
