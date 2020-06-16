@@ -153,3 +153,54 @@ spec:
   - number: 443
     name: https
     protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: www.googleapis.com
+  namespace: lazylibrarian
+spec:
+  hosts:
+  - www.googleapis.com
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: openlibrary.org
+  namespace: lazylibrarian
+spec:
+  hosts:
+  - openlibrary.org
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: i.gr-assets.com
+  namespace: lazylibrarian
+spec:
+  hosts:
+  - i.gr-assets.com
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
