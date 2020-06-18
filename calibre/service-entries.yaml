@@ -29,5 +29,5 @@ spec:
   location: MESH_EXTERNAL
   ports:
   - number: 587
-    name: tcp
-    protocol: TCP
+    name: tls
+    protocol: TLS
