@@ -120,11 +120,13 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: api.tvmaze.com
+  name: tvmaze.com
   namespace: ombi
 spec:
   hosts:
+  - tvmaze.com
   - api.tvmaze.com
+  - www.tvmaze.com
   exportTo:
   - "."
   resolution: DNS
@@ -167,3 +169,20 @@ spec:
   - number: 80
     name: http
     protocol: HTTP
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: onesignal.com
+  namespace: ombi
+spec:
+  hosts:
+  - onesignal.com
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
