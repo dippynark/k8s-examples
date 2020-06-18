@@ -171,6 +171,11 @@ spec:
                                   server.d.erase(hash)
                                   continue
 
+                              if tracker_failure_reason == 'Unregistered torrent: Encode Errors':
+                                  print("Erasing %s: %s" % (name, tracker_failure_reason))
+                                  server.d.erase(hash)
+                                  continue
+
                               if tracker_failure_reason == 'Unregistered torrent: Specifically Banned: pre-retail':
                                   print("Erasing %s: %s" % (name, tracker_failure_reason))
                                   server.d.erase(hash)
