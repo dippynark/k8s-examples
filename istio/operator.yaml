@@ -8,6 +8,16 @@ spec:
     kiali:
       enabled: true
   components:
+    pilot:
+      k8s:
+        overlays:
+        - apiVersion: policy/v1beta1
+          kind: PodDisruptionBudget
+          name: istiod
+          patches:
+          - path: spec.minAvailable
+        podDisruptionBudget:
+          maxUnavailable: 1
     ingressGateways:
     - enabled: false
   values:
