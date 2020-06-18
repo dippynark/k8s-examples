@@ -1,4 +1,4 @@
-export ISTIO_VERSION = 1.6.0
+export ISTIO_VERSION = 1.6.2
 export ARCH = osx
 export ISTIOCTL := $(CURDIR)/istio-$(ISTIO_VERSION)-$(ARCH)/bin/istioctl
 
