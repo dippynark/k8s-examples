@@ -192,9 +192,11 @@ spec:
 
               if not ratio_will_be_below_minimum and disk_space_used/disk_space_allotted <= 0.95:
                   # start all incomplete torrents
+                  # calling `d.check_hash=` first seems to unstick some torrents
                   r = server.d.multicall.filtered("",
                     "main",
                     "and=\"d.incomplete=,cat=1\",\"or=\\\"equal=d.custom1=,cat=LukeBooks\\\",\\\"equal=d.custom1=,cat=LukeFilms\\\",\\\"equal=d.custom1=,cat=LukeMusic\\\",\\\"equal=d.custom1=,cat=LukeTVShows\\\",\\\"equal=d.custom1=,cat=LukeApplications\\\",\\\"equal=d.custom1=,cat=LukeGames\\\"\"",
+                    "d.check_hash=",
                     "d.start=")
 
               stopping_torrents_failed = False

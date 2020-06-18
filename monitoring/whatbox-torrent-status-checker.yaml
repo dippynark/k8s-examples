@@ -132,6 +132,13 @@ spec:
                           print("%s is in a stopped state" % name)
                           continue
 
+                      # This seems to be the signature for books that have finished downloading but
+                      # have failed to continue seeding
+                      if state == 1 and is_open == 0 and is_active == 0 and message == "":
+                          print("%s is in a finished state" % name)
+                          server.d.check_hash(hash)
+                          continue
+
                       # give failing torrents at least three days to be downloaded if finished. This
                       # could happen if an early release is banned for example
                       now = datetime.datetime.now()
