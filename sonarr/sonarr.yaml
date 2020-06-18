@@ -82,10 +82,6 @@ spec:
       - name: sonarr
         image: dippynark/sonarr:v3
         imagePullPolicy: Always
-        resources:
-          requests:
-            cpu: 50m
-            memory: 100Mi
         ports:
         - containerPort: 8989
           name: http

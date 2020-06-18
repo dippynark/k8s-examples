@@ -39,10 +39,6 @@ spec:
         - -g 
         - "ntlm auth = yes" 
         - -S
-        resources:
-          requests:
-            cpu: 50m
-            memory: 100Mi
         ports:
         - name: tcp-netbios
           containerPort: 139

@@ -30,10 +30,6 @@ spec:
       - name: tautulli
         image: tautulli/tautulli
         imagePullPolicy: Always
-        resources:
-          requests:
-            cpu: 50m
-            memory: 50Mi
         readinessProbe:
           httpGet:
             path: /

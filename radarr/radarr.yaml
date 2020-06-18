@@ -81,10 +81,6 @@ spec:
       - name: radarr
         image: dippynark/radarr
         imagePullPolicy: Always
-        resources:
-          requests:
-            cpu: 50m
-            memory: 100Mi
         ports:
         - containerPort: 7878
           name: http

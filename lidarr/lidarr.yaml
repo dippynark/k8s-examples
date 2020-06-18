@@ -30,10 +30,6 @@ spec:
       - name: lidarr
         image: linuxserver/lidarr:0.7.1.1381-ls3
         imagePullPolicy: Always
-        resources:
-          requests:
-            cpu: 50m
-            memory: 100Mi
         ports:
         - containerPort: 8686
           name: http

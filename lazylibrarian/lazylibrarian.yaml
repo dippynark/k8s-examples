@@ -53,10 +53,6 @@ spec:
       - name: lazylibrarian
         image: linuxserver/lazylibrarian
         imagePullPolicy: Always
-        resources:
-          requests:
-            cpu: 50m
-            memory: 100Mi
         readinessProbe:
           httpGet:
             path: /

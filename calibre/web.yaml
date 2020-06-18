@@ -59,10 +59,6 @@ spec:
           initialDelaySeconds: 120
           failureThreshold: 5
           timeoutSeconds: 10
-        resources:
-          requests:
-            cpu: 50m
-            memory: 100Mi
       volumes:
       - name: books
         persistentVolumeClaim:

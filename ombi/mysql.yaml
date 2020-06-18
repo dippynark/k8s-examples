@@ -54,10 +54,6 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 10
           timeoutSeconds: 10
-        resources:
-          requests:
-            cpu: 50m
-            memory: 500Mi
         volumeMounts:
         - name: data
           mountPath: /var/lib/mysql
