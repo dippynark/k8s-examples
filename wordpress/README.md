@@ -10,6 +10,8 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 helm upgrade --install danny --namespace wordpress \
   --set wordpressUsername=admin \
   --set wordpressPassword=admin \
+  --set mariadb.rootUser.password=mariadb \
+  --set mariadb.db.password=mariadb \
   --set persistence.existingClaim=danny-wordpress \
   --set mariadb.master.persistence.existingClaim=danny-mariadb \
   --set service.type=ClusterIP \
@@ -17,14 +19,14 @@ helm upgrade --install danny --namespace wordpress \
   --set resources.requests.cpu=100m \
   --set mariadb.resources.requests.memory=128Mi \
   --set mariadb.resources.requests.cpu=100m \
-  --set mariadb.rootUser.password=mariadb \
-  --set mariadb.db.password=mariadb \
   --version 9.3.10 \
   bitnami/wordpress
 # Tom
 helm upgrade --install tom --namespace wordpress \
   --set wordpressUsername=admin \
   --set wordpressPassword=admin \
+  --set mariadb.rootUser.password=mariadb \
+  --set mariadb.db.password=mariadb \
   --set persistence.existingClaim=tom-wordpress \
   --set mariadb.master.persistence.existingClaim=tom-mariadb \
   --set service.type=ClusterIP \
@@ -32,8 +34,6 @@ helm upgrade --install tom --namespace wordpress \
   --set resources.requests.cpu=100m \
   --set mariadb.resources.requests.memory=128Mi \
   --set mariadb.resources.requests.cpu=100m \
-  --set mariadb.rootUser.password=mariadb \
-  --set mariadb.db.password=mariadb \
   --version 9.3.10 \
   bitnami/wordpress
 ```
