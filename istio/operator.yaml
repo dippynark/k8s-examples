@@ -25,8 +25,8 @@ spec:
       proxy:
         resources:
           requests:
-            cpu: 20m
-            memory: 20Mi
+            cpu: 10m
+            memory: 10Mi
     meshConfig:
       accessLogFile: /dev/stdout
       outboundTrafficPolicy:
