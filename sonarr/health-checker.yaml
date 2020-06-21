@@ -50,6 +50,8 @@ spec:
                       continue
                   if source == 'DownloadClientCheck' and message == 'Unable to communicate with Whatbox. Unable to connect to rTorrent, please check your settings':
                       continue
+                  if source == 'DownloadClientStatusCheck' and message == 'All download clients are unavailable due to failures':
+                      continue
                   if source == "ImportMechanismCheck" and message == "Enable Completed Download Handling":
                       continue
                   if source == "IndexerStatusCheck" and message == "All indexers are unavailable due to failures":

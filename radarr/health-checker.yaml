@@ -48,6 +48,8 @@ spec:
                       continue
                   if error["message"] == 'Unable to communicate with Whatbox. Gateway Time-out':
                       continue
+                  if error["message"] == 'Unable to communicate with Whatbox. Bad Gateway':
+                      continue
                   print(error)
                   unrecognised_error = True
 
