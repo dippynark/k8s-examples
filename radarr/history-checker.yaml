@@ -46,9 +46,9 @@ spec:
               grabbed = {}
               imported = []
               for record in json_data['records']:
-                if record['eventType'] == 'downloadFolderImported' and record['sourceTitle'] not in imported:
-                  imported.append(record['sourceTitle'])
-                if record['eventType'] == 'grabbed' and record['sourceTitle'] not in imported:
+                if record['eventType'] == 'downloadFolderImported' and record['movieId'] not in imported:
+                  imported.append(record['movieId'])
+                if record['eventType'] == 'grabbed' and record['movieId'] not in imported:
                   if not grabbed.get(record['sourceTitle'], None):
                     grabbed[record['sourceTitle']] = []
                   grabbed[record['sourceTitle']].append(record)
