@@ -19,6 +19,7 @@ helm upgrade --install danny --namespace wordpress \
   --set resources.requests.cpu=100m \
   --set mariadb.resources.requests.memory=128Mi \
   --set mariadb.resources.requests.cpu=100m \
+  --set wordpressScheme=https \
   --version 9.3.10 \
   bitnami/wordpress
 # Tom

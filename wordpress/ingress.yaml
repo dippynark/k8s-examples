@@ -6,15 +6,20 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/auth-url: "https://oauth2.wordpress.lukeaddison.co.uk/oauth2/auth"
-    nginx.ingress.kubernetes.io/auth-signin: "https://oauth2.wordpress.lukeaddison.co.uk/oauth2/start?rd=https://$host$request_uri"
 spec:
   tls:
-  - secretName: danny-wordpress-tls
+  - secretName: dannyaddison-com-tls
     hosts:
-    - danny.wordpress.lukeaddison.co.uk
+    - dannyaddison.com
+    - www.dannyaddison.com
   rules:
-  - host: danny.wordpress.lukeaddison.co.uk
+  - host: dannyaddison.com
+    http:
+      paths:
+      - backend:
+          serviceName: danny-wordpress
+          servicePort: 80
+  - host: www.dannyaddison.com
     http:
       paths:
       - backend:

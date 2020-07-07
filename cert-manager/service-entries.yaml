@@ -25,7 +25,9 @@ spec:
   hosts:
   - "*.lukeaddison.co.uk"
   - "*.dippystreams.co.uk"
-  - "dippystreams.co.uk"
+  - dippystreams.co.uk
+  - dannyaddison.com
+  - www.dannyaddison.com
   exportTo:
   - "."
   location: MESH_EXTERNAL
