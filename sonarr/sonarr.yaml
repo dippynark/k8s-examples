@@ -92,6 +92,14 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8989
+          timeoutSeconds: 10
+          failureThreshold: 10
+          initialDelaySeconds: 60
+          periodSeconds: 60
         volumeMounts:
         - name: tv-shows
           mountPath: /tv
