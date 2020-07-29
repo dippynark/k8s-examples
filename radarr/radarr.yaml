@@ -44,16 +44,6 @@ spec:
             secretKeyRef:
               name: radarr
               key: whatbox_hostname
-        - name: RADARR_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: radarr
-              key: radarr_username
-        - name: RADARR_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: radarr
-              key: radarr_password
         - name: RADARR_APIKEY
           valueFrom:
             secretKeyRef:
@@ -75,7 +65,7 @@ spec:
         - -c
         - |
           while true; do
-            find /connect -type f -exec /opt/bin/link.py $WHATBOX_USERNAME $WHATBOX_PASSWORD $WHATBOX_HOSTNAME $RADARR_USERNAME $RADARR_PASSWORD $RADARR_APIKEY $PUSHBULLET_ACCESS_TOKEN {} \;
+            find /connect -type f -exec /opt/bin/link.py $WHATBOX_USERNAME $WHATBOX_PASSWORD $WHATBOX_HOSTNAME $RADARR_APIKEY $PUSHBULLET_ACCESS_TOKEN {} \;
             sleep 10
           done
       - name: radarr

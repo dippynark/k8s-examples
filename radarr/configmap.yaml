@@ -22,16 +22,14 @@ data:
     whatbox_username = sys.argv[1]
     whatbox_password = sys.argv[2]
     whatbox_hostname = sys.argv[3]
-    radarr_username = sys.argv[4]
-    radarr_password = sys.argv[5]
-    radarr_apikey = sys.argv[6]
-    pushbullet_access_token = sys.argv[7]
-    trigger_path = sys.argv[8]
+    radarr_apikey = sys.argv[4]
+    pushbullet_access_token = sys.argv[5]
+    trigger_path = sys.argv[6]
     torrent_hash = os.path.basename(trigger_path)
 
     print("Torrent hash: %s" % torrent_hash)
 
-    radarr_url = "https://%s:%s@radarr.radarr.svc.cluster.local/api/command?apikey=%s" % (radarr_username, radarr_password, radarr_apikey);
+    radarr_url = "http://radarr.radarr.svc.cluster.local/api/command?apikey=%s" % radarr_apikey;
 
     server_url = "https://%s:%s@%s:443/xmlrpc" % (whatbox_username, whatbox_password, whatbox_hostname);
     server = xmlrpc.client.Server(server_url);

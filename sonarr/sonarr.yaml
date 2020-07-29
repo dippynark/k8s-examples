@@ -45,16 +45,6 @@ spec:
             secretKeyRef:
               name: sonarr
               key: whatbox_hostname
-        - name: SONARR_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: sonarr
-              key: sonarr_username
-        - name: SONARR_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: sonarr
-              key: sonarr_password
         - name: SONARR_APIKEY
           valueFrom:
             secretKeyRef:
@@ -76,7 +66,7 @@ spec:
         - -c
         - |
           while true; do
-            find /connect -type f -exec /opt/bin/link.py $WHATBOX_USERNAME $WHATBOX_PASSWORD $WHATBOX_HOSTNAME $SONARR_USERNAME $SONARR_PASSWORD $SONARR_APIKEY $PUSHBULLET_ACCESS_TOKEN {} \;
+            find /connect -type f -exec /opt/bin/link.py $WHATBOX_USERNAME $WHATBOX_PASSWORD $WHATBOX_HOSTNAME $SONARR_APIKEY $PUSHBULLET_ACCESS_TOKEN {} \;
             sleep 10
           done
       - name: sonarr
