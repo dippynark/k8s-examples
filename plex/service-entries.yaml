@@ -72,22 +72,19 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: resources-cdn.plexapp.com
+  name: plexapp.com
   namespace: plex
 spec:
   hosts:
-  - resources-cdn.plexapp.com
+  - plexapp.com
+  - "*.plexapp.com"
   exportTo:
   - "."
-  resolution: DNS
   location: MESH_EXTERNAL
   ports:
-  - number: 80
-    name: http
-    protocol: HTTP
   - number: 443
-    name: https
-    protocol: HTTPS
+    name: tls
+    protocol: TLS
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
