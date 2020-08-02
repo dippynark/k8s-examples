@@ -74,7 +74,7 @@ spec:
         runAsUser: 472        
       containers:
       - name: grafana
-        image: grafana/grafana:6.7.2
+        image: grafana/grafana:7.1.1
         volumeMounts:
         - name: config
           mountPath: /etc/grafana/grafana.ini
@@ -115,4 +115,39 @@ spec:
         configMap:
           name: grafana
       - name: storage
-        emptyDir: {}
+        persistentVolumeClaim:
+          claimName: grafana
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: monitoring-grafana
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+  - ReadWriteOnce
+  local:
+    path: /var/lib/kubernetes/volumes/monitoring-grafana
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - core1
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  resources:
+    requests:
+      storage: 10Gi
+  accessModes:
+  - ReadWriteOnce
+  volumeName: monitoring-grafana
+  storageClassName: ""

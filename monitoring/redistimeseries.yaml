@@ -1,34 +1,35 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis
+  name: redistimeseries
   namespace: monitoring
 spec:
   ports:
   - port: 6379
     name: redis
+    targetPort: redis
   selector:
-    app: redis
+    app: redistimeseries
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: redis
+  name: redistimeseries
   namespace: monitoring
 spec:
   selector:
     matchLabels:
-      app: redis
-  serviceName: redis
+      app: redistimeseries
+  serviceName: redistimeseries
   replicas: 1
   template:
     metadata:
       labels:
-        app: redis
+        app: redistimeseries
     spec:
       containers:
       - name: redis
-        image: redis:5.0.7
+        image: redislabs/redistimeseries:1.4.2
         args:
         - --requirepass
         - $(REDIS_PASS)
@@ -41,7 +42,7 @@ spec:
         - name: REDIS_PASS
           valueFrom:
             secretKeyRef:
-              name: redis
+              name: redistimeseries
               key: REDIS_PASS
         volumeMounts:
         - name: data
@@ -49,4 +50,4 @@ spec:
       volumes:
       - name: data
         persistentVolumeClaim:
-          claimName: redis
+          claimName: redistimeseries

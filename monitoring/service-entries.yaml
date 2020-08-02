@@ -120,11 +120,28 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: stats.grafan.org
+  name: stats.grafana.org
   namespace: monitoring
 spec:
   hosts:
   - stats.grafana.org
+  exportTo:
+  - "."
+  resolution: DNS
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: storage.googleapis.com
+  namespace: monitoring
+spec:
+  hosts:
+  - storage.googleapis.com
   exportTo:
   - "."
   resolution: DNS

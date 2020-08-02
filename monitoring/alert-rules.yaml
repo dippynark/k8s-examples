@@ -169,13 +169,13 @@ spec:
       for: 2m
       labels:
         severity: warning
-    - alert: NetworkTransmitErrors
-      annotations:
-        message: Network interface {{ $labels.device }} in Pod {{ $labels.namespace }}/{{ $labels.pod }} showing transmit errors
-      expr: rate(node_network_transmit_errs_total{job="node-exporter",device!~"veth.+"}[2m]) > 0
-      for: 2m
-      labels:
-        severity: warning
+    #- alert: NetworkTransmitErrors
+    #  annotations:
+    #    message: Network interface {{ $labels.device }} in Pod {{ $labels.namespace }}/{{ $labels.pod }} showing transmit errors
+    #  expr: rate(node_network_transmit_errs_total{job="node-exporter",device!~"veth.+"}[2m]) > 0
+    #  for: 2m
+    #  labels:
+    #    severity: warning
     - alert: NodeNetworkInterfaceFlapping
       annotations:
         message: Network interface {{ $labels.device }} in Pod {{ $labels.namespace }}/{{ $labels.pod }} changing it's up status often
