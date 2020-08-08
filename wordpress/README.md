@@ -22,19 +22,4 @@ helm upgrade --install danny --namespace wordpress \
   --set wordpressScheme=https \
   --version 9.3.10 \
   bitnami/wordpress
-# Tom
-helm upgrade --install tom --namespace wordpress \
-  --set wordpressUsername=admin \
-  --set wordpressPassword=admin \
-  --set mariadb.rootUser.password=mariadb \
-  --set mariadb.db.password=mariadb \
-  --set persistence.existingClaim=tom-wordpress \
-  --set mariadb.master.persistence.existingClaim=tom-mariadb \
-  --set service.type=ClusterIP \
-  --set resources.requests.memory=128Mi \
-  --set resources.requests.cpu=100m \
-  --set mariadb.resources.requests.memory=128Mi \
-  --set mariadb.resources.requests.cpu=100m \
-  --version 9.3.10 \
-  bitnami/wordpress
 ```
