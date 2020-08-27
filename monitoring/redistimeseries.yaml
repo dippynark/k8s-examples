@@ -35,6 +35,8 @@ spec:
         - $(REDIS_PASS)
         - --appendonly
         - "yes"
+        - --loadmodule
+        - /usr/lib/redis/modules/redistimeseries.so
         ports:
         - containerPort: 6379
           name: redis
