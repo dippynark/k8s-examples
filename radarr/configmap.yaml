@@ -59,4 +59,3 @@ data:
 
     # always remove path to avoid continuous alerts if there is an issue
     os.remove(trigger_path)
-      

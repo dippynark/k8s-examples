@@ -6,7 +6,7 @@ metadata:
 spec:
   schedule: "*/10 * * * *"
   successfulJobsHistoryLimit: 1
-  concurrencyPolicy: Forbid
+  concurrencyPolicy: Replace
   jobTemplate:
     spec:
       backoffLimit: 1
@@ -94,4 +94,3 @@ spec:
                 print("Queue Ok - Nothing to do")
                 EOF
                 python queue-checker.py
-  
