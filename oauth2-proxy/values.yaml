@@ -19,6 +19,7 @@ deployments:
     aleksbhowmick@googlemail.com
     notanotheremailaddress93@gmail.com
     mattheweppy@gmail.com
+    hanmorris13@gmail.com
 - suffix: -wordpress
   subdomain: oauth2.wordpress
   authenticatedEmails: |-
