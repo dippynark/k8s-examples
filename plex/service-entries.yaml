@@ -82,6 +82,9 @@ spec:
   - "."
   location: MESH_EXTERNAL
   ports:
+  - number: 80
+    name: http
+    protocol: HTTP
   - number: 443
     name: tls
     protocol: TLS
