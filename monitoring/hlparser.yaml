@@ -1,0 +1,248 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: hlparser
+  namespace: monitoring
+spec:
+  schedule: "0 0 * * *"
+  successfulJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+          annotations:
+            sidecar.istio.io/inject: "false"
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: hlparser
+            image: dippynark/hlparser
+            env:
+            - name: USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: hlparser
+                  key: USERNAME
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hlparser
+                  key: PASSWORD
+            - name: DOB
+              valueFrom:
+                secretKeyRef:
+                  name: hlparser
+                  key: DOB
+            - name: PIN
+              valueFrom:
+                secretKeyRef:
+                  name: hlparser
+                  key: PIN
+            - name: REDIS_HOST
+              value: redistimeseries
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redistimeseries
+                  key: REDIS_PASS
+            args:
+            - bash
+            - -c
+            - |
+              set -euo pipefail
+
+              cat > hlparser.py <<EOF
+              import os
+              import io
+              import json
+              import mechanicalsoup
+              import time
+              import redis
+              import datetime
+              from contextlib import redirect_stdout
+              from redistimeseries.client import Client
+
+              username = os.environ['USERNAME']
+              username_input_name = "username"
+
+              dob = os.environ['DOB']
+              dob_input_name = "date-of-birth"
+
+              password = os.environ['PASSWORD']
+              password_input_name = "online-password-verification"
+
+              pin = os.environ['PIN']
+
+              redis_password = os.environ['REDIS_PASSWORD']
+
+              my_accounts = "https://online.hl.co.uk/my-accounts"
+              login_step_one_url = "https://online.hl.co.uk/my-accounts/login-step-one"
+              login_step_two_url = "https://online.hl.co.uk/my-accounts/login-step-two"
+
+              account_csv_url = "https://online.hl.co.uk/my-accounts/account_summary_csv/sort/stock/sortdir/asc"
+
+              sas_account_url = "https://online.hl.co.uk/my-accounts/account_summary/account/22"
+              lifetime_account_url = "https://online.hl.co.uk/my-accounts/account_summary/account/25"
+
+              sas_account_csv_filename = "sas.csv"
+              lifetime_account_csv_filename = "lifetime.csv"
+
+              # initialise browser
+              browser = mechanicalsoup.StatefulBrowser()
+              browser.open(login_step_one_url)
+
+              # form step one
+              browser.select_form('#login')
+              browser[username_input_name] = username
+              browser[dob_input_name] = dob
+              r = browser.submit_selected()
+
+              # form step two
+              browser.select_form('#login-step2')
+              browser[password_input_name] = password
+              f = io.StringIO()
+              with redirect_stdout(f):
+                  browser.get_current_form().print_summary()
+              form_summary = f.getvalue()
+              numbers_entered = 0
+              if 'Enter the 1st' in form_summary:
+                  numbers_entered += 1
+                  browser["secure-number[%s]" % str(numbers_entered)] = pin[0]
+              if 'Enter the 2nd' in form_summary:
+                  numbers_entered += 1
+                  browser["secure-number[%s]" % str(numbers_entered)] = pin[1]
+              if 'Enter the 3rd' in form_summary:
+                  numbers_entered += 1
+                  browser["secure-number[%s]" % str(numbers_entered)] = pin[2]
+              if 'Enter the 4th' in form_summary:
+                  numbers_entered += 1
+                  browser["secure-number[%s]" % str(numbers_entered)] = pin[3]
+              if 'Enter the 5th' in form_summary:
+                  numbers_entered += 1
+                  browser["secure-number[%s]" % str(numbers_entered)] = pin[4]
+              if 'Enter the 6th' in form_summary:
+                  numbers_entered += 1
+                  browser["secure-number[%s]" % str(numbers_entered)] = pin[5]
+              r = browser.submit_selected()
+
+              # verify successful login
+              if r.url != my_accounts:
+                  print("ERROR: failed to login")
+                  print(r.url)
+                  sys.exit(1)
+
+              # download stocks & shares isa csv
+              r = browser.open(sas_account_url)
+              r = browser.open(account_csv_url)
+              with open(sas_account_csv_filename, 'wb') as f:
+                  for chunk in r.iter_content(chunk_size=512 * 1024): 
+                      if chunk: # filter out keep-alive new chunks
+                          f.write(chunk)
+
+              # download lifetime isa csv
+              r = browser.open(lifetime_account_url)
+              r = browser.open(account_csv_url)
+              with open(lifetime_account_csv_filename, 'wb') as f:
+                  for chunk in r.iter_content(chunk_size=512 * 1024): 
+                      if chunk: # filter out keep-alive new chunks
+                          f.write(chunk)
+
+              # calculate total stocks & shares deposit
+              sas_account_total_deposit = 0.0
+              current_tax_year = datetime.datetime.now().year + 1
+              transaction_error = False
+              while True:
+                if transaction_error:
+                  break
+                tax_year = "%d/%s" % (current_tax_year - 1, str(current_tax_year)[-2:])
+                transactions_url = "https://online.hl.co.uk/ajaxx/list_subscriptions.php?action=fetch_subscriptions&account=22&taxyear=%s" % tax_year
+                r = browser.open(transactions_url)
+                r.raise_for_status()
+                transactions = json.loads(r.text)
+                for transaction in transactions:
+                  if "ErrMsg" in transaction:
+                    transaction_error = True
+                    break
+                  if "Value" in transaction:
+                    sas_account_total_deposit += float(transaction["Value"].strip())
+                    continue
+                  raise Exception("Unexpected transaction")
+                current_tax_year -= 1
+
+              # calculate total lifetime deposit
+              lifetime_account_total_deposit = 0.0
+              current_tax_year = datetime.datetime.now().year + 1
+              transaction_error = False
+              while True:
+                if transaction_error:
+                  break
+                tax_year = "%d/%s" % (current_tax_year - 1, str(current_tax_year)[-2:])
+                transactions_url = "https://online.hl.co.uk/ajaxx/list_subscriptions.php?action=fetch_subscriptions&account=25&taxyear=%s" % tax_year
+                r = browser.open(transactions_url)
+                r.raise_for_status()
+                transactions = json.loads(r.text)
+                for transaction in transactions:
+                  if "ErrMsg" in transaction:
+                    transaction_error = True
+                    break
+                  if "Value" in transaction:
+                    lifetime_account_total_deposit += float(transaction["Value"].strip())
+                    continue
+                  raise Exception("Unexpected transaction")
+                current_tax_year -= 1
+
+              # parse stocks & shares isa totals
+              with open(sas_account_csv_filename, encoding="ISO-8859-1") as fp:
+                lines = fp.readlines()
+                for line in lines:
+                  if line.startswith("Total value:"):
+                    sas_account_total_value = float(line.split('"')[1].replace(',', ''))
+                    break
+
+              # parse lifetime isa totals
+              with open(lifetime_account_csv_filename, encoding="ISO-8859-1") as fp:
+                lines = fp.readlines()
+                for line in lines:
+                  if line.startswith("Total value:"):
+                    lifetime_account_total_value = float(line.split('"')[1].replace(',', ''))
+                    break
+
+              # calcuate profit
+              sas_account_total_profit = sas_account_total_value - sas_account_total_deposit
+              lifetime_account_total_profit = lifetime_account_total_value - lifetime_account_total_deposit
+
+              # save to redis timeseries
+              rts = Client(host=os.environ['REDIS_HOST'], password=redis_password)
+              timestamp = int(round(time.time() * 1000))
+
+              sas_value_series = "Stocks & Shares ISA Value"
+              try:
+                rts.get(sas_value_series)
+              except redis.exceptions.ResponseError:
+                rts.create(sas_value_series)
+              rts.add(sas_value_series, timestamp, sas_account_total_value)
+
+              sas_profit_series = "Stocks & Shares ISA Profit"
+              try:
+                rts.get(sas_profit_series)
+              except redis.exceptions.ResponseError:
+                rts.create(sas_profit_series)
+              rts.add(sas_profit_series, timestamp, sas_account_total_profit)
+
+              lifetime_value_series = "Lifetime ISA Value"
+              try:
+                rts.get(lifetime_value_series)
+              except redis.exceptions.ResponseError:
+                rts.create(lifetime_value_series)
+              rts.add(lifetime_value_series, timestamp, lifetime_account_total_value)
+
+              lifetime_profit_series = "Lifetime ISA Profit"
+              try:
+                rts.get(lifetime_profit_series)
+              except redis.exceptions.ResponseError:
+                rts.create(lifetime_profit_series)
+              rts.add(lifetime_profit_series, timestamp, lifetime_account_total_profit)
+              EOF
+              python hlparser.py
