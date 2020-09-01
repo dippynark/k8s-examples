@@ -194,20 +194,24 @@ spec:
                 current_tax_year -= 1
 
               # parse stocks & shares isa totals
+              sas_account_total_value = 0
               with open(sas_account_csv_filename, encoding="ISO-8859-1") as fp:
                 lines = fp.readlines()
                 for line in lines:
                   if line.startswith("Total value:"):
-                    sas_account_total_value = float(line.split('"')[1].replace(',', ''))
-                    break
+                    sas_account_total_value += float(line.split('"')[1].replace(',', ''))
+                  if line.startswith("Amount available to invest:"):
+                    sas_account_total_value += float(line.split('"')[1].replace(',', ''))
 
               # parse lifetime isa totals
+              lifetime_account_total_value = 0
               with open(lifetime_account_csv_filename, encoding="ISO-8859-1") as fp:
                 lines = fp.readlines()
                 for line in lines:
                   if line.startswith("Total value:"):
-                    lifetime_account_total_value = float(line.split('"')[1].replace(',', ''))
-                    break
+                    lifetime_account_total_value += float(line.split('"')[1].replace(',', ''))
+                  if line.startswith("Amount available to invest:"):
+                    lifetime_account_total_value += float(line.split('"')[1].replace(',', ''))
 
               # calcuate profit
               sas_account_total_profit = sas_account_total_value - sas_account_total_deposit
