@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: calibre-web
-        image: linuxserver/calibre-web:0.6.8-ls74
+        image: linuxserver/calibre-web:0.6.8-ls77
         ports:
         - containerPort: 8083
         env:
