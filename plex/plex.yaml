@@ -98,8 +98,6 @@ spec:
         - name: ldconfig
           mountPath: /etc/ld.so.conf.d/nvidia.conf
           subPath: nvidia.conf
-        - name: pkcs12
-          mountPath: /config/pkcs12
       volumes:
       - name: music
         persistentVolumeClaim:
@@ -127,9 +125,3 @@ spec:
           items:
           - key: nvidia.conf
             path: nvidia.conf
-      - name: pkcs12
-        secret:
-          secretName: dippystreams-tls
-          items:
-          - key: keystore.p12
-            path: keystore.p12
