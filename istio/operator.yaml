@@ -2,6 +2,10 @@ apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 spec:
   profile: default
+  meshConfig:
+    accessLogFile: /dev/stdout
+    outboundTrafficPolicy:
+      mode: REGISTRY_ONLY
   addonComponents:
     prometheus:
       enabled: false
@@ -19,7 +23,8 @@ spec:
         podDisruptionBudget:
           maxUnavailable: 1
     ingressGateways:
-    - enabled: false
+    - name: istio-ingressgateway
+      enabled: false
   values:
     global:
       proxy:
@@ -27,10 +32,6 @@ spec:
           requests:
             cpu: 10m
             memory: 10Mi
-    meshConfig:
-      accessLogFile: /dev/stdout
-      outboundTrafficPolicy:
-        mode: REGISTRY_ONLY
     sidecarInjectorWebhook:
       #enableNamespacesByDefault: true
       rewriteAppHTTPProbe: true
