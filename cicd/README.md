@@ -1,11 +1,26 @@
 # CI/CD
 
 - Push code
-- ArgoCD watching GitHub applies config containing hash
-- Knative Eventing watches configmap
-- Sends event to endpoint to run Workflow to build code
-- Final Workflow step applies Application to change Helm parameters for new image version plus hash of repo commit
+- ArgoCD updates Application object
+- Argo Events picks up change
+- Revision is parsed and used to run build Workflow
+- Final Workflow updates Application to change Helm parameters for new image version
 - ArgoCD syncs automatically
+
+## Knative Eventing
+
+```sh
+# https://knative.dev/docs/install/any-kubernetes-cluster/#installing-the-eventing-component
+kubectl apply --filename https://github.com/knative/eventing/releases/download/v0.18.0/eventing-crds.yaml
+kubectl apply --filename https://github.com/knative/eventing/releases/download/v0.18.0/eventing-core.yaml
+```
+
+## Argo
+
+```sh
+kubectl create namespace argo
+kubectl apply -n argo -f https://raw.githubusercontent.com/argoproj/argo/v2.11.6/manifests/install.yaml
+```
 
 ## Argo CD
 
