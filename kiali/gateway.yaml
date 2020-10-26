@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: kiali
+  namespace: istio-system
+spec:
+  selector:
+    app: istio-ingressgateway
+  servers:
+  - port:
+      number: 8080
+      name: http
+      protocol: HTTP
+    hosts:
+    - kiali.lukeaddison.co.uk  
+    tls:
+      httpsRedirect: true
+  - port:
+      number: 8443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: lukeaddison-co-uk-wildcard-tls
+    hosts:
+    - kiali/kiali.lukeaddison.co.uk  

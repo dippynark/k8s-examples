@@ -11,6 +11,10 @@ spec:
       enabled: false
     kiali:
       enabled: true
+      namespace: kiali
+      k8s:
+        podAnnotations:
+          sidecar.istio.io/inject: "true"
   components:
     pilot:
       k8s:
@@ -48,6 +52,13 @@ spec:
           requests:
             cpu: 10m
             memory: 10Mi
+    kiali:
+      contextPath: /
+      prometheusAddr: http://prometheus.monitoring:9090
+      dashboard:
+        grafanaInClusterURL: http://grafana.monitoring:3000
+        auth:
+          strategy: anonymous
     sidecarInjectorWebhook:
       #enableNamespacesByDefault: true
       rewriteAppHTTPProbe: true
