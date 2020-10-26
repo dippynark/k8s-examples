@@ -66,11 +66,12 @@ spec:
     alertmanagers:
     - namespace: monitoring
       name: alertmanager
-      port: web
+      port: http-web
   version: v2.10.0
   externalUrl: http://prometheus.monitoring.svc.cluster.local:9090
   enableAdminAPI: true
   scrapeInterval: 30s
+  portName: http-web
   serviceAccountName: prometheus
   serviceMonitorSelector: {}
   podMetadata:

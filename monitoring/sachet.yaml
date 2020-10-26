@@ -17,6 +17,7 @@ metadata:
   name: sachet
   namespace: monitoring
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: sachet

@@ -5,7 +5,7 @@ metadata:
   namespace: monitoring
 spec:
   ports:
-  - name: web
+  - name: http-web
     port: 80
     protocol: TCP
     targetPort: web
@@ -18,9 +18,10 @@ metadata:
   name: alertmanager
   namespace: monitoring
 spec:
-  baseImage: quay.io/prometheus/alertmanager
+  image: quay.io/prometheus/alertmanager:v0.20.0
   externalUrl: https://alertmanager.lukeaddison.co.uk
   listenLocal: false
+  portName: http-web
   logFormat: logfmt
   logLevel: info
   paused: false
@@ -35,4 +36,3 @@ spec:
     runAsUser: 1000
   #serviceAccountName: prometheus-operator-alertmanager
   version: v0.20.0
----

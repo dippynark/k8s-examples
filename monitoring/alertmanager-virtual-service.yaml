@@ -1,11 +1,11 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: prometheus
+  name: alertmanager
   namespace: monitoring
 spec:
   hosts:
-  - prometheus.lukeaddison.co.uk
+  - alertmanager.lukeaddison.co.uk
   gateways:
   - istio-system/istio-ingressgateway
   http:
@@ -13,4 +13,6 @@ spec:
     - port: 8443
     route:
     - destination:
-        host: prometheus-operated
+        host: alertmanager-operated
+        port:
+          number: 9093

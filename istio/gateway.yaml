@@ -18,6 +18,7 @@ spec:
     - wiki.lukeaddison.co.uk
     - lazylibrarian.lukeaddison.co.uk
     - prometheus.lukeaddison.co.uk
+    - alertmanager.lukeaddison.co.uk
     - grafana.lukeaddison.co.uk
     - dippystreams.co.uk
     - requests.dippystreams.co.uk
@@ -39,6 +40,7 @@ spec:
     - bookstack/wiki.lukeaddison.co.uk
     - lazylibrarian/lazylibrarian.lukeaddison.co.uk
     - monitoring/prometheus.lukeaddison.co.uk
+    - monitoring/alertmanager.lukeaddison.co.uk
     - monitoring/grafana.lukeaddison.co.uk
   - port:
       number: 8443
