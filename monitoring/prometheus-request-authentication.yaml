@@ -1,0 +1,12 @@
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: prometheus
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: prometheus
+  jwtRules:
+  - issuer: https://accounts.google.com
+    jwksUri: https://www.googleapis.com/oauth2/v3/certs

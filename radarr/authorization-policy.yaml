@@ -1,14 +1,22 @@
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
-  name: istio-ingressgateway-internal
-  namespace: istio-system
+  name: radarr
+  namespace: radarr
 spec:
   selector:
     matchLabels:
-      app: istio-ingressgateway-internal
+      app: radarr
   rules:
+  - to:
+    - operation:
+        paths:
+        - "/api/*"
   - when:
     - key: request.auth.audiences
       values:
       - 189522423084-6opace55ro8aeqqgjsajsm24p6qlis6e.apps.googleusercontent.com
+    - key: request.auth.claims[email]
+      values:
+      - lukeaddison785@gmail.com
+      - luke@lukeaddison.co.uk

@@ -29,7 +29,7 @@ spec:
   - match:
     - port: 8443
       uri:
-        prefix: /api
+        prefix: /api/
     route:
     - destination:
         host: lidarr
