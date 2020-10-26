@@ -41,3 +41,5 @@ nodeExporter:
   enabled: false
 prometheus:
   enabled: false
+prometheusOperator:
+  prometheusInstanceNamespaces: ["monitoring"]
