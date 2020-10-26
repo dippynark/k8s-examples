@@ -37,17 +37,17 @@ spec:
       mode: SIMPLE
       credentialName: lukeaddison-co-uk-wildcard-tls
     hosts:
-    - jackett/jackett.lukeaddison.co.uk
-    - calibre/calibre.lukeaddison.co.uk
-    - bookstack/wiki.lukeaddison.co.uk
-    - lazylibrarian/lazylibrarian.lukeaddison.co.uk
-    - monitoring/alertmanager.lukeaddison.co.uk
-    - monitoring/grafana.lukeaddison.co.uk
+    - istio-system/jackett.lukeaddison.co.uk
+    - istio-system/wiki.lukeaddison.co.uk
+    - istio-system/lazylibrarian.lukeaddison.co.uk
+    - istio-system/alertmanager.lukeaddison.co.uk
+    - istio-system/grafana.lukeaddison.co.uk
     - istio-system/prometheus.lukeaddison.co.uk
     - istio-system/kiali.lukeaddison.co.uk
     - istio-system/radarr.lukeaddison.co.uk
     - istio-system/sonarr.lukeaddison.co.uk
     - istio-system/lidarr.lukeaddison.co.uk
+    - calibre/calibre.lukeaddison.co.uk
     - radarr/api.radarr.lukeaddison.co.uk
     - sonarr/api.sonarr.lukeaddison.co.uk
     - lidarr/api.lidarr.lukeaddison.co.uk

@@ -7,10 +7,10 @@ spec:
   hosts:
   - wiki.lukeaddison.co.uk
   gateways:
-  - istio-system/istio-ingressgateway
+  - istio-system/istio-ingressgateway-internal
   http:
   - match:
-    - port: 8443
+    - port: 8080
     route:
     - destination:
         host: bookstack
