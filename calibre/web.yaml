@@ -9,7 +9,8 @@ spec:
   selector:
     app: calibre-web
   ports:
-  - port: 80
+  - name: http
+    port: 80
     targetPort: 8083
 ---
 apiVersion: apps/v1
