@@ -16,6 +16,8 @@ spec:
     hosts:
     - monitoring/prometheus.lukeaddison.co.uk
     - radarr/radarr.lukeaddison.co.uk
+    - sonarr/sonarr.lukeaddison.co.uk
+    - lidarr/lidarr.lukeaddison.co.uk
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
@@ -35,6 +37,16 @@ spec:
       tls:
         mode: ISTIO_MUTUAL
         sni: radarr.lukeaddison.co.uk
+  - name: sonarr
+    trafficPolicy:
+      tls:
+        mode: ISTIO_MUTUAL
+        sni: sonarr.lukeaddison.co.uk
+  - name: lidarr
+    trafficPolicy:
+      tls:
+        mode: ISTIO_MUTUAL
+        sni: lidarr.lukeaddison.co.uk
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -73,5 +85,45 @@ spec:
     - destination:
         host: istio-ingressgateway-internal
         subset: radarr
+        port:
+          number: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: sonarr
+  namespace: istio-system
+spec:
+  hosts:
+  - sonarr.lukeaddison.co.uk
+  gateways:
+  - istio-system/istio-ingressgateway
+  http:
+  - match:
+    - port: 8443
+    route:
+    - destination:
+        host: istio-ingressgateway-internal
+        subset: sonarr
+        port:
+          number: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: lidarr
+  namespace: istio-system
+spec:
+  hosts:
+  - lidarr.lukeaddison.co.uk
+  gateways:
+  - istio-system/istio-ingressgateway
+  http:
+  - match:
+    - port: 8443
+    route:
+    - destination:
+        host: istio-ingressgateway-internal
+        subset: lidarr
         port:
           number: 80

@@ -21,6 +21,8 @@ spec:
     - grafana.lukeaddison.co.uk
     - prometheus.lukeaddison.co.uk
     - radarr.lukeaddison.co.uk
+    - sonarr.lukeaddison.co.uk
+    - lidarr.lukeaddison.co.uk
     - dippystreams.co.uk
     - requests.dippystreams.co.uk
     - dannyaddison.com
@@ -44,7 +46,11 @@ spec:
     - monitoring/grafana.lukeaddison.co.uk
     - istio-system/prometheus.lukeaddison.co.uk
     - istio-system/radarr.lukeaddison.co.uk
+    - istio-system/sonarr.lukeaddison.co.uk
+    - istio-system/lidarr.lukeaddison.co.uk
     - radarr/api.radarr.lukeaddison.co.uk
+    - sonarr/api.sonarr.lukeaddison.co.uk
+    - lidarr/api.lidarr.lukeaddison.co.uk
   - port:
       number: 8443
       name: https-plex
