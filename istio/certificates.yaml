@@ -23,3 +23,17 @@ spec:
     kind: ClusterIssuer
   dnsNames:
   - dippystreams.co.uk
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: dannyaddison-com-tls
+  namespace: istio-system
+spec:
+  secretName: dannyaddison-com-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+  - dannyaddison.com
+  - www.dannyaddison.com
