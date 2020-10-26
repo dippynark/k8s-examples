@@ -15,4 +15,13 @@ spec:
     # Enable HTTP01 validations
     - http01:
        ingress:
-         class: nginx
+         class: istio
+    - selector:
+        dnsZones:
+        - "*.lukeaddison.co.uk"
+      dns01:
+        cloudflare:
+          email: lukeaddison785@gmail.com
+          apiTokenSecretRef:
+            name: cloudflare-api-token
+            key: value

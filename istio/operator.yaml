@@ -3,7 +3,7 @@ kind: IstioOperator
 spec:
   profile: default
   meshConfig:
-    accessLogFile: /dev/stdout
+    #accessLogFile: /dev/stdout
     outboundTrafficPolicy:
       mode: REGISTRY_ONLY
   addonComponents:
@@ -24,7 +24,23 @@ spec:
           maxUnavailable: 1
     ingressGateways:
     - name: istio-ingressgateway
-      enabled: false
+      enabled: true
+      k8s:
+        overlays:
+        # Disable LoadBalancer so we can deploy our own
+        - apiVersion: v1
+          kind: Service
+          name: istio-ingressgateway
+          patches:
+          - path: spec.type
+            value: ClusterIP
+        - apiVersion: policy/v1beta1
+          kind: PodDisruptionBudget
+          name: istio-ingressgateway
+          patches:
+          - path: spec.minAvailable
+        podDisruptionBudget:
+          maxUnavailable: 1
   values:
     global:
       proxy:

@@ -1,0 +1,25 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: lukeaddison-co-uk-wildcard-tls
+  namespace: istio-system
+spec:
+  secretName: lukeaddison-co-uk-wildcard-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+  - "*.lukeaddison.co.uk"
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: dippystreams-co-uk-tls
+  namespace: istio-system
+spec:
+  secretName: dippystreams-co-uk-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+  - dippystreams.co.uk

@@ -7,16 +7,14 @@ metadata:
   labels:
     app: plex
 spec:
-  type: NodePort
   selector:
     app: plex
   ports:
   - name: https
     protocol: TCP
     port: 32400
-    nodePort: 32400
 ---
-apiVersion: scheduling.k8s.io/v1beta1
+apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:
   name: high-priority

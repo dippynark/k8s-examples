@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: plex
+  namespace: plex
+spec:
+  hosts:
+  - dippystreams.co.uk
+  gateways:
+  - istio-system/plex
+  http:
+  - match:
+    - port: 8443
+    route:
+    - destination:
+        host: plex
+  tls:
+  - match:
+    - port: 32400
+      sniHosts:
+      - dippystreams.co.uk
+    route:
+    - destination:
+        host: plex
