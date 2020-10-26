@@ -1,0 +1,70 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: istio-ingressgateway
+  namespace: istio-system
+spec:
+  selector:
+    app: istio-ingressgateway
+  servers:
+  - port:
+      number: 8080
+      name: http
+      protocol: HTTP
+    hosts:
+    - kiali.lukeaddison.co.uk
+    - jackett.lukeaddison.co.uk
+    - calibre.lukeaddison.co.uk
+    - dippystreams.co.uk
+    - requests.dippystreams.co.uk
+    - dannyaddison.com
+    - www.dannyaddison.com
+    tls:
+      httpsRedirect: true
+  - port:
+      number: 8443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: lukeaddison-co-uk-wildcard-tls
+    hosts:
+    - kiali/kiali.lukeaddison.co.uk
+    - jackett/jackett.lukeaddison.co.uk
+    - calibre/calibre.lukeaddison.co.uk
+  - port:
+      number: 8443
+      name: https-plex
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: dippystreams-co-uk-tls
+    hosts:
+    - plex/dippystreams.co.uk
+  - port:
+      number: 8443
+      name: https-plex-requests
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: requests-dippystreams-co-uk-tls
+    hosts:
+    - ombi/requests.dippystreams.co.uk
+  - port:
+      number: 8443
+      name: https-danny-wordpress
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: dannyaddison-com-tls
+    hosts:
+    - wordpress/dannyaddison.com
+    - wordpress/www.dannyaddison.com
+  - port:
+      number: 32400
+      name: https-plex-passthrough
+      protocol: HTTPS
+    tls:
+      mode: PASSTHROUGH
+    hosts:
+    - plex/dippystreams.co.uk

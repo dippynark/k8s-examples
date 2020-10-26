@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: danny-wordpress
+  namespace: wordpress
+spec:
+  hosts:
+  - dannyaddison.com
+  - www.dannyaddison.com
+  gateways:
+  - istio-system/istio-ingressgateway
+  http:
+  - match:
+    - port: 8443
+    route:
+    - destination:
+        host: danny-wordpress
+        port:
+          number: 80

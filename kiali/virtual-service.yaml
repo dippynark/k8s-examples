@@ -7,7 +7,7 @@ spec:
   hosts:
   - kiali.lukeaddison.co.uk
   gateways:
-  - istio-system/kiali
+  - istio-system/istio-ingressgateway
   http:
   - match:
     - port: 8443

@@ -7,7 +7,7 @@ spec:
   hosts:
   - calibre.lukeaddison.co.uk
   gateways:
-  - istio-system/calibre
+  - istio-system/istio-ingressgateway
   http:
   - match:
     - port: 8443

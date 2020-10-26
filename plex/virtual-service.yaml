@@ -7,7 +7,7 @@ spec:
   hosts:
   - dippystreams.co.uk
   gateways:
-  - istio-system/plex
+  - istio-system/istio-ingressgateway
   http:
   - match:
     - port: 8443
