@@ -6,3 +6,7 @@ init:
 
 install:
 	$(ISTIOCTL) manifest install -f operator.yaml
+	kubectl apply \
+		-f certificates.yaml \
+		-f gateway.yaml \
+		-f ingressgateway-service.yaml

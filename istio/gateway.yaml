@@ -15,6 +15,7 @@ spec:
     - kiali.lukeaddison.co.uk
     - jackett.lukeaddison.co.uk
     - calibre.lukeaddison.co.uk
+    - wiki.lukeaddison.co.uk
     - dippystreams.co.uk
     - requests.dippystreams.co.uk
     - dannyaddison.com
@@ -32,6 +33,7 @@ spec:
     - kiali/kiali.lukeaddison.co.uk
     - jackett/jackett.lukeaddison.co.uk
     - calibre/calibre.lukeaddison.co.uk
+    - bookstack/wiki.lukeaddison.co.uk
   - port:
       number: 8443
       name: https-plex

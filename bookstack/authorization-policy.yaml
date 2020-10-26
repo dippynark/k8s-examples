@@ -1,0 +1,25 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: bookstack
+  namespace: bookstack
+spec:
+  selector:
+    matchLabels:
+      app: bookstack
+  rules:
+  - when:
+    - key: request.auth.audiences
+      values:
+      - 189522423084-6opace55ro8aeqqgjsajsm24p6qlis6e.apps.googleusercontent.com
+    - key: request.auth.claims[email]
+      values:
+      - luke@lukeaddison.co.uk
+      - lukeaddison785@gmail.com
+      - addisondaniel43@gmail.com
+      - tomaddison98@gmail.com
+      - tomaddisonmusic@gmail.com
+      - aleksbhowmick@googlemail.com
+      - notanotheremailaddress93@gmail.com
+      - mattheweppy@gmail.com
+      - hanmorris13@gmail.com
