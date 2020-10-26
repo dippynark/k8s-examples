@@ -10,3 +10,4 @@ spec:
   jwtRules:
   - issuer: https://accounts.google.com
     jwksUri: https://www.googleapis.com/oauth2/v3/certs
+    forwardOriginalToken: true
