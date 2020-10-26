@@ -1,0 +1,18 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: prometheus
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: prometheus
+  rules:
+  - when:
+    - key: request.auth.audiences
+      values:
+      - 189522423084-6opace55ro8aeqqgjsajsm24p6qlis6e.apps.googleusercontent.com
+    - key: request.auth.claims[email]
+      values:
+      - lukeaddison785@gmail.com
+      - luke@lukeaddison.co.uk

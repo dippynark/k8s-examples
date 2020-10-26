@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  hosts:
+  - grafana.lukeaddison.co.uk
+  gateways:
+  - istio-system/istio-ingressgateway
+  http:
+  - match:
+    - port: 8443
+    route:
+    - destination:
+        host: grafana

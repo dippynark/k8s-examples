@@ -75,7 +75,7 @@ spec:
   serviceMonitorSelector: {}
   podMetadata:
     annotations:
-      sidecar.istio.io/inject: "false"
+      traffic.sidecar.istio.io/excludeOutboundIPRanges: 0.0.0.0/0
   resources:
     requests:
       memory: 400Mi
@@ -111,29 +111,6 @@ spec:
     targetPort: web
   selector:
     app: prometheus
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: prometheus
-  namespace: monitoring
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/auth-url: "https://oauth2.lukeaddison.co.uk/oauth2/auth"
-    nginx.ingress.kubernetes.io/auth-signin: "https://oauth2.lukeaddison.co.uk/oauth2/start?rd=https://$host$request_uri"
-spec:
-  tls:
-  - secretName: prometheus-tls
-    hosts:
-    - prometheus.lukeaddison.co.uk
-  rules:
-  - host: prometheus.lukeaddison.co.uk
-    http:
-      paths:
-      - backend:
-          serviceName: prometheus
-          servicePort: 9090
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
