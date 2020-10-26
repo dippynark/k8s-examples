@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: istio-ingressgateway-internal
+  namespace: istio-system
+spec:
+  selector:
+    app: istio-ingressgateway-internal
+  servers:
+  - port:
+      number: 8080
+      name: http
+      protocol: HTTP
+    hosts:
+    - prometheus.lukeaddison.co.uk
+    #tls:
+    #  httpsRedirect: true
+    # TODO: can I remove the 8443 server and get mTLS end to end?
+  - port:
+      number: 8443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: lukeaddison-co-uk-wildcard-tls
+    hosts:
+    - monitoring/prometheus.lukeaddison.co.uk

@@ -68,7 +68,7 @@ spec:
       name: alertmanager
       port: http-web
   version: v2.10.0
-  externalUrl: http://prometheus.monitoring.svc.cluster.local:9090
+  externalUrl: https://prometheus.lukeaddison.co.uk
   enableAdminAPI: true
   scrapeInterval: 30s
   portName: http-web

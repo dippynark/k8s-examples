@@ -39,9 +39,9 @@ spec:
     - calibre/calibre.lukeaddison.co.uk
     - bookstack/wiki.lukeaddison.co.uk
     - lazylibrarian/lazylibrarian.lukeaddison.co.uk
-    - monitoring/prometheus.lukeaddison.co.uk
     - monitoring/alertmanager.lukeaddison.co.uk
     - monitoring/grafana.lukeaddison.co.uk
+    - istio-system/prometheus.lukeaddison.co.uk
   - port:
       number: 8443
       name: https-plex

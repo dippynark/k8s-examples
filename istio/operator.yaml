@@ -45,6 +45,26 @@ spec:
           - path: spec.minAvailable
         podDisruptionBudget:
           maxUnavailable: 1
+    - name: istio-ingressgateway-internal
+      enabled: true
+      label:
+        app: istio-ingressgateway-internal
+      k8s:
+        overlays:
+        # Disable LoadBalancer so we can deploy our own
+        - apiVersion: v1
+          kind: Service
+          name: istio-ingressgateway-internal
+          patches:
+          - path: spec.type
+            value: ClusterIP
+        - apiVersion: policy/v1beta1
+          kind: PodDisruptionBudget
+          name: istio-ingressgateway-internal
+          patches:
+          - path: spec.minAvailable
+        podDisruptionBudget:
+          maxUnavailable: 1
   values:
     global:
       proxy:
@@ -54,7 +74,7 @@ spec:
             memory: 10Mi
     kiali:
       contextPath: /
-      prometheusAddr: http://prometheus.monitoring:9090
+      prometheusAddr: http://prometheus-operated.monitoring:9090
       dashboard:
         grafanaInClusterURL: http://grafana.monitoring:3000
         auth:

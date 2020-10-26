@@ -1,12 +1,12 @@
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
-  name: prometheus
-  namespace: monitoring
+  name: istio-ingressgateway-internal
+  namespace: istio-system
 spec:
   selector:
     matchLabels:
-      app: prometheus
+      app: istio-ingressgateway-internal
   rules:
   - when:
     - key: request.auth.audiences

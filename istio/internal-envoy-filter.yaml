@@ -1,16 +1,16 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
-  name: prometheus
-  namespace: monitoring
+  name: istio-ingressgateway-internal
+  namespace: istio-system
 spec:
   workloadSelector:
     labels:
-      app: prometheus
+      app: istio-ingressgateway-internal
   configPatches:
   - applyTo: HTTP_FILTER
     match:
-      context: SIDECAR_INBOUND
+      context: GATEWAY
       listener:
         filterChain:
           filter:
