@@ -17,9 +17,10 @@ spec:
     - calibre.lukeaddison.co.uk
     - wiki.lukeaddison.co.uk
     - lazylibrarian.lukeaddison.co.uk
-    - prometheus.lukeaddison.co.uk
     - alertmanager.lukeaddison.co.uk
     - grafana.lukeaddison.co.uk
+    - prometheus.lukeaddison.co.uk
+    - radarr.lukeaddison.co.uk
     - dippystreams.co.uk
     - requests.dippystreams.co.uk
     - dannyaddison.com
@@ -42,6 +43,7 @@ spec:
     - monitoring/alertmanager.lukeaddison.co.uk
     - monitoring/grafana.lukeaddison.co.uk
     - istio-system/prometheus.lukeaddison.co.uk
+    - istio-system/radarr.lukeaddison.co.uk
   - port:
       number: 8443
       name: https-plex
