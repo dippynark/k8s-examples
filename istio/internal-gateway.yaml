@@ -11,5 +11,8 @@ spec:
       number: 8080
       name: http
       protocol: HTTP
+    # TODO: enable mTLS
+    #tls:
+    #  mode: ISTIO_MUTUAL
     hosts:
     - monitoring/prometheus.lukeaddison.co.uk
