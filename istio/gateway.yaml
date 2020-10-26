@@ -44,6 +44,7 @@ spec:
     - monitoring/grafana.lukeaddison.co.uk
     - istio-system/prometheus.lukeaddison.co.uk
     - istio-system/radarr.lukeaddison.co.uk
+    - radarr/api.radarr.lukeaddison.co.uk
   - port:
       number: 8443
       name: https-plex
