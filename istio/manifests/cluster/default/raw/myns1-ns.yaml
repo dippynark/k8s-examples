@@ -6,6 +6,6 @@ metadata:
     app: raw
     chart: raw-0.2.3
     heritage: Helm
+    istio-injection: enabled
     release: kiali-namespaces
   name: myns1
-spec: null

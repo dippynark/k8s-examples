@@ -60,7 +60,7 @@ data:
       private_key_file: ""
     istio_namespace: kiali
     login_token:
-      signing_key: vxeF46HcSR5eHjqc
+      signing_key: PSNtojOXUwNwM1kM
     server:
       metrics_enabled: true
       metrics_port: 9090
