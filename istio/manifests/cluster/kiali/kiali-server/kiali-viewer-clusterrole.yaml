@@ -1,11 +1,16 @@
-# Source: Istio/templates/istioctl.yaml
+# Source: kiali-server/templates/role-viewer.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: kiali
+  name: kiali-viewer
   labels:
+    helm.sh/chart: kiali-server-1.25.0
     app: kiali
-    release: istio
+    app.kubernetes.io/name: kiali
+    app.kubernetes.io/instance: kiali
+    version: "v1.25.0"
+    app.kubernetes.io/version: "v1.25.0"
+    app.kubernetes.io/managed-by: Helm
 rules:
   - apiGroups: [""]
     resources:
@@ -15,6 +20,7 @@ rules:
       - nodes
       - pods
       - pods/log
+      - pods/proxy
       - replicationcontrollers
       - services
     verbs:
@@ -53,15 +59,35 @@ rules:
       - security.istio.io
     resources: ["*"]
     verbs:
-      - create
-      - delete
       - get
       - list
-      - patch
       - watch
+  - apiGroups: ["apps.openshift.io"]
+    resources:
+      - deploymentconfigs
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups: ["project.openshift.io"]
+    resources:
+      - projects
+    verbs:
+      - get
+  - apiGroups: ["route.openshift.io"]
+    resources:
+      - routes
+    verbs:
+      - get
   - apiGroups: ["monitoring.kiali.io"]
     resources:
       - monitoringdashboards
+    verbs:
+      - get
+      - list
+  - apiGroups: ["iter8.tools"]
+    resources:
+      - experiments
     verbs:
       - get
       - list

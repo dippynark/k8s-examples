@@ -1,0 +1,25 @@
+# Source: kiali-server/templates/dashboards/thorntail.yaml
+apiVersion: "monitoring.kiali.io/v1alpha1"
+kind: MonitoringDashboard
+metadata:
+  name: thorntail
+  labels:
+    helm.sh/chart: kiali-server-1.25.0
+    app: kiali
+    app.kubernetes.io/name: kiali
+    app.kubernetes.io/instance: kiali
+    version: "v1.25.0"
+    app.kubernetes.io/version: "v1.25.0"
+    app.kubernetes.io/managed-by: Helm
+  namespace: kiali
+spec:
+  runtime: Thorntail
+  title: Thorntail Metrics
+  discoverOn: "vendor:loaded_modules"
+  items:
+    - include: "microprofile-1.1"
+    - chart:
+        name: "Loaded modules"
+        spans: 6
+        metricName: "vendor:loaded_modules"
+        dataType: "raw"

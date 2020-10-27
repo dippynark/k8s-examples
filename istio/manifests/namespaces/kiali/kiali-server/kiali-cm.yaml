@@ -1,0 +1,68 @@
+# Source: kiali-server/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kiali
+  namespace: kiali
+  labels:
+    helm.sh/chart: kiali-server-1.25.0
+    app: kiali
+    app.kubernetes.io/name: kiali
+    app.kubernetes.io/instance: kiali
+    version: "v1.25.0"
+    app.kubernetes.io/version: "v1.25.0"
+    app.kubernetes.io/managed-by: Helm
+data:
+  config.yaml: |
+    auth:
+      openid: {}
+      openshift:
+        client_id_prefix: kiali
+      strategy: token
+    deployment:
+      accessible_namespaces:
+      - '**'
+      additional_service_yaml: {}
+      affinity:
+        node: {}
+        pod: {}
+        pod_anti: {}
+      custom_dashboards:
+        excludes:
+        - ""
+        includes:
+        - '*'
+      image_name: quay.io/kiali/kiali
+      image_pull_policy: Always
+      image_pull_secrets: []
+      image_version: v1.25.0
+      ingress_enabled: false
+      namespace: kiali
+      node_selector: {}
+      override_ingress_yaml:
+        metadata: {}
+      pod_annotations: {}
+      priority_class_name: ""
+      replicas: 1
+      resources: {}
+      secret_name: kiali
+      service_annotations: {}
+      service_type: ""
+      tolerations: []
+      verbose_mode: "3"
+      version_label: v1.25.0
+      view_only_mode: false
+    external_services:
+      custom_dashboards:
+        enabled: true
+    identity:
+      cert_file: ""
+      private_key_file: ""
+    istio_namespace: kiali
+    login_token:
+      signing_key: vxeF46HcSR5eHjqc
+    server:
+      metrics_enabled: true
+      metrics_port: 9090
+      port: 20001
+      web_root: /kiali

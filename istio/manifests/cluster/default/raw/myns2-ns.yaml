@@ -1,0 +1,11 @@
+# Source: raw/templates/resources.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app: raw
+    chart: raw-0.2.3
+    heritage: Helm
+    release: kiali-namespaces
+  name: myns2
+spec: null
