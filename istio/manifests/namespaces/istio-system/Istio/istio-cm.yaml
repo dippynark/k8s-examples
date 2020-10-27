@@ -1,0 +1,27 @@
+# Source: Istio/templates/istioctl.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: istio
+  namespace: istio-system
+  labels:
+    istio.io/rev: default
+    release: istio
+data:
+  # Configuration file for the mesh networks to be used by the Split Horizon EDS.
+  meshNetworks: |-
+    networks: {}
+  mesh: |-
+    defaultConfig:
+      discoveryAddress: istiod.istio-system.svc:15012
+      proxyMetadata:
+        DNS_AGENT: ""
+      tracing:
+        zipkin:
+          address: zipkin.istio-system:9411
+    disableMixerHttpReports: true
+    enablePrometheusMerge: true
+    outboundTrafficPolicy:
+      mode: REGISTRY_ONLY
+    rootNamespace: istio-system
+    trustDomain: cluster.local

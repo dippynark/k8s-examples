@@ -1,0 +1,13 @@
+# Source: Istio/templates/certificates.yaml
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: requests-dippystreams-co-uk-tls
+  namespace: istio-system
+spec:
+  secretName: requests-dippystreams-co-uk-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - requests.dippystreams.co.uk

@@ -1,0 +1,59 @@
+# Source: Istio/templates/internal-gateway.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: istio-ingressgateway-internal
+  namespace: istio-system
+spec:
+  host: istio-ingressgateway-internal.istio-system.svc.cluster.local
+  subsets:
+    - name: prometheus
+      trafficPolicy:
+        tls:
+          mode: ISTIO_MUTUAL
+          sni: prometheus.lukeaddison.co.uk
+    - name: alertmanager
+      trafficPolicy:
+        tls:
+          mode: ISTIO_MUTUAL
+          sni: alertmanager.lukeaddison.co.uk
+    - name: grafana
+      trafficPolicy:
+        tls:
+          mode: ISTIO_MUTUAL
+          sni: grafana.lukeaddison.co.uk
+    - name: jackett
+      trafficPolicy:
+        tls:
+          mode: ISTIO_MUTUAL
+          sni: jackett.lukeaddison.co.uk
+    - name: bookstack
+      trafficPolicy:
+        tls:
+          mode: ISTIO_MUTUAL
+          sni: wiki.lukeaddison.co.uk
+    - name: lazylibrarian
+      trafficPolicy:
+        tls:
+          mode: ISTIO_MUTUAL
+          sni: lazylibrarian.lukeaddison.co.uk
+    - name: kiali
+      trafficPolicy:
+        tls:
+          mode: ISTIO_MUTUAL
+          sni: kiali.lukeaddison.co.uk
+    - name: radarr
+      trafficPolicy:
+        tls:
+          mode: ISTIO_MUTUAL
+          sni: radarr.lukeaddison.co.uk
+    - name: sonarr
+      trafficPolicy:
+        tls:
+          mode: ISTIO_MUTUAL
+          sni: sonarr.lukeaddison.co.uk
+    - name: lidarr
+      trafficPolicy:
+        tls:
+          mode: ISTIO_MUTUAL
+          sni: lidarr.lukeaddison.co.uk

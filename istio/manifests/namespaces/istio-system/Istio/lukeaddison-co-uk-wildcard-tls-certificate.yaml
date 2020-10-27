@@ -1,0 +1,13 @@
+# Source: Istio/templates/certificates.yaml
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: lukeaddison-co-uk-wildcard-tls
+  namespace: istio-system
+spec:
+  secretName: lukeaddison-co-uk-wildcard-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.lukeaddison.co.uk"

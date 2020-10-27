@@ -1,0 +1,16 @@
+# Source: Istio/templates/istioctl.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: istio-kiali-viewer-role-binding-kiali
+  labels:
+    app: kiali
+    release: istio
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kiali-viewer
+subjects:
+  - kind: ServiceAccount
+    name: kiali-service-account
+    namespace: kiali

@@ -1,0 +1,11 @@
+# Source: Istio/templates/istioctl.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kiali
+  namespace: istio-system
+  labels:
+    app: kiali
+    release: istio
+data:
+  config.yaml: "istio_component_namespaces:\n  grafana: istio-system\n  tracing: istio-system\n  istiod: istio-system\n  prometheus: \nistio_namespace: istio-system\nauth:\n  strategy: anonymous\ndeployment:\n  accessible_namespaces: ['**']\nlogin_token:\n  signing_key: \"aCL7Eb7oq4\"\nserver:\n  port: 20001\n  web_root: /\nexternal_services:\n  istio:\n    url_service_version: http://istiod.istio-system:15014/version\n  tracing:\n    url: \n    in_cluster_url: http://tracing/jaeger\n  grafana:\n    url: https://grafana.lukeaddison.co.uk\n    in_cluster_url: http://grafana.monitoring:3000\n  prometheus:\n    url: http://prometheus-operated.monitoring:9090"

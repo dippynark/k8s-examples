@@ -1,0 +1,4 @@
+releases:
+- name: istio
+  namespace: istio-system
+  chart: ./charts/istio

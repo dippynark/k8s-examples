@@ -10,3 +10,11 @@ install:
 		-f certificates.yaml \
 		-f gateway.yaml \
 		-f ingressgateway-service.yaml
+
+generate:
+	$(ISTIOCTL) manifest generate -f operator.yaml > charts/istio/templates/istioctl.yaml
+	sed -i '' -e 's/{{/~~/g; s/}}/{{ "}}" }}/g; s/~~/{{ "{{" }}/g' charts/istio/templates/istioctl.yaml
+	rm -Rf manifests
+	jx gitops helmfile template \
+		--args="--include-crds" \
+		--output-dir manifests

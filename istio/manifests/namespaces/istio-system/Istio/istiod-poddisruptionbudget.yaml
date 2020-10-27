@@ -1,0 +1,17 @@
+# Source: Istio/templates/istioctl.yaml
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  labels:
+    app: istiod
+    istio: pilot
+    istio.io/rev: default
+    release: istio
+  name: istiod
+  namespace: istio-system
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: istiod
+      istio: pilot
