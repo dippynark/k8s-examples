@@ -17,8 +17,7 @@ metadata:
   name: sachet
   namespace: monitoring
 spec:
-  # kubectl scale deploy -n monitoring sachet --replicas 0
-  #replicas: 1
+  replicas: 1
   selector:
     matchLabels:
       app: sachet
