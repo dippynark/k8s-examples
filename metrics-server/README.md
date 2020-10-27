@@ -1,6 +1,9 @@
 # metrics-server
 
-https://github.com/kubernetes-incubator/metrics-server/tree/master/deploy/1.8%2B
+```sh
+# https://github.com/kubernetes-sigs/metrics-server
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.7/components.yaml
+```
 
 ## TODO
 
