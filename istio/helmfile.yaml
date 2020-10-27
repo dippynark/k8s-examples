@@ -1,4 +1,24 @@
+repositories:
+- name: kiali
+  url: https://kiali.org/helm-charts
+- name: incubator
+  url: https://storage.googleapis.com/kubernetes-charts-incubator
 releases:
 - name: istio
   namespace: istio-system
   chart: ./charts/istio
+- name: kiali-namespaces
+  chart: incubator/raw
+  values:
+  - resources:
+    - apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: myns1
+        labels:
+          istio-injection: enabled
+- name: kiali
+  namespace: kiali
+  chart: kiali/kiali-server
+  values:
+  - kiali-values.yaml
