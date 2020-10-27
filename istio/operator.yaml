@@ -78,6 +78,7 @@ spec:
       dashboard:
         grafanaInClusterURL: http://grafana.monitoring:3000
         grafanaURL: https://grafana.lukeaddison.co.uk
+        viewOnlyMode: true
         auth:
           strategy: anonymous
     sidecarInjectorWebhook:
