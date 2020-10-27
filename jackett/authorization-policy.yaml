@@ -8,6 +8,10 @@ spec:
     matchLabels:
       app: jackett
   rules:
+  - to:
+    - operation:
+        paths:
+        - "/api/*"
   - when:
     - key: request.auth.audiences
       values:

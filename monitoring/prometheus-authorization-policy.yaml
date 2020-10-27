@@ -8,11 +8,7 @@ spec:
     matchLabels:
       app: prometheus
   rules:
-  - # TODO: why does this not work?
-    #from:
-    #- source:
-    #    principals: ["cluster.local/ns/kiali/sa/kiali-service-account"]
-    to:
+  - to:
     - operation:
         paths:
         - "/api/*"
