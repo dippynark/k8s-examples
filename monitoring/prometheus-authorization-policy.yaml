@@ -11,7 +11,14 @@ spec:
   - to:
     - operation:
         paths:
+        - /version
+        methods:
+        - GET
+    - operation:
+        paths:
         - "/api/*"
+        methods:
+        - POST
   - when:
     - key: request.auth.audiences
       values:

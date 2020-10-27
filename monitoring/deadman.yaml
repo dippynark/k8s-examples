@@ -6,7 +6,7 @@ metadata:
   namespace: monitoring
 spec:
   ports:
-  - name: alertmanager
+  - name: http-alertmanager
     port: 9095
   selector:
     app: deadman

@@ -8,6 +8,12 @@ spec:
     matchLabels:
       app: grafana
   rules:
+  - to:
+    - operation:
+        paths:
+        - "/api/*"
+        methods:
+        - GET
   - when:
     - key: request.auth.audiences
       values:

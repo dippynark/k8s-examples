@@ -112,9 +112,9 @@ spec:
     port: 8080
     targetPort: http-metrics
     protocol: TCP
-  - name: telemetry
+  - name: http-telemetry
     port: 8081
-    targetPort: telemetry
+    targetPort: http-telemetry
     protocol: TCP
   selector:
     k8s-app: kube-state-metrics
@@ -143,7 +143,7 @@ spec:
         ports:
         - name: http-metrics
           containerPort: 8080
-        - name: telemetry
+        - name: http-telemetry
           containerPort: 8081
         livenessProbe:
           httpGet:

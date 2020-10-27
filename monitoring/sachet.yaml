@@ -6,7 +6,7 @@ metadata:
   namespace: monitoring
 spec:
   ports:
-  - name: alert
+  - name: http-alert
     port: 9876
   selector:
     app: sachet
