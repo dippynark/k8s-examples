@@ -19,6 +19,7 @@ spec:
     - selector:
         dnsZones:
         - "*.lukeaddison.co.uk"
+        - "*.jx.lukeaddison.co.uk"
       dns01:
         cloudflare:
           email: lukeaddison785@gmail.com
