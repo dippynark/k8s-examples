@@ -65,7 +65,7 @@ spec:
   alerting:
     alertmanagers:
     - namespace: monitoring
-      name: alertmanager
+      name: alertmanager-operated
       port: http-web
   version: v2.10.0
   externalUrl: https://prometheus.lukeaddison.co.uk

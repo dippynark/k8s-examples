@@ -8,6 +8,14 @@ spec:
     matchLabels:
       app: alertmanager
   rules:
+  - # TODO: configure mTLS
+    #from:
+    #- source:
+    #    principals: ["cluster.local/ns/monitoring/sa/prometheus"]
+    to:
+    - operation:
+        paths:
+        - "/api/*"
   - when:
     - key: request.auth.audiences
       values:
