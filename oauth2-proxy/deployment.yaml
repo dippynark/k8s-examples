@@ -20,8 +20,8 @@ spec:
         - --provider=oidc
         - --cookie-secure=true
         - --cookie-samesite=lax
-        - --cookie-refresh=1h
-        - --cookie-expire=4h
+        - --cookie-refresh=24h
+        - --cookie-expire=48h
         - --cookie-name=_oauth2_proxy_istio_ingressgateway
         - --cookie-domain=.lukeaddison.co.uk
         - --whitelist-domain=.lukeaddison.co.uk
