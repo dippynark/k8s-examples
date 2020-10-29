@@ -12,15 +12,7 @@ spec:
     privateKeySecretRef:
       name: letsencrypt-prod
     solvers:
-    # Enable HTTP01 validations
-    - http01:
-       ingress:
-         class: istio
-    - selector:
-        dnsZones:
-        - "*.lukeaddison.co.uk"
-        - "*.jx.lukeaddison.co.uk"
-      dns01:
+    - dns01:
         cloudflare:
           email: lukeaddison785@gmail.com
           apiTokenSecretRef:
