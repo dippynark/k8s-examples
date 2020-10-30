@@ -37,6 +37,7 @@ spec:
             # https://github.com/moby/moby/issues/9054#issuecomment-227920187
             docker images | grep -v REPOSITORY | awk '{print $3}' | xargs -n 1 docker history | grep -v missing | grep -v "^IMAGE" | egrep -v "day|hour|minute|second" | awk '{print $1}' | sort | uniq | xargs -n 1 docker inspect | jq -r '.[0].RepoTags[]' | sort > old-images.txt
             docker images | grep -v REPOSITORY | awk '{print $3}' | xargs -n 1 docker history | grep -v missing | grep -v "^IMAGE" | egrep "day|hour|minute|second" | awk '{print $1}' | sort | uniq | xargs -n 1 docker inspect | jq -r '.[0].RepoTags[]' | sort > new-images.txt
+            # https://stackoverflow.com/a/4366568
             comm -23 new-images.txt old-images.txt | xargs docker rmi 2>/dev/null
 
             # Remove all unused local volumes
