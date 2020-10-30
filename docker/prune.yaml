@@ -16,7 +16,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 1
       containers:
-      - image: docker:stable
+      - image: docker:19.03.13
         name: prune
         command:
         - sh
@@ -42,8 +42,8 @@ spec:
             # Remove all unused local volumes
             docker volume prune -f
 
-            # Sleep for an hours
-            sleep 3600
+            # Sleep for a day
+            sleep $(( 24 * 60 * 60 ))
           done
         env:
         - name: DOCKER_API_VERSION
