@@ -24,13 +24,16 @@ spec:
           while true; do
             #docker system prune -f --filter "until=48h"
             #docker container prune -f --filter "until=48h"
-            # Cannot use system or conntainer prune as this triggers Kubernetes to restart init
+            # Cannot use system or container prune as this triggers Kubernetes to restart init
             # containers
             # https://github.com/kubernetes/kubernetes/issues/86531
             docker image prune -af --filter "until=48h"
 
+            # Remove all unused local volumes
             docker volume prune -f
-            sleep 3600
+
+            # Sleep for a day
+            sleep $(( 24 * 60 * 60 ))
           done
         env:
         - name: DOCKER_API_VERSION
