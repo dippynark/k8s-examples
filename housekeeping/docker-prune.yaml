@@ -1,39 +1,44 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: prune
-  namespace: docker
+  name: docker-prune
+  namespace: housekeeping
 spec:
   updateStrategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: prune
+      app: docker-prune
   template:
     metadata:
       labels:
-        app: prune
+        app: docker-prune
     spec:
       terminationGracePeriodSeconds: 1
       containers:
       - image: docker:19.03.13
-        name: prune
+        name: docker-prune
         command:
         - sh
         - -c
         - |
           apk add --update jq
 
+          # We want to remove images that haven't been used in a while to keep disk usage down
           while true; do
-            # Cannot use system or container prune as this triggers Kubernetes to restart init
-            # containers
+            # We cannot use system or container prune as this triggers Kubernetes to restart init
+            # containers (Kubernetes handles the removal of containers that it creates)
             # https://github.com/kubernetes/kubernetes/issues/86531
             #docker system prune -f --filter "until=48h"
             #docker container prune -f --filter "until=48h"
 
-            # Cannot use image prune since that only looks at when the image was last created (instead of used)
-            # docker image prune -af --filter "until=48h"
+            # We cannot use image prune since that only looks at when the image was last created
+            # instead of used
+            #docker image prune -af --filter "until=48h"
 
+            # The following implementation removes images that haven't been used to create a Docker
+            # container for a while (2 weeks). Removing images used by init containers (even if
+            # they're stopped) is not allowed (without force), which avoids the issue above
             # https://github.com/moby/moby/issues/9054#issuecomment-227920187
             docker images | grep -v REPOSITORY | awk '{print $3}' | xargs -n 1 docker history | grep -v '^<missing>' | grep -v "^IMAGE" | awk '{print $1 " " $3}' | egrep -v "day|hour|minute|second" | awk '{print $1}' | sort | uniq | xargs -n 1 docker inspect | jq -r '.[0].RepoTags[]' | sort | uniq > old-images.txt
             docker images | grep -v REPOSITORY | awk '{print $3}' | xargs -n 1 docker history | grep -v '^<missing>' | grep -v "^IMAGE" | awk '{print $1 " " $3}' | egrep "day|hour|minute|second" | awk '{print $1}' | sort | uniq | xargs -n 1 docker inspect | jq -r '.[0].RepoTags[]' | sort | uniq > new-images.txt

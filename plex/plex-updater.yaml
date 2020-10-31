@@ -52,7 +52,7 @@ spec:
           restartPolicy: Never
           containers:
           - name: updater
-            image: k8s.gcr.io/hyperkube:v1.17.0
+            image: k8s.gcr.io/hyperkube:v1.18.10
             env:
             - name: PLEX_LOGIN
               valueFrom:
