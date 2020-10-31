@@ -18,7 +18,7 @@ spec:
           restartPolicy: Never
           containers:
           - name: queue-checker
-            image: dippynark/python
+            image: dippynark/python:v1.0.0
             env:
             - name: X_API_KEY
               valueFrom:

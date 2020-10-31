@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
       - name: connect
-        image: dippynark/python
+        image: dippynark/python:v1.0.0
         env:
         - name: WHATBOX_USERNAME
           valueFrom:

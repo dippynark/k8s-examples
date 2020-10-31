@@ -18,7 +18,7 @@ spec:
           restartPolicy: Never
           containers:
           - name: health-checker
-            image: dippynark/python
+            image: dippynark/python:v1.0.0
             env:
             - name: SONARR_API_KEY
               valueFrom:
