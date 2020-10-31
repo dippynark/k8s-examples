@@ -61,6 +61,6 @@ spec:
                 COMPLETION_TIME=$(echo $LINE | awk '{print $3}')
                 if [[ "$COMPLETION_TIME" < "$ONE_HOUR_AGO" ]];
                 then
-                    kubectl delete job -n $NAMESPACE $NAME
+                    kubectl delete job -n $NAMESPACE $NAME --ignore-not-found=true
                 fi
               done
