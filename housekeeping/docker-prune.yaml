@@ -22,6 +22,8 @@ spec:
         - sh
         - -c
         - |
+          set -e
+
           apk add --update jq
 
           # We want to remove images that haven't been used in a while to keep disk usage down
@@ -43,7 +45,7 @@ spec:
             docker images | grep -v REPOSITORY | awk '{print $3}' | xargs -n 1 docker history | grep -v '^<missing>' | grep -v "^IMAGE" | awk '{print $1 " " $3}' | egrep -v "day|hour|minute|second" | awk '{print $1}' | sort | uniq | xargs -n 1 docker inspect | jq -r '.[0].RepoTags[]' | sort | uniq > old-images.txt
             docker images | grep -v REPOSITORY | awk '{print $3}' | xargs -n 1 docker history | grep -v '^<missing>' | grep -v "^IMAGE" | awk '{print $1 " " $3}' | egrep "day|hour|minute|second" | awk '{print $1}' | sort | uniq | xargs -n 1 docker inspect | jq -r '.[0].RepoTags[]' | sort | uniq > new-images.txt
             # https://stackoverflow.com/a/4366568
-            comm -23 new-images.txt old-images.txt | xargs docker rmi 2>/dev/null
+            comm -23 new-images.txt old-images.txt | xargs docker rmi 2>/dev/null || true
 
             # Remove all unused local volumes
             docker volume prune -f
