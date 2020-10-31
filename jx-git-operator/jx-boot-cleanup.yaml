@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: job-cleanup
+  name: jx-boot-cleanup
   namespace: jx-git-operator
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: job-cleanup
+  name: jx-boot-cleanup
   namespace: jx-git-operator
 rules:
 - apiGroups: ["batch", "v1"]
@@ -17,24 +17,24 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: job-cleanup
+  name: jx-boot-cleanup
   namespace: jx-git-operator
 subjects:
 - kind: ServiceAccount
-  name: job-cleanup
+  name: jx-boot-cleanup
   namespace: jx-git-operator
 roleRef:
   kind: ClusterRole
-  name: job-cleanup
+  name: jx-boot-cleanup
   apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: job-cleanup
+  name: jx-boot-cleanup
   namespace: jx-git-operator
 spec:
-  schedule: "*/1 * * * *"
+  schedule: "0 * * * *"
   successfulJobsHistoryLimit: 1
   concurrencyPolicy: Replace
   jobTemplate:
@@ -43,9 +43,9 @@ spec:
       template:
         spec:
           restartPolicy: Never
-          serviceAccountName: job-cleanup
+          serviceAccountName: jx-boot-cleanup
           containers:
-          - name: job-cleanup
+          - name: jx-boot-cleanup
             image: k8s.gcr.io/hyperkube:v1.18.10
             command:
             - /bin/bash
@@ -53,7 +53,7 @@ spec:
             - |
               # Delete Jobs in the jx-git-operator Namespace that were started over an hour ago
               ONE_HOUR_AGO=$(date -d '1 hour ago' +"%FT%TZ")
-              kubectl get jobs -n jx-git-operator -o json \
+              kubectl get jobs -n jx-git-operator -l app=jx-boot -o json \
                 | jq -r '.items[] | select(.status.startTime != null) | "\(.metadata.namespace) \(.metadata.name) \(.status.startTime)"' \
                 | while read LINE; do
                 NAMESPACE=$(echo $LINE | awk '{print $1}')
