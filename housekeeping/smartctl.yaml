@@ -15,7 +15,7 @@ spec:
           restartPolicy: Never
           containers:
           - name: smartctl
-            image: dippynark/smartctl
+            image: dippynark/smartctl:v1.0.0
             securityContext:
               privileged: true
             command:
