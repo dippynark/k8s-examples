@@ -1,0 +1,31 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: smartctl
+  namespace: housekeeping
+spec:
+  schedule: "0 * * * *"
+  successfulJobsHistoryLimit: 1
+  concurrencyPolicy: Replace
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: smartctl
+            image: dippynark/smartctl
+            securityContext:
+              privileged: true
+            command:
+              - sh
+              - -c
+              - |
+                set -e
+
+                smartctl --all /dev/sda
+                smartctl --all /dev/sdb
+                smartctl --all /dev/sdc
+                smartctl --all /dev/sdd
+                smartctl --all /dev/sde
