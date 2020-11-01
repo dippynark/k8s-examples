@@ -38,4 +38,3 @@ spec:
           operator: In
           values:
           - core1
-
