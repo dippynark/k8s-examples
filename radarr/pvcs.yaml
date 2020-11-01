@@ -47,8 +47,10 @@ metadata:
   name: connect
   namespace: radarr
 spec:
-  accessModes:
-  - ReadWriteOnce
   resources:
     requests:
       storage: 10Gi
+  accessModes:
+  - ReadWriteOnce
+  volumeName: radarr-connect
+  storageClassName: ""

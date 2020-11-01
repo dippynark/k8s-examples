@@ -4,8 +4,10 @@ metadata:
   name: redis
   namespace: monitoring
 spec:
-  accessModes:
-  - ReadWriteOnce
   resources:
     requests:
       storage: 10Gi
+  accessModes:
+  - ReadWriteOnce
+  volumeName: monitoring-redis
+  storageClassName: ""
