@@ -16,20 +16,6 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: books-staging
-  namespace: housekeeping
-spec:
-  resources:
-    requests:
-      storage: 10Gi
-  accessModes:
-  - ReadWriteOnce
-  volumeName: housekeeping-books-staging
-  storageClassName: ""
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
   name: root-ssh
   namespace: housekeeping
 spec:

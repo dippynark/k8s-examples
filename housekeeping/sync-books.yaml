@@ -107,19 +107,18 @@ spec:
                 # remove rating
                 calibredb --with-library=$booksfolder list --field rating --for-machine | grep -v 'No write acces to' | jq '.[] | select(.rating != null) | .id' | xargs -I {} calibredb --with-library=$booksfolder set_metadata {} -f rating:0
             volumeMounts:
-            - name: books
-              mountPath: /books
             - name: staging
               mountPath: /staging
+            - name: books
+              mountPath: /books
             - name: ssh
               mountPath: /root/.ssh
           volumes:
+          - name: staging
+            emptyDir: {}
           - name: books
             persistentVolumeClaim:
               claimName: books
-          - name: staging
-            persistentVolumeClaim:
-              claimName: books-staging
           - name: ssh
             persistentVolumeClaim:
               claimName: root-ssh
