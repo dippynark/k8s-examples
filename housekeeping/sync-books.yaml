@@ -1,0 +1,126 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: sync-books
+  namespace: housekeeping
+spec:
+  schedule: "*/2 * * * *"
+  successfulJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          securityContext:
+            fsGroup: 1000
+          restartPolicy: Never
+          containers:
+          - name: sync-books
+            image: dippynark/calibre:v1.0.0
+            command:
+              - bash
+              - -c
+              - |
+                set -euo pipefail
+
+                # configuration
+                remoteuser="eckoro"
+                remoteserver="neptune.whatbox.ca"
+                remotefolder="/home/eckoro/finished/luke/Books/"
+                stagingfolder="/staging/"
+                booksfolder="/books/"
+                syncvar="-avzPL --bwlimit=20480 --compress-level=9 --inplace --append-verify --exclude=.rsync-timestamp"
+
+                # check whether there is something to download
+                list=`ssh -o "ConnectionAttempts 3" $remoteuser@$remoteserver find $remotefolder -type l`
+                count=`echo "$list" | wc -l`
+                if [ -z "$list" ]; then
+                    count=0
+                fi
+                if [ $count == 0 ]; then
+                    echo "Nothing to download"
+                else
+                    # touch timestamp file to prevent deleting links that are created while rsync is running
+                    ssh -o "ConnectionAttempts 3" $remoteuser@$remoteserver touch $remotefolder/.rsync-timestamp
+
+                    rsync -e "ssh -o \"ConnectionAttempts 3\"" $syncvar $remoteuser@$remoteserver:$remotefolder "$stagingfolder"
+                    # No need to do this anymore as we run as 1000
+                    #chown -R 1000:1000 $stagingfolder
+
+                    # delete symlinks now that we're done with them.
+                    ssh -o "ConnectionAttempts 3" $remoteuser@$remoteserver find $remotefolder \! -newer $remotefolder/.rsync-timestamp -type l -delete -print
+                fi
+
+                # count number of files to add to library
+                count=`find $stagingfolder -type f -name "*.epub" -or -name "*.mobi" | wc -l`
+                if [ $count == 0 ]; then
+                    echo "Nothing to add"
+                else
+                    find $stagingfolder -type f \( -name "*.epub" -or -name "*.mobi" \) -print0 | xargs -0 -n 1 -I {} bash -c "calibredb --library-path $booksfolder add \"{}\" && rm \"{}\""
+                fi
+
+                OLD_IFS=$IFS
+                IFS=$'\n'
+                for file in $(find $booksfolder -type f -name "*.mobi")
+                do
+                    cover="$(dirname "$file")/cover.jpg"
+                    if [ ! -f "${file%mobi}epub" ]; then
+                        ebook-convert "$file" "${file%mobi}epub" --preserve-cover-aspect-ratio
+                        bookid=$(dirname "${file%mobi}epub")
+                        bookid=${bookid%\)}
+                        calibredb add_format --with-library=$booksfolder ${bookid##*\(} "${file%mobi}epub"
+                        if [ -f "$cover" ]; then
+                            ebook-convert "${file%mobi}epub" "${file%mobi}tmp.epub" --preserve-cover-aspect-ratio --cover "$cover"
+                            mv "${file%mobi}tmp.epub" "${file%mobi}epub"
+                        fi
+                    fi
+                    if [ -f "$cover" ]; then
+                        if [ "$cover" -nt "$file" ]; then
+                            ebook-convert "$file" "${file%mobi}tmp.mobi" --output-profile kindle --cover "$cover"
+                            mv "${file%mobi}tmp.mobi" "$file"
+                        fi
+                    fi
+                done
+                for file in $(find $booksfolder -type f -name "*.epub")
+                do
+                    cover="$(dirname "$file")/cover.jpg"
+                    if [ ! -f "${file%epub}mobi" ]; then
+                        ebook-convert "$file" "${file%epub}mobi" --output-profile kindle
+                        bookid=$(dirname "${file%epub}mobi")
+                        bookid=${bookid%\)}
+                        calibredb add_format --with-library=$booksfolder ${bookid##*\(} "${file%epub}mobi"
+                        if [ -f "$cover" ]; then
+                            ebook-convert "${file%epub}mobi" "${file%epub}tmp.mobi" --output-profile kindle --cover "$cover"
+                            mv "${file%epub}tmp.mobi" "${file%epub}mobi"
+                        fi
+                    fi
+                    if [ -f "$cover" ]; then
+                        if [ "$cover" -nt "$file" ]; then
+                      ebook-convert "$file" "${file%epub}tmp.epub" --preserve-cover-aspect-ratio --cover "$cover"
+                            mv "${file%epub}tmp.epub" "$file"
+                        fi
+                    fi
+                done
+                IFS=$OLD_IFS
+
+                # remove rating
+                calibredb --with-library=$booksfolder list --field rating --for-machine | grep -v 'No write acces to' | jq '.[] | select(.rating != null) | .id' | xargs -I {} calibredb --with-library=$booksfolder set_metadata {} -f rating:0
+            volumeMounts:
+            - name: books
+              mountPath: /books
+            - name: staging
+              mountPath: /staging
+            - name: ssh
+              mountPath: /root/.ssh
+          volumes:
+          - name: books
+            persistentVolumeClaim:
+              claimName: books
+          - name: staging
+            persistentVolumeClaim:
+              claimName: books-staging
+          - name: ssh
+            persistentVolumeClaim:
+              claimName: root-ssh
+              readOnly: true
