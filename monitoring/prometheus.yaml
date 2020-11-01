@@ -46,7 +46,7 @@ spec:
   accessModes:
   - ReadWriteOnce
   local:
-    path: /mnt/data/kubernetes/volumes/monitoring-prometheus
+    path: /var/lib/kubernetes/volumes/monitoring-prometheus
   nodeAffinity:
     required:
       nodeSelectorTerms:
