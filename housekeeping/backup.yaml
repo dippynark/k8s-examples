@@ -1,0 +1,105 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: backup
+  namespace: housekeeping
+spec:
+  schedule: "0 2 * * *"
+  successfulJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          restartPolicy: Never
+          hostNetwork: true
+          hostPID: true
+          containers:
+          - name: backup
+            image: dippynark/backup:v1.0.0
+            securityContext:
+              privileged: true
+              capabilities:
+                add: ["*"]
+            command:
+              - /bin/sh
+              - -c
+              - |
+                set -euxo pipefail
+
+                # Copy static binaries to host -- rsync and btrfs are assumed to exist already
+                ls /host/opt/bin/restic || cp /usr/bin/restic /host/opt/bin/restic
+                ls /host/opt/bin/rclone || cp /usr/bin/rclone /host/opt/bin/rclone
+                ls /host/opt/bin/etcdctl || cp /usr/bin/etcdctl /host/opt/bin/etcdctl
+
+                # Enter host mount namespace
+                nsenter --mount=/proc/1/ns/mnt -- /bin/bash <<'EOF'
+
+                set -euxo pipefail
+
+                subvolumes=(data)
+                backup_dirs=(
+                  /etc
+                  /var/lib/kubernetes/volumes
+                #  root@ubnt.lukeaddison.co.uk:/config/config.boot
+                )
+
+                # Backup directories
+                for backup_dir in ${backup_dirs[@]}; do
+                  # https://unix.stackexchange.com/questions/86879/suppress-rsync-warning-some-files-vanished-before-they-could-be-transferred
+                  # https://git.samba.org/?p=rsync.git;a=blob_plain;f=support/rsync-no-vanished;hb=HEAD
+                  if rsync -qa --delete "$backup_dir" "/mnt/data/backup/"; ret=$?; [ $ret -ne 0 ]; then
+                    if [ $ret -ne 24 ]; then
+                      exit $ret
+                    fi
+                  fi
+                done
+
+                # Snapshot etcd
+                ETCDCTL_API=3 /opt/bin/etcdctl snapshot save --cert=/etc/kubernetes/pki/etcd/peer.crt --key=/etc/kubernetes/pki/etcd/peer.key --cacert=/etc/kubernetes/pki/etcd/ca.crt /mnt/data/backup/etcd-snapshot
+
+                # snapshot subvolumes
+                for subvolume in ${subvolumes[@]}; do
+                  mkdir -p "/mnt/btrfs/snapshots/$subvolume"
+                  date=`date +"%FT%T"`
+                  btrfs subvolume snapshot /mnt/$subvolume "/mnt/btrfs/snapshots/$subvolume/$date"
+                  touch "/mnt/btrfs/snapshots/$subvolume/$date"
+
+                  cd "/mnt/btrfs/snapshots/$subvolume"
+                  ls -1rt | head -n -8 | xargs -r -d '\n' btrfs subvolume delete -c --
+                done
+
+                # Sync to cloud
+                /opt/bin/restic backup \
+                  -o rclone.program="/opt/bin/rclone" \
+                  -o rclone.args="serve restic --stdio --b2-hard-delete --drive-use-trash=false --drive-chunk-size=256M -l --fast-list --bwlimit=4M --tpslimit=10" \
+                  -r rclone:gdrive:Backup \
+                  --cache-dir=/root/.cache/restic \
+                  --cleanup-cache \
+                  --password-file=/root/.config/restic/password \
+                  --exclude-file=/root/.config/restic/excludes.txt \
+                  /mnt/data/backup
+                /opt/bin/restic forget \
+                  -o rclone.program="/opt/bin/rclone" \
+                  -o rclone.args="serve restic --stdio --b2-hard-delete --drive-use-trash=false --drive-chunk-size=256M -l --fast-list --bwlimit=4M --tpslimit=10" \
+                  -r rclone:gdrive:Backup \
+                  --cache-dir=/root/.cache/restic \
+                  --cleanup-cache \
+                  --password-file=/root/.config/restic/password \
+                  --keep-daily=8 \
+                  --keep-weekly=5 \
+                  --keep-monthly=12 \
+                  --keep-yearly=5 \
+                  --prune
+                /opt/bin/rclone sync -P --filter="- **.partial~" --drive-chunk-size=256M -l --fast-list --bwlimit=4M --tpslimit=10 "/mnt/btrfs/snapshots/$subvolume/$date/media/Books/" media:Books/
+                /opt/bin/rclone sync -P --filter="- **.partial~" --drive-chunk-size=256M -l --fast-list --bwlimit=4M --tpslimit=10 "/mnt/btrfs/snapshots/$subvolume/$date/media/Music/" media:Music/
+                exit 0
+                EOF
+            volumeMounts:
+            - name: opt-bin
+              mountPath: /host/opt/bin
+          volumes:
+          - name: opt-bin
+            hostPath:
+              path: /opt/bin
